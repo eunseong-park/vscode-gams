@@ -18,12 +18,16 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
         // Regex to find GAMS declaration keywords at the beginning of a line
         const declarationRegex = /^\s*(SETS?|PARAMETERS?|VARIABLES?|EQUATIONS?|MODELS?|SCALARS?|TABLES?|ACRONYMS?|ASSIGNS?|OPTIONS?)\b/i;
         // Regex for comment-based sections: # Section Name ---
-        const sectionRegex = /^\s*#\s*([^\-]+?)\s*\-{3,}/;
-        // Regex for comment-based subsections: ## Subsection Name ---
-        const subsectionRegex = /^\s*##\s*([^\-]+?)\s*\-{3,}/;
+        const sectionRegex = /^\s*\*(?![*])\s*([^\-]+?)\s*\-{3,}/;
+        // Regex for comment-based subsections: ** Subsection Name ---
+        const subsectionRegex = /^\s*\*\*\s*([^\-]+?)\s*\-{3,}/;
+        // Regex for comment-based sub-subsections: *** Sub-subsection Name ---
+        const subSubsectionRegex = /^\s*\*\*\*\s*([^\-]+?)\s*\-{3,}/;
+        // Regex for comment-based sub-sub-subsections: **** Sub-sub-subsection Name ---
+        const subSubSubsectionRegex = /^\s*\*\*\*\*\s*([^\-]+?)\s*\-{3,}/;
         
         let currentParentSymbol: vscode.DocumentSymbol | undefined;
-        let currentSectionSymbol: vscode.DocumentSymbol | undefined; // To track the current top-level section
+        let sectionStack: vscode.DocumentSymbol[] = []; // To track the current section hierarchy
         let inBlockComment: boolean = false;
         let currentDeclarationContent: string = '';
         let currentDeclarationStartLine: number = -1;
@@ -61,61 +65,70 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                 continue;
             }
 
-            // Check for section/subsection comments first
-            const sectionMatch = processedLine.match(sectionRegex);
-            const subsectionMatch = processedLine.match(subsectionRegex);
+            let newSectionSymbol: vscode.DocumentSymbol | undefined;
+            let sectionLevel: number = 0;
+            let sectionMatchResult: RegExpExecArray | null = null;
 
-            if (sectionMatch) {
+            // Check for section/subsection comments - prioritize deepest levels first
+            if ((sectionMatchResult = subSubSubsectionRegex.exec(processedLine))) {
+                sectionLevel = 4;
+            } else if ((sectionMatchResult = subSubsectionRegex.exec(processedLine))) {
+                sectionLevel = 3;
+            } else if ((sectionMatchResult = subsectionRegex.exec(processedLine))) {
+                sectionLevel = 2;
+            } else if ((sectionMatchResult = sectionRegex.exec(processedLine))) {
+                sectionLevel = 1;
+            }
+
+            if (sectionLevel > 0 && sectionMatchResult) {
                 // If we were in the middle of a declaration, process it
                 if (currentParentSymbol && currentDeclarationContent.length > 0) {
-                    this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
                     currentDeclarationContent = '';
                     currentParentSymbol = undefined;
                 }
 
-                const sectionName = sectionMatch[1].trim();
-                const range = new vscode.Range(i, line.indexOf(sectionMatch[0]), i, line.length);
-                const selectionRange = new vscode.Range(i, line.indexOf(sectionMatch[0]), i, line.indexOf(sectionMatch[0]) + sectionName.length);
+                const sectionName = sectionMatchResult[1].trim();
+                const range = new vscode.Range(i, sectionMatchResult.index, i, line.length);
+                const selectionRange = new vscode.Range(i, sectionMatchResult.index, i, sectionMatchResult.index + sectionName.length);
 
-                currentSectionSymbol = new vscode.DocumentSymbol(
+                let kind: vscode.SymbolKind;
+                let detail: string;
+                switch (sectionLevel) {
+                    case 1: kind = vscode.SymbolKind.Module; detail = 'Section'; break;
+                    case 2: kind = vscode.SymbolKind.Namespace; detail = 'Subsection'; break;
+                    case 3: kind = vscode.SymbolKind.Class; detail = 'Sub-subsection'; break;
+                    case 4: kind = vscode.SymbolKind.Method; detail = 'Sub-sub-subsection'; break;
+                    default: kind = vscode.SymbolKind.Module; detail = 'Section'; break;
+                }
+                
+                newSectionSymbol = new vscode.DocumentSymbol(
                     sectionName,
-                    'Section',
-                    vscode.SymbolKind.Module, // Module or Namespace for sections
+                    detail,
+                    kind,
                     range,
                     selectionRange
                 );
-                symbols.push(currentSectionSymbol);
-                continue; // Move to next line after processing section
-            } else if (subsectionMatch) {
-                // If we were in the middle of a declaration, process it
-                if (currentParentSymbol && currentDeclarationContent.length > 0) {
-                    this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
-                    currentDeclarationContent = '';
-                    currentParentSymbol = undefined;
+
+                // Manage the sectionStack
+                while (sectionStack.length > 0 && sectionStack[sectionStack.length - 1].detail && 
+                       (sectionLevel <= (sectionStack[sectionStack.length - 1].detail === 'Section' ? 1 : 
+                                         sectionStack[sectionStack.length - 1].detail === 'Subsection' ? 2 :
+                                         sectionStack[sectionStack.length - 1].detail === 'Sub-subsection' ? 3 : 4))) {
+                    sectionStack.pop();
                 }
 
-                const subsectionName = subsectionMatch[1].trim();
-                const range = new vscode.Range(i, line.indexOf(subsectionMatch[0]), i, line.length);
-                const selectionRange = new vscode.Range(i, line.indexOf(subsectionMatch[0]), i, line.indexOf(subsectionMatch[0]) + subsectionName.length);
-
-                const subsectionSymbol = new vscode.DocumentSymbol(
-                    subsectionName,
-                    'Subsection',
-                    vscode.SymbolKind.Function, // Function or SubFunction for subsections
-                    range,
-                    selectionRange
-                );
-
-                if (currentSectionSymbol) {
-                    if (!currentSectionSymbol.children) {
-                        currentSectionSymbol.children = [];
+                const parent = sectionStack.length > 0 ? sectionStack[sectionStack.length - 1] : undefined;
+                if (parent) {
+                    if (!parent.children) {
+                        parent.children = [];
                     }
-                    currentSectionSymbol.children.push(subsectionSymbol);
+                    parent.children.push(newSectionSymbol);
+                    parent.range = new vscode.Range(parent.range.start, newSectionSymbol.range.end);
                 } else {
-                    // If no parent section, add as top-level symbol (might happen if file starts with subsection)
-                    symbols.push(subsectionSymbol);
+                    symbols.push(newSectionSymbol);
                 }
-                continue; // Move to next line after processing subsection
+                sectionStack.push(newSectionSymbol);
+                continue; // Move to next line after processing section
             }
 
             const match = processedLine.match(declarationRegex);
@@ -123,7 +136,6 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
             if (match) {
                 // If we were in the middle of a declaration, process it before starting a new one
                 if (currentParentSymbol && currentDeclarationContent.length > 0) {
-                    this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
                     currentDeclarationContent = ''; // Reset for the new declaration
                 }
 
@@ -184,12 +196,15 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                     range,
                     selectionRange
                 );
-                // Decide where to push: under current section or top-level
-                if (currentSectionSymbol) {
-                    if (!currentSectionSymbol.children) {
-                        currentSectionSymbol.children = [];
+                // Decide where to push: under current section, or top-level
+                const currentSectionParent = sectionStack.length > 0 ? sectionStack[sectionStack.length - 1] : undefined;
+                if (currentSectionParent) {
+                    if (!currentSectionParent.children) {
+                        currentSectionParent.children = [];
                     }
-                    currentSectionSymbol.children.push(currentParentSymbol);
+                    currentSectionParent.children.push(currentParentSymbol);
+                    // Extend the parent section's range to include this GAMS declaration
+                    currentSectionParent.range = new vscode.Range(currentSectionParent.range.start, currentParentSymbol.range.end);
                 } else {
                     symbols.push(currentParentSymbol);
                 }
@@ -203,7 +218,6 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                 
                 // Check if the declaration ends on this line
                 if (processedLine.endsWith(';')) {
-                    this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
                     currentDeclarationContent = '';
                     currentParentSymbol = undefined; // Reset current parent
                 }
@@ -216,70 +230,6 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
             }
         }
 
-        // Process any remaining declaration content if file ends without a semicolon
-        if (currentParentSymbol && currentDeclarationContent.length > 0) {
-            this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
-        }
-
         return symbols;
-    }
-
-    private parseDeclarationItems(
-        parentSymbol: vscode.DocumentSymbol,
-        declarationContent: string,
-        startLine: number,
-        document: vscode.TextDocument
-    ) {
-        // Remove content after / ... / as it's data and not relevant for symbol names
-        let contentToParse = declarationContent.replace(/\s*\/.+\/\s*/g, '');
-        
-        // Split by commas, but handle cases where descriptions or dimensions contain commas
-        // This regex attempts to find item definitions: name(dim) "description"
-        const itemRegex = /\b([a-zA-Z0-9_]+)(\s*\([^)]+\))?(\s*["'][^"']*["'])?/g;
-        let match: RegExpExecArray | null;
-
-        while ((match = itemRegex.exec(contentToParse)) !== null) {
-            const itemName = match[1];
-            const itemDescription = match[3] ? match[3].trim().replace(/^"|"$/g, '') : '';
-            
-            // Calculate range for the item name relative to the document
-            // This is a simplification; a more accurate range would require parsing the original line number
-            // and column index within the full declarationContent string.
-            // For now, we'll use the startLine for the item, and estimate its column.
-            const itemStartCol = document.lineAt(startLine).text.indexOf(itemName);
-            const itemRange = new vscode.Range(
-                startLine, 
-                itemStartCol === -1 ? 0 : itemStartCol, 
-                startLine, 
-                (itemStartCol === -1 ? 0 : itemStartCol) + itemName.length
-            );
-            
-            // Assign a default SymbolKind for items, this can be refined based on parentSymbol.kind
-            let itemKind: vscode.SymbolKind = vscode.SymbolKind.Field; 
-            if (parentSymbol.kind === vscode.SymbolKind.Array) { // Sets
-                itemKind = vscode.SymbolKind.EnumMember;
-            } else if (parentSymbol.kind === vscode.SymbolKind.Constant) { // Parameters, Scalars, Tables
-                itemKind = vscode.SymbolKind.Constant;
-            } else if (parentSymbol.kind === vscode.SymbolKind.Variable) { // Variables
-                itemKind = vscode.SymbolKind.Variable;
-            } else if (parentSymbol.kind === vscode.SymbolKind.Function) { // Equations
-                itemKind = vscode.SymbolKind.Function;
-            } else if (parentSymbol.kind === vscode.SymbolKind.Class) { // Models
-                itemKind = vscode.SymbolKind.Module;
-            }
-
-            const itemSymbol = new vscode.DocumentSymbol(
-                itemName,
-                itemDescription,
-                itemKind,
-                itemRange,
-                itemRange
-            );
-            
-            if (!parentSymbol.children) {
-                parentSymbol.children = [];
-            }
-            parentSymbol.children.push(itemSymbol);
-        }
     }
 }
