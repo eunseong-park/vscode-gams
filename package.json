@@ -12,7 +12,9 @@
   "categories": [
     "Programming Languages"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:gams"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "languages": [
@@ -195,8 +197,8 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "npx tsc -p ./",
+    "watch": "npx tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test"
@@ -213,7 +215,5 @@
     "eslint": "^8.56.0",
     "typescript": "^5.5.2"
   },
-  "dependencies": {
-    "tsc": "^2.0.4"
-  }
+  "dependencies": {}
 }
