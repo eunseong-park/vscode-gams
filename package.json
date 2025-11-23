@@ -5,15 +5,12 @@
   "version": "0.0.7",
   "publisher": "eunseong-park",
   "icon": "images/letter-g.png",
-  "repository": "https://github.com/eunseong-park/gams",
+  "repository": "https://github.com/eunseong-park/vscode-gams",
   "engines": {
     "vscode": "^1.87.0"
   },
   "categories": [
     "Programming Languages"
-  ],
-  "activationEvents": [
-    "onLanguage:gams"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -62,7 +59,7 @@
         "GAMS.terminalCwd": {
           "type": "string",
           "default": "",
-          "description": "Determine where the working directory of the terminal. If empty, the terminal will be opened in the folder where the .gms file is located."
+          "description": "Specifies the working directory for the terminal. If empty, the terminal's working directory will be the folder containing the .gms file."
         },
         "GAMS.commandLineParameters": {
           "type": "string",
@@ -207,13 +204,16 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
     "@types/vscode": "^1.87.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "@vscode/test-cli": "^0.0.6",
     "@vscode/test-electron": "^2.3.9",
     "@vscode/vsce": "^3.1.1",
-    "eslint": "^8.56.0",
+    "eslint": "^9.0.0",
     "typescript": "^5.5.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "overrides": {
+    "ajv": "8.17.1"
+  }
 }
