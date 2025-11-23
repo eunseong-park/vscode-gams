@@ -1,0 +1,320 @@
+{
+  "scopeName": "source.gams",
+  "patterns": [
+    {
+      "include": "#general"
+    },
+    {
+      "include": "#set"
+    },
+    {
+      "include": "#parameter"
+    },
+    {
+      "include": "#scalar"
+    },
+    {
+      "include": "#table"
+    },
+    {
+      "include": "#variable"
+    },
+    {
+      "include": "#equation"
+    },
+    {
+      "include": "#equationdef"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#math"
+    },
+    {
+      "include": "#suffix"
+    },
+    {
+      "include": "#operator"
+    }
+  ],
+  "repository": {
+    "argument": {
+      "match": "%[^%]*%",
+      "name": "entity.name.class.gams"
+    },
+    "blockcomment": {
+      "begin": "(?i)(^\\$|\\$\\$)ONTEXT\\b(?!.*?\\s+mpsge)",
+      "contentName": "comment.block.documentation.gams",
+      "end": "(?i)(^\\$|\\$\\$)OFFTEXT",
+      "name": "keyword.control.gams"
+    },
+    "blockcommentc": {
+      "begin": "/\\*",
+      "contentName": "comment.block.documentation.gams",
+      "end": "\\*/",
+      "name": "comment.slashstar.gams"
+    },
+    "doublequotestring": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.gams"
+        }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.gams"
+        }
+      },
+      "name": "string.quoted.double.gams",
+      "patterns": [
+        {
+          "match": "%[^%]*%",
+          "name": "entity.name.class.gams"
+        }
+      ]
+    },
+    "equation": {
+      "begin": "(?i)(^|;)\\s*\\b(EQUATIONS?)\\s+",
+      "beginCaptures": {
+        "2": {
+          "name": "storage.type.gams"
+        }
+      },
+      "end": ";",
+      "name": "meta.function.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        }
+      ]
+    },
+    "equationdef": {
+      "match": "\\.\\.",
+      "name": "keyword.operator.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        },
+        {
+          "include": "#equationseparator"
+        },
+        {
+          "include": "#math"
+        },
+        {
+          "include": "#suffix"
+        },
+        {
+          "include": "#operator"
+        }
+      ]
+    },
+    "equationseparator": {
+      "match": "(?i)(=e=|=l=|=g=|=x=)",
+      "name": "keyword.operator.gams"
+    },
+    "fulllinecomment": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.gams"
+        }
+      },
+      "match": "^(\\*).*$",
+      "name": "comment.line.star.gams"
+    },
+    "general": {
+      "patterns": [
+        {
+          "include": "#blockcomment"
+        },
+        {
+          "include": "#blockcommentc"
+        },
+        {
+          "include": "#linecomment"
+        },
+        {
+          "include": "#fulllinecomment"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "include": "#specialnumber"
+        },
+        {
+          "include": "#singlequotestring"
+        },
+        {
+          "include": "#doublequotestring"
+        },
+        {
+          "include": "#preprocess"
+        },
+        {
+          "include": "#argument"
+        }
+      ]
+    },
+    "keyword": {
+      "match": "(?i)\\b(ABORT|ACRONYMS?|ALIAS|ALL|AND|ASSIGN|BINARY|CARD|DISPLAY|EPS|EQ|GE|GT|INTEGER|LE|LOOP|LT|MAXIMIZING|MINIMIZING|MODELS?|NA|NE|NEGATIVE|NOT|OPTION|OPTIONS|OR|ORD|PROD|SMAX|SMIN|SOS1|SOS2|SUM|SYSTEM|TABLE|USING|XOR|REPEAT|UNTIL|WHILE|IF|THEN|ELSE|SEMICONT|SEMIINT|FILES?|PUT|PUTPAGE|PUTTL|PUTCLOSE|FREE|SOLVE|FOR|ELSEIF|EXECUTE_(UN)?LOAD(DC)?|PUT_UTILITY|EXIST|SET|SAMEAS)\\b",
+      "name": "keyword.control.gams"
+    },
+    "linecomment": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.gams"
+        }
+      },
+      "match": "(//|\\!\\!)(?!\\[\\[).*$\\n?",
+      "name": "comment.line.sharp.gams"
+    },
+    "math": {
+      "match": "(?i)\\b(ABS|ARCCOS|ARCSIN|ARCTAN|ARCTAN2|BETA|BETAREG|BINOMIAL|BOOL_(AND|EQV|IMP|NOT|OR|XOR)|CEIL|CENTROPY|COS|COSH|CVPOWER|DIV|DIV0|EDIST|ENTROPY|ERRORF|EXECSEED|EXP|FACT|FLOOR|FRAC|GAMMA|GAMMAREG|IFTHEN|LOG|LOG2|LOG10|LOGBETA|LOGGAMMA|MAPVAL|MAX|MIN|MOD|NCP(CM|F|VUPOW|VUSIN)|NORMAL|PI|POLY|POWER|RANDBINOMIAL|RANDLINEAR|RANDTRIANGLE|ROUND|RPOWER|SIGMOID|SIGN|SIGNPOWER|SIN|SINH|SL(EXP|LOG10|REC)|SQ(EXP|LOG10|R|REC|RT)|TANH?|TRUNC|UNIFORM|UNIFORMINT|VCPOWER)\\b",
+      "name": "keyword.operator.gams"
+    },
+    "number": {
+      "match": "(?<![\\d.])\\b\\d+(\\.\\d+)?([eE]-?\\d+)?|\\.\\d+([eE]-?\\d+)?",
+      "name": "constant.numeric.gams"
+    },
+    "specialnumber": {
+      "match": "(?i)\\b(YES|NO|INF)\\b",
+      "name": "constant.numeric.gams"
+    },
+    "operator": {
+      "match": "(\\b(and|or|not)\\b)|(\\+|-|%|#|\\*|\\/|\\*\\*|=|<=?|>=?|\\$|;)",
+      "name": "keyword.operator.gams"
+    },
+    "parameter": {
+      "begin": "(?i)(^|;)\\s*\\b(PARAMETERS?)\\s+",
+      "beginCaptures": {
+        "2": {
+          "name": "storage.type.gams"
+        }
+      },
+      "end": ";",
+      "name": "meta.function.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        }
+      ]
+    },
+    "preprocess": {
+      "match": "(?i)\\$\\$?(MODEL|SECTORS|COMMODIT(Y|IES)?|CONSUMER(S)?|AUXILIAR(Y|IES)?|PROD|DEMAND|CONSTRAINT|REPORT|ECHOP|PEPS|EULCHK|WALCHK|FUNLOG|DATECH|abort(.noError)?|batInclude|call(.checkErrorLevel)?|call.Async(NC)?|callTool(.checkErrorLevel)?|clear|clearError(s)?|comment|compress|declareAndLoad|decompress|dollar|double|drop(Env|Global|Local)?|echo(N)?|eject|else|elseIf(E|I)?|encrypt|endif|eolCom|error|escape|eval(.Set)?|evalGlobal(.Set)?|evalLocal(.Set)?|exit|expose|funcLibIn|gdxIn|gdxLoad(All)?|gdxOut|gdxUnload|goto|hidden|hiddenCall|hiddenCall.Async(NC)?|hiddenCall(.checkErrorLevel)?|hiddenCallTool(.checkErrorLevel)?|hide|if(E|I)?|ifThen(E|I)?|include|inlineCom|kill|label|libInclude|lines|load(DC|DCM|DCR|Filtered|FilteredM|FilteredR|Idx|M|R)?|log|macro|maxCol|maxGoTo|minCol|(on|off)?CheckErrorLevel|(on|off)?Delim|(on|off)?Digit|(on|off)?Dollar|(on|off)?DotL|(on|off)?DotScale|(on|off)?Echo(S|V)?|(on|off)?ECImplicitLoad|(on|off)?Embedded|(on|off)?EmbeddedCode(S|V)?|(on|off)?Empty|(on|off)?End|(on|off)?EolCom|(on|off)?Eps|(on|off)?EpsToZero|(on|off)?Expand|(on|off)?ExternalInput|(on|off)?ExternalOutput|(on|off)?Filtered|(on|off)?Global|(on|off)?IDCProtect|(on|off)?ImplicitAssign|(on|off)?Include|(on|off)?Inline|(on|off)?Listing|(on|off)?Local|(on|off)?Log|(on|off)?Macro|(on|off)?Margin|(on|off)?Multi(R)?|(on|off)?NestCom|(on|off)?Order|(on|off)?Put(S|V)?|(on|off)?Recurse|(on|off)?StrictSingleton|(on|off)?SuffixAlgebraVars|(on|off)?SuffixDLVars|(on|off)?SymList|(on|off)?SymXRef|(on|off)?Text|(on|off)?Troll|(on|off)?UElList|(on|off)?UElXRef|(on|off)?UNDF|(on|off)?Uni|(on|off)?Upper|(on|off)?Verbatim|(on|off)?Warning|Option|phantom|prefixPath|protect|purge|remark|save(.keepCode)?|scratchFileName|set(Args|Comps|DDList|DDList.Cont|Env|Global|Local|Names)?|shift|show(Files|Macros|Variables)?|single|splitOption|stars|sTitle|stop|sysInclude|terminate|title|unLoad|use205|use225|use999|version|warning)\\b",
+      "name": "keyword.other.special-method.gams"
+    },
+    "scalar": {
+      "begin": "(?i)(^|;)\\s*\\b(SCALARS?)",
+      "beginCaptures": {
+        "2": {
+          "name": "storage.type.gams"
+        }
+      },
+      "end": ";",
+      "name": "meta.function.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        },
+        {
+          "include": "#scalarvalue"
+        }
+      ]
+    },
+    "scalarvalue": {
+      "begin": "\\/",
+      "contentName": "normal.gams",
+      "end": "\\/",
+      "name": "keyword.operator.gams",
+      "patterns": [
+        {
+          "match": "(?<![\\d.])\\b\\d+(\\.\\d+)?([eE]-?\\d+)?|\\.\\d+([eE]-?\\d+)?",
+          "name": "constant.numeric.gams"
+        },
+        {
+          "include": "#general"
+        }
+      ]
+    },
+    "set": {
+      "begin": "(?i)(^|;)\\s*\\b(SINGLETON\\s+)?\\b(SETS?)\\s+",
+      "beginCaptures": {
+        "2": {
+          "name": "storage.modifier.gams"
+        },
+        "3": {
+          "name": "storage.type.gams"
+        }
+      },
+      "end": ";",
+      "name": "meta.function.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        }
+      ]
+    },
+    "singlequotestring": {
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.gams"
+        }
+      },
+      "end": "'",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.gams"
+        }
+      },
+      "name": "string.quoted.single.gams",
+      "patterns": [
+        {
+          "match": "%[^%]*%",
+          "name": "entity.name.class.gams"
+        }
+      ]
+    },
+    "suffix": {
+      "match": "(?i)\\.(lo|up|fx|l|m|scale|prior|stage|range|slackup|slacklo|slack|infeas|ap|bm|case|cc|cr|errors|hdcc|hdcr|hdll|lcase|lj|ll|lm|lp|lw|nd|nj|nr|nw|nz|pdir|pc|ps|pw|sj|sw|tf|tj|tlcc|tlcr|tlll|tm|tw|ws|pos|ord|off|rev|uel|len|tlen|val|tval|first|last|BuildCode|CNS|ComputerName|Date|Date1|DirSep|DNLP|Elapsed|EMP|Error|ErrorLevel|FE|FileSys|FN|FP|GamsRelease|GamsReleaseMaint|GamsVersion|GdxFileNameIn|GdxFileNameOut|GString|HostPlatform|IFile|ILine|IncLine|IncName|IncParent|IncParentL|IsAlphaBeta|JobHandle|LicenseFileName|LicenseLevel|Line|ListLine|LP|MACAddress|MaxInput|MCP|Memory|MINLP|MIP|MIQCP|MPEC|NLP|NullFile|OFile|OPage|Page|PFile|Platform|PrLine|Procname|PrPage|PutFileName|QCP|RDate|ReDirLog|RFile|RMINLP|RMIP|RMIQCP|RMPEC|RTime|SFile|SString|Tab|TClose|TComp|TExec|Time|Title|TStart|UserConfigDir|UserDataDir|UserName|VerID|Version|)\\b",
+      "name": "keyword.gams"
+    },
+    "table": {
+      "begin": "(?i)(^|;)\\s*\\b(TABLES?)\\s+",
+      "beginCaptures": {
+        "2": {
+          "name": "storage.type.gams"
+        }
+      },
+      "end": ";",
+      "name": "meta.function.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        }
+      ]
+    },
+    "variable": {
+      "begin": "(?i)(^|;)\\s*\\b((free|positive|nonnegative|negative|binary|integer|sos1|sos2|semicont|semiint)\\s+)?\\b(VARIABLES?)",
+      "beginCaptures": {
+        "2": {
+          "name": "storage.modifier.gams"
+        },
+        "4": {
+          "name": "storage.type.gams"
+        }
+      },
+      "end": ";",
+      "name": "meta.function.gams",
+      "patterns": [
+        {
+          "include": "#general"
+        }
+      ]
+    }
+  }
+}

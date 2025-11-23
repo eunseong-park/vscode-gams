@@ -1,0 +1,219 @@
+{
+  "name": "gams",
+  "displayName": "GAMS",
+  "description": "GAMS Extension for Visual Studio Code",
+  "version": "0.0.7",
+  "publisher": "eunseong-park",
+  "icon": "images/letter-g.png",
+  "repository": "https://github.com/eunseong-park/gams",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "gams",
+        "aliases": [
+          "GAMS",
+          "gams"
+        ],
+        "extensions": [
+          ".gms",
+          ".inc",
+          ".lst",
+          ".gdx"
+        ],
+        "icon": {
+          "light": "./images/letter-g.png",
+          "dark": "./images/letter-g.png"
+        },
+        "configuration": "./languages/language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "GAMS",
+      "properties": {
+        "GAMS.terminalLocation": {
+          "type": "string",
+          "default": "Panel",
+          "enum": [
+            "Panel",
+            "Active",
+            "Beside",
+            "One",
+            "Two",
+            "Three",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
+            "Eight",
+            "Nine"
+          ],
+          "description": "Determine the location of the terminal. If empty, the terminal will be opened in the default location (Panel). Possible values are Panel, Active, Beside, One, ..., Nine."
+        },
+        "GAMS.terminalCwd": {
+          "type": "string",
+          "default": "",
+          "description": "Determine where the working directory of the terminal. If empty, the terminal will be opened in the folder where the .gms file is located."
+        },
+        "GAMS.commandLineParameters": {
+          "type": "string",
+          "default": "",
+          "description": "Determine the command line parameters that will be passed to the GAMS executable."
+        },
+        "GAMS.preserveFocus": {
+          "type": "boolean",
+          "default": true,
+          "description": "If selected, the focus remains on the active tab while the listing file is opened. Otherwise, the focus changes to the newly opened listing file."
+        },
+        "GAMS.runProject": {
+          "type": "boolean",
+          "default": false,
+          "description": "Determine whether to run the project run batch file instead of the active .gms file."
+        },
+        "GAMS.runBatchPath": {
+          "type": "string",
+          "default": "",
+          "description": "Determine the path to the batch file that will be executed when running the project run file."
+        },
+        "GAMS.projectLst": {
+          "type": "string",
+          "default": "",
+          "description": "Determine the path to the project listing file."
+        },
+        "GAMS.projectGDX": {
+          "type": "string",
+          "default": "",
+          "description": "Determine the path to the project GDX file."
+        },
+        "GAMS.idePath": {
+          "type": "string",
+          "default": "gamside",
+          "description": "Determine the path to the GAMS IDE/Studio."
+        }
+      }
+    },
+    "grammars": [
+      {
+        "language": "gams",
+        "scopeName": "source.gams",
+        "path": "./syntaxes/gams_org.tmGrammar.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "gams.run",
+        "title": "Run GAMS",
+        "icon": "$(play)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.runWithGdxCreation",
+        "title": "Run GAMS with GDX creation",
+        "icon": "$(run-below)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.showListing",
+        "title": "Show the GAMS listing file",
+        "icon": "$(output)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.toggleRunProject",
+        "title": "Toggle run project file",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.openCorrGDX",
+        "title": "Open GDX with GAMS IDE/Studio",
+        "icon": "$(file-binary)"
+      },
+      {
+        "command": "gams.openGDX",
+        "title": "Open GDX with GAMS IDE/Studio"
+      },
+      {
+        "command": "gams.openSettings",
+        "title": "Open GAMS extension Settings"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "gams.run",
+        "key": "f9",
+        "when": "editorLangId == gams && resourceExtname == .gms"
+      },
+      {
+        "command": "gams.runWithGdxCreation",
+        "key": "shift+f9",
+        "when": "editorLangId == gams && resourceExtname == .gms && config.GAMS.runProject == false"
+      },
+      {
+        "command": "gams.showListing",
+        "key": "f10",
+        "when": "editorLangId == gams && resourceExtname == .gms"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "gams.run",
+          "group": "navigation@1",
+          "when": "editorLangId == gams && resourceExtname == .gms"
+        },
+        {
+          "command": "gams.runWithGdxCreation",
+          "group": "navigation@2",
+          "when": "editorLangId == gams && resourceExtname == .gms && config.GAMS.runProject == false"
+        },
+        {
+          "command": "gams.showListing",
+          "group": "navigation@3",
+          "when": "editorLangId == gams && resourceExtname == .gms"
+        },
+        {
+          "command": "gams.openCorrGDX",
+          "group": "navigation@4",
+          "when": "editorLangId == gams"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "gams.openGDX",
+          "group": "navigation",
+          "when": "resourceExtname == .gdx"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.87.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^3.1.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "tsc": "^2.0.4"
+  }
+}
