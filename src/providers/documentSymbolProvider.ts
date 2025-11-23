@@ -9,7 +9,7 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
         const lines = document.getText().split('\n');
 
         // Regex to find GAMS declaration keywords at the beginning of a line
-        const declarationRegex = /^\s*(SETS?|PARAMETERS?|VARIABLES?|EQUATIONS?|MODELS?)\b/i;
+        const declarationRegex = /^\s*(SETS?|PARAMETERS?|VARIABLES?|EQUATIONS?|MODELS?|SCALARS?|TABLES?|ACRONYMS?|ASSIGNS?|OPTIONS?)\b/i;
 
         let currentSection: vscode.DocumentSymbol | undefined;
 
