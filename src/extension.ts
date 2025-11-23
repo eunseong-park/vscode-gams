@@ -8,6 +8,7 @@ import { registerOpenSettingsCommand } from './commands/openSettings';
 import { registerToggleRunProjectCommand } from './commands/toggleRunProject';
 import { registerOpenGDXCommand } from './commands/openGDX';
 import { registerToggleLineCommentCommand } from './commands/toggleLineComment';
+import { GamsDocumentSymbolProvider } from './providers/documentSymbolProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 	const extensionId = context.extension.id;
@@ -21,6 +22,14 @@ export function activate(context: vscode.ExtensionContext) {
 	registerToggleRunProjectCommand(context);
 	registerOpenGDXCommand(context);
 	registerToggleLineCommentCommand(context);
+
+    // Register Document Symbol Provider
+    context.subscriptions.push(
+        vscode.languages.registerDocumentSymbolProvider(
+            { language: 'gams' },
+            new GamsDocumentSymbolProvider()
+        )
+    );
 }
 
 export function deactivate() { }
