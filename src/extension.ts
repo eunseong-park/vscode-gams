@@ -7,6 +7,7 @@ import { registerOpenCorrGDXCommand } from './commands/openCorrGDX';
 import { registerOpenSettingsCommand } from './commands/openSettings';
 import { registerToggleRunProjectCommand } from './commands/toggleRunProject';
 import { registerOpenGDXCommand } from './commands/openGDX';
+import { registerToggleLineCommentCommand } from './commands/toggleLineComment';
 
 export function activate(context: vscode.ExtensionContext) {
 	const extensionId = context.extension.id;
@@ -19,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	registerOpenSettingsCommand(context, extensionId);
 	registerToggleRunProjectCommand(context);
 	registerOpenGDXCommand(context);
+	registerToggleLineCommentCommand(context);
 }
 
 export function deactivate() { }

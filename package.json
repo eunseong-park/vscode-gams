@@ -141,6 +141,11 @@
       {
         "command": "gams.openSettings",
         "title": "Open GAMS extension Settings"
+      },
+      {
+        "command": "gams.toggleLineComment",
+        "title": "Toggle Line Comment for GAMS",
+        "category": "GAMS"
       }
     ],
     "keybindings": [
@@ -158,6 +163,11 @@
         "command": "gams.showListing",
         "key": "f10",
         "when": "editorLangId == gams && resourceExtname == .gms"
+      },
+      {
+        "command": "gams.toggleLineComment",
+        "key": "alt+;",
+        "when": "editorLangId == gams"
       }
     ],
     "menus": {
