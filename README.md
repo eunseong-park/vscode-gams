@@ -28,7 +28,7 @@ You can install the GAMS Extension for Visual Studio Code in a few ways:
    * Click "Install".
 2. **From a VSIX file:**
 
-   * Download the `.vsix` file from the [releases page](https://github.com/eunseong-park/gams/releases) (or provided by other means).
+   * Download the `.vsix` file from the [releases page](https://github.com/eunseong-park/vscode-gams/releases) (or provided by other means).
    * In VS Code, open the Extensions view (`Ctrl+Shift+X`).
    * Click on the three dots (...) in the top-right corner of the Extensions view header.
 
@@ -47,4 +47,4 @@ You can also customize the extension's behavior through VS Code settings. Go to 
 
 ## Acknowledgements
 
-This extension builds on the original GAMS syntax highlighting by [lolow](httpss://github.com/lolow/gams). Their work provided the foundation for the language grammar used here.
+This extension builds on the original GAMS syntax highlighting by [lolow](https://github.com/lolow/gams). Their work provided the foundation for the language grammar used here.
