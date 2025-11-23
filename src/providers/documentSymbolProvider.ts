@@ -17,8 +17,13 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
 
         // Regex to find GAMS declaration keywords at the beginning of a line
         const declarationRegex = /^\s*(SETS?|PARAMETERS?|VARIABLES?|EQUATIONS?|MODELS?|SCALARS?|TABLES?|ACRONYMS?|ASSIGNS?|OPTIONS?)\b/i;
+        // Regex for comment-based sections: # Section Name ---
+        const sectionRegex = /^\s*#\s*([^\-]+?)\s*\-{3,}/;
+        // Regex for comment-based subsections: ## Subsection Name ---
+        const subsectionRegex = /^\s*##\s*([^\-]+?)\s*\-{3,}/;
         
         let currentParentSymbol: vscode.DocumentSymbol | undefined;
+        let currentSectionSymbol: vscode.DocumentSymbol | undefined; // To track the current top-level section
         let inBlockComment: boolean = false;
         let currentDeclarationContent: string = '';
         let currentDeclarationStartLine: number = -1;
@@ -54,6 +59,63 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
             }
             if (processedLine.length === 0) { // Check again after stripping comments
                 continue;
+            }
+
+            // Check for section/subsection comments first
+            const sectionMatch = processedLine.match(sectionRegex);
+            const subsectionMatch = processedLine.match(subsectionRegex);
+
+            if (sectionMatch) {
+                // If we were in the middle of a declaration, process it
+                if (currentParentSymbol && currentDeclarationContent.length > 0) {
+                    this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
+                    currentDeclarationContent = '';
+                    currentParentSymbol = undefined;
+                }
+
+                const sectionName = sectionMatch[1].trim();
+                const range = new vscode.Range(i, line.indexOf(sectionMatch[0]), i, line.length);
+                const selectionRange = new vscode.Range(i, line.indexOf(sectionMatch[0]), i, line.indexOf(sectionMatch[0]) + sectionName.length);
+
+                currentSectionSymbol = new vscode.DocumentSymbol(
+                    sectionName,
+                    'Section',
+                    vscode.SymbolKind.Module, // Module or Namespace for sections
+                    range,
+                    selectionRange
+                );
+                symbols.push(currentSectionSymbol);
+                continue; // Move to next line after processing section
+            } else if (subsectionMatch) {
+                // If we were in the middle of a declaration, process it
+                if (currentParentSymbol && currentDeclarationContent.length > 0) {
+                    this.parseDeclarationItems(currentParentSymbol, currentDeclarationContent, currentDeclarationStartLine, document);
+                    currentDeclarationContent = '';
+                    currentParentSymbol = undefined;
+                }
+
+                const subsectionName = subsectionMatch[1].trim();
+                const range = new vscode.Range(i, line.indexOf(subsectionMatch[0]), i, line.length);
+                const selectionRange = new vscode.Range(i, line.indexOf(subsectionMatch[0]), i, line.indexOf(subsectionMatch[0]) + subsectionName.length);
+
+                const subsectionSymbol = new vscode.DocumentSymbol(
+                    subsectionName,
+                    'Subsection',
+                    vscode.SymbolKind.Function, // Function or SubFunction for subsections
+                    range,
+                    selectionRange
+                );
+
+                if (currentSectionSymbol) {
+                    if (!currentSectionSymbol.children) {
+                        currentSectionSymbol.children = [];
+                    }
+                    currentSectionSymbol.children.push(subsectionSymbol);
+                } else {
+                    // If no parent section, add as top-level symbol (might happen if file starts with subsection)
+                    symbols.push(subsectionSymbol);
+                }
+                continue; // Move to next line after processing subsection
             }
 
             const match = processedLine.match(declarationRegex);
@@ -122,7 +184,16 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                     range,
                     selectionRange
                 );
-                symbols.push(currentParentSymbol);
+                // Decide where to push: under current section or top-level
+                if (currentSectionSymbol) {
+                    if (!currentSectionSymbol.children) {
+                        currentSectionSymbol.children = [];
+                    }
+                    currentSectionSymbol.children.push(currentParentSymbol);
+                } else {
+                    symbols.push(currentParentSymbol);
+                }
+                
                 currentDeclarationContent = processedLine.substring(match[0].length).trim();
                 currentDeclarationStartLine = i;
             } else if (currentParentSymbol && processedLine.length > 0) {
