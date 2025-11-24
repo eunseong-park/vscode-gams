@@ -16,15 +16,9 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
         const lines = document.getText().split('\n');
 
         // Regex to find GAMS declaration keywords at the beginning of a line
-        const declarationRegex = /^\s*(SETS?|PARAMETERS?|VARIABLES?|EQUATIONS?|MODELS?|SCALARS?|TABLES?|ACRONYMS?|ASSIGNS?|OPTIONS?)\b/i;
+        const declarationRegex = /^\s*(ACRONYM(S)?|ALIAS(ES)?|EQUATION(S)?|FILE(S)?|FUNCTION(S)?|MODEL(S)?|PARAMETER(S)?|SCALAR(S)?|SET(S)?|TABLE(S)?|(FREE|POSITIVE|NONNEGATIVE|NEGATIVE|BINARY|INTEGER|SOS1|SOS2|SEMICONT|SEMIINT)?\s*VARIABLE(S)?)\b/i;
         // Regex for comment-based sections: # Section Name ---
-        const sectionRegex = /^\s*\*(?![*])\s*([^\-]+?)\s*\-{3,}/;
-        // Regex for comment-based subsections: ** Subsection Name ---
-        const subsectionRegex = /^\s*\*\*\s*([^\-]+?)\s*\-{3,}/;
-        // Regex for comment-based sub-subsections: *** Sub-subsection Name ---
-        const subSubsectionRegex = /^\s*\*\*\*\s*([^\-]+?)\s*\-{3,}/;
-        // Regex for comment-based sub-sub-subsections: **** Sub-sub-subsection Name ---
-        const subSubSubsectionRegex = /^\s*\*\*\*\*\s*([^\-]+?)\s*\-{3,}/;
+        const levelBasedSectionRegex = /^\s*(\*+)\s*([^\-]+?)\s*\-{3,}/;
         
         let currentParentSymbol: vscode.DocumentSymbol | undefined;
         let sectionStack: vscode.DocumentSymbol[] = []; // To track the current section hierarchy
@@ -69,15 +63,9 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
             let sectionLevel: number = 0;
             let sectionMatchResult: RegExpExecArray | null = null;
 
-            // Check for section/subsection comments - prioritize deepest levels first
-            if ((sectionMatchResult = subSubSubsectionRegex.exec(processedLine))) {
-                sectionLevel = 4;
-            } else if ((sectionMatchResult = subSubsectionRegex.exec(processedLine))) {
-                sectionLevel = 3;
-            } else if ((sectionMatchResult = subsectionRegex.exec(processedLine))) {
-                sectionLevel = 2;
-            } else if ((sectionMatchResult = sectionRegex.exec(processedLine))) {
-                sectionLevel = 1;
+            // Check for section/subsection comments - use single regex
+            if ((sectionMatchResult = levelBasedSectionRegex.exec(processedLine))) {
+                sectionLevel = sectionMatchResult[1].length; // Length of the captured '*' sequence
             }
 
             if (sectionLevel > 0 && sectionMatchResult) {
@@ -87,33 +75,25 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                     currentParentSymbol = undefined;
                 }
 
-                const sectionName = sectionMatchResult[1].trim();
+                const sectionName = sectionMatchResult[2].trim(); // Captured group for section name
                 const range = new vscode.Range(i, sectionMatchResult.index, i, line.length);
                 const selectionRange = new vscode.Range(i, sectionMatchResult.index, i, sectionMatchResult.index + sectionName.length);
 
-                let kind: vscode.SymbolKind;
-                let detail: string;
-                switch (sectionLevel) {
-                    case 1: kind = vscode.SymbolKind.Module; detail = 'Section'; break;
-                    case 2: kind = vscode.SymbolKind.Namespace; detail = 'Subsection'; break;
-                    case 3: kind = vscode.SymbolKind.Class; detail = 'Sub-subsection'; break;
-                    case 4: kind = vscode.SymbolKind.Method; detail = 'Sub-sub-subsection'; break;
-                    default: kind = vscode.SymbolKind.Module; detail = 'Section'; break;
-                }
+                // Assign a generic symbol kind, as detail is removed
+                let kind: vscode.SymbolKind = vscode.SymbolKind.String; 
                 
                 newSectionSymbol = new vscode.DocumentSymbol(
                     sectionName,
-                    detail,
+                    '', // No detail
                     kind,
                     range,
                     selectionRange
                 );
-
+                (newSectionSymbol as any).level = sectionLevel; // Store level on the symbol
+                
                 // Manage the sectionStack
-                while (sectionStack.length > 0 && sectionStack[sectionStack.length - 1].detail && 
-                       (sectionLevel <= (sectionStack[sectionStack.length - 1].detail === 'Section' ? 1 : 
-                                         sectionStack[sectionStack.length - 1].detail === 'Subsection' ? 2 :
-                                         sectionStack[sectionStack.length - 1].detail === 'Sub-subsection' ? 3 : 4))) {
+                while (sectionStack.length > 0 && (sectionStack[sectionStack.length - 1] as any).level && 
+                       (sectionLevel <= (sectionStack[sectionStack.length - 1] as any).level)) {
                     sectionStack.pop();
                 }
 
@@ -140,49 +120,55 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                 }
 
                 // Found a new declaration block
-                const keyword = match[1].toUpperCase();
-                const range = new vscode.Range(i, line.indexOf(match[0]), i, line.length);
-                const selectionRange = new vscode.Range(i, line.indexOf(match[0]), i, line.length);
+                // Determine the base keyword for symbol kind assignment
+                let baseKeyword = match[1].toUpperCase();
+                if (baseKeyword.includes('VARIABLE')) {
+                    baseKeyword = 'VARIABLE';
+                } else if (baseKeyword.includes('EQUATION')) {
+                    baseKeyword = 'EQUATION';
+                } else if (baseKeyword.includes('MODEL')) {
+                    baseKeyword = 'MODEL';
+                } else if (baseKeyword.includes('PARAMETER') || baseKeyword.includes('SCALAR') || baseKeyword.includes('TABLE')) {
+                    baseKeyword = 'PARAMETER';
+                } else if (baseKeyword.includes('SET') || baseKeyword.includes('ALIAS')) {
+                    baseKeyword = 'SET';
+                } else if (baseKeyword.includes('ACRONYM')) {
+                    baseKeyword = 'ACRONYM';
+                } else if (baseKeyword.includes('FILE')) {
+                    baseKeyword = 'FILE';
+                } else if (baseKeyword.includes('FUNCTION')) {
+                    baseKeyword = 'FUNCTION';
+                }
+
+
+                const keywordRange = new vscode.Range(i, line.indexOf(match[0]), i, line.indexOf(match[0]) + match[0].trim().length);
+                const selectionRange = new vscode.Range(i, line.indexOf(match[0]), i, line.indexOf(match[0]) + match[0].trim().length);
 
                 let kind: vscode.SymbolKind;
-                switch (keyword) {
+                switch (baseKeyword) {
                     case 'SET':
-                    case 'SETS':
                         kind = vscode.SymbolKind.Array;
                         break;
                     case 'PARAMETER':
-                    case 'PARAMETERS':
-                        kind = vscode.SymbolKind.Constant;
+                        kind = vscode.SymbolKind.TypeParameter;
                         break;
                     case 'VARIABLE':
-                    case 'VARIABLES':
                         kind = vscode.SymbolKind.Variable;
                         break;
                     case 'EQUATION':
-                    case 'EQUATIONS':
-                        kind = vscode.SymbolKind.Function;
+                        kind = vscode.SymbolKind.Interface;
                         break;
                     case 'MODEL':
-                    case 'MODELS':
                         kind = vscode.SymbolKind.Class;
                         break;
-                    case 'SCALAR':
-                    case 'SCALARS':
-                        kind = vscode.SymbolKind.Constant;
-                        break;
-                    case 'TABLE':
-                    case 'TABLES':
-                        kind = vscode.SymbolKind.Constant; // Can also be an Array
-                        break;
                     case 'ACRONYM':
-                    case 'ACRONYMS':
                         kind = vscode.SymbolKind.Enum;
                         break;
-                    case 'ASSIGN':
-                        kind = vscode.SymbolKind.Operator; // Or some other suitable kind
+                    case 'FILE':
+                        kind = vscode.SymbolKind.File;
                         break;
-                    case 'OPTION':
-                        kind = vscode.SymbolKind.Property;
+                    case 'FUNCTION':
+                        kind = vscode.SymbolKind.Function; // Functions in GAMS
                         break;
                     default:
                         kind = vscode.SymbolKind.Key;
@@ -193,8 +179,8 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                     match[0].trim(),
                     '', // detail
                     kind,
-                    range,
-                    selectionRange
+                    keywordRange, // Use keywordRange here
+                    selectionRange // Use selectionRange here
                 );
                 // Decide where to push: under current section, or top-level
                 const currentSectionParent = sectionStack.length > 0 ? sectionStack[sectionStack.length - 1] : undefined;
