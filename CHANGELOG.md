@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.0.9] - 2025-11-24
+
+### Added
+
+* Added tip to `README.md` for MPSGE syntax highlighting.
+
+### Fixed
+
+* Resolved `vsce package` error by explicitly adding `activationEvents` property.
+
 ## [0.0.8] - 2025-11-24
 
 ### Added
