@@ -2,7 +2,7 @@
   "name": "gams",
   "displayName": "GAMS",
   "description": "GAMS Extension for Visual Studio Code",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "eunseong-park",
   "icon": "images/letter-g.png",
   "repository": "https://github.com/eunseong-park/vscode-gams",

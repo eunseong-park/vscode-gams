@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.0.8] - 2025-11-24
+
+### Added
+
+*   Implemented "Toggle Line Comment" functionality (uses `*`).
+*   Added Document Symbol Provider for GAMS files, enabling outline view for declarations and sections.
+
+### Changed
+
+*   Updated syntax highlighting for improved accuracy and consistency across various GAMS language constructs (keywords, options, comments, strings).
+*   Added '#' as a recognized line comment character in syntax highlighting.
+
 All notable changes to the "gams" extension will be documented in this file.
 
 ## [0.0.7] - 2025-02-20
