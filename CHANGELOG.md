@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.11] - 2025-11-24
+
+### Added
+* Added `GAMS.listingFileLocation` setting to customize where the listing file opens.
+
 ## [0.0.10] - 2025-11-24
 
 ### Changed

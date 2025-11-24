@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as path from 'path'; // Path is used for dirPath and constructing commands
 import { getGamsTerminal, getActiveGamsFileInfo } from '../utils';
 
 export function registerRunCommand(context: vscode.ExtensionContext) {

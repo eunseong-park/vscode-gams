@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as path from 'path'; // path is used for dirPath for cwd
 import { getGamsTerminal, getActiveGamsFileInfo } from '../utils';
 
 export function registerRunWithGdxCreationCommand(context: vscode.ExtensionContext) {

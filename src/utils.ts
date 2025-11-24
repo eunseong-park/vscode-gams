@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
 import * as cp from 'child_process';
 
 export interface GamsFileInfo {
@@ -63,10 +62,34 @@ export function getGamsTerminal(cwd: string, terminalLocationSetting: string): v
 }
 
 export function openLstFile(document: vscode.TextDocument, preservesFocus: boolean) {
+    const config = vscode.workspace.getConfiguration('GAMS');
+    const listingFileLocation = config.get<string>('listingFileLocation', 'Beside');
+
+    const viewColumnMapping = {
+        "active": vscode.ViewColumn.Active,
+        "beside": vscode.ViewColumn.Beside,
+        "one": vscode.ViewColumn.One,
+        "two": vscode.ViewColumn.Two,
+        "three": vscode.ViewColumn.Three,
+        "four": vscode.ViewColumn.Four,
+        "five": vscode.ViewColumn.Five,
+        "six": vscode.ViewColumn.Six,
+        "seven": vscode.ViewColumn.Seven,
+        "eight": vscode.ViewColumn.Eight,
+        "nine": vscode.ViewColumn.Nine
+    };
+    type ViewColumnKey = keyof typeof viewColumnMapping;
+
+    let column: vscode.ViewColumn = vscode.ViewColumn.Beside; // Default
+    const key = listingFileLocation.toLowerCase() as ViewColumnKey;
+    if (viewColumnMapping[key]) {
+        column = viewColumnMapping[key];
+    }
+    
 	if (preservesFocus) {
-		vscode.window.showTextDocument(document, { viewColumn: vscode.ViewColumn.Beside, preserveFocus: true });
+		vscode.window.showTextDocument(document, { viewColumn: column, preserveFocus: true });
 	} else {
-		vscode.window.showTextDocument(document, { viewColumn: vscode.ViewColumn.Beside });
+		vscode.window.showTextDocument(document, { viewColumn: column });
 	}
 }
 

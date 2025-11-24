@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { GamsFileInfo, getActiveGamsFileInfo, getGamsTerminal, launchGamsIde } from './utils';
 import { registerRunCommand } from './commands/run';
 import { registerRunWithGdxCreationCommand } from './commands/runWithGdxCreation';
 import { registerShowListingCommand } from './commands/showListing';

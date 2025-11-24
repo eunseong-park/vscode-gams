@@ -2,7 +2,7 @@
   "name": "vscode-gams",
   "displayName": "GAMS",
   "description": "GAMS Extension for Visual Studio Code",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "publisher": "eunseong-park",
   "icon": "images/letter-gams.png",
   "repository": "https://github.com/eunseong-park/vscode-gams",
@@ -98,6 +98,24 @@
           "type": "string",
           "default": "gamside",
           "description": "Determine the path to the GAMS IDE/Studio."
+        },
+        "GAMS.listingFileLocation": {
+          "type": "string",
+          "default": "Beside",
+          "enum": [
+            "Beside",
+            "Active",
+            "One",
+            "Two",
+            "Three",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
+            "Eight",
+            "Nine"
+          ],
+          "description": "Determine the location where the GAMS listing file should open. Possible values are Beside, Active, One, ..., Nine."
         }
       }
     },
@@ -169,7 +187,7 @@
       },
       {
         "command": "gams.toggleLineComment",
-        "key": "alt+;",
+        "key": "ctrl+/",
         "when": "editorLangId == gams"
       }
     ],
