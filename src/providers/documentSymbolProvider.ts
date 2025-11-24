@@ -16,7 +16,7 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
         const lines = document.getText().split('\n');
 
         // Regex to find GAMS declaration keywords at the beginning of a line
-        const declarationRegex = /^\s*(ACRONYM(S)?|ALIAS(ES)?|EQUATION(S)?|FILE(S)?|FUNCTION(S)?|MODEL(S)?|PARAMETER(S)?|SCALAR(S)?|SET(S)?|TABLE(S)?|(FREE|POSITIVE|NONNEGATIVE|NEGATIVE|BINARY|INTEGER|SOS1|SOS2|SEMICONT|SEMIINT)?\s*VARIABLE(S)?)\b/i;
+        const declarationRegex = /^\s*(ACRONYM(S)?|ALIAS(ES)?|EQUATION(S)?|FILE(S)?|FUNCTION(S)?|MODEL(S)?|PARAMETER(S)?|SCALAR(S)?|(SINGLETON)?\s*SET(S)?|TABLE(S)?|(FREE|POSITIVE|NONNEGATIVE|NEGATIVE|BINARY|INTEGER|SOS1|SOS2|SEMICONT|SEMIINT)?\s*VARIABLE(S)?)\b/i;
         // Regex for comment-based sections: # Section Name ---
         const levelBasedSectionRegex = /^\s*(\*+)\s*([^\-]+?)\s*\-{3,}/;
         
