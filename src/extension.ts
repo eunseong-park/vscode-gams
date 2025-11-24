@@ -7,6 +7,7 @@ import { registerOpenSettingsCommand } from './commands/openSettings';
 import { registerToggleRunProjectCommand } from './commands/toggleRunProject';
 import { registerOpenGDXCommand } from './commands/openGDX';
 import { registerToggleLineCommentCommand } from './commands/toggleLineComment';
+import { registerInsertNewSectionCommand } from './commands/insertNewSection';
 import { GamsDocumentSymbolProvider } from './providers/documentSymbolProvider';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -21,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 	registerToggleRunProjectCommand(context);
 	registerOpenGDXCommand(context);
 	registerToggleLineCommentCommand(context);
+	registerInsertNewSectionCommand(context);
 
     // Register Document Symbol Provider
     context.subscriptions.push(

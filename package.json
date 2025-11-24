@@ -167,6 +167,11 @@
         "command": "gams.toggleLineComment",
         "title": "Toggle Line Comment for GAMS",
         "category": "GAMS"
+      },
+      {
+        "command": "gams.insertNewSection",
+        "title": "Insert a new section",
+        "category": "GAMS"
       }
     ],
     "keybindings": [
@@ -188,6 +193,11 @@
       {
         "command": "gams.toggleLineComment",
         "key": "ctrl+/",
+        "when": "editorLangId == gams"
+      },
+      {
+        "command": "gams.insertNewSection",
+        "key": "ctrl+shift+r",
         "when": "editorLangId == gams"
       }
     ],

@@ -18,7 +18,7 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
         // Regex to find GAMS declaration keywords at the beginning of a line
         const declarationRegex = /^\s*(ACRONYM(S)?|ALIAS(ES)?|EQUATION(S)?|FILE(S)?|FUNCTION(S)?|MODEL(S)?|PARAMETER(S)?|SCALAR(S)?|(SINGLETON)?\s*SET(S)?|TABLE(S)?|(FREE|POSITIVE|NONNEGATIVE|NEGATIVE|BINARY|INTEGER|SOS1|SOS2|SEMICONT|SEMIINT)?\s*VARIABLE(S)?)\b/i;
         // Regex for comment-based sections: # Section Name ---
-        const levelBasedSectionRegex = /^\s*(\*+)\s*([^\-]+?)\s*\-{3,}/;
+        const levelBasedSectionRegex = /^\s*(\*+)\s*([^\-]*?)\s*\-{3,}/;
         
         let currentParentSymbol: vscode.DocumentSymbol | undefined;
         let sectionStack: vscode.DocumentSymbol[] = []; // To track the current section hierarchy
@@ -75,7 +75,10 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                     currentParentSymbol = undefined;
                 }
 
-                const sectionName = sectionMatchResult[2].trim(); // Captured group for section name
+                let sectionName = sectionMatchResult[2].trim(); // Captured group for section name
+                if (sectionName === '') {
+                    sectionName = '(empty)';
+                }
                 const range = new vscode.Range(i, sectionMatchResult.index, i, line.length);
                 const selectionRange = new vscode.Range(i, sectionMatchResult.index, i, sectionMatchResult.index + sectionName.length);
 
