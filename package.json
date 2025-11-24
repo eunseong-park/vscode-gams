@@ -2,7 +2,7 @@
   "name": "vscode-gams",
   "displayName": "GAMS",
   "description": "GAMS Extension for Visual Studio Code",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "publisher": "eunseong-park",
   "icon": "images/letter-gams.png",
   "repository": "https://github.com/eunseong-park/vscode-gams",
@@ -67,7 +67,7 @@
         "GAMS.commandLineParameters": {
           "type": "string",
           "default": "",
-          "description": "Determine the command line parameters that will be passed to the GAMS executable."
+          "description": "Determine the command line parameters that will be passed to the GAMS executable. Example: -keep 1 --MPSGEMT 1"
         },
         "GAMS.preserveFocus": {
           "type": "boolean",
@@ -97,7 +97,7 @@
         "GAMS.idePath": {
           "type": "string",
           "default": "gamside",
-          "description": "Determine the path to the GAMS IDE/Studio."
+          "description": "Determine the path to the GAMS IDE/Studio. From GAMS version 51, the classic GAMS IDE is no longer included in the release. Therefore, when using GAMS version 51 or higher, you must set the path for GAMS Studio (for example, usually c:/GAMS/[gams version]/studio/studio.exe in Windows) to use the 'open with GAMS IDE/Studio' feature."
         },
         "GAMS.listingFileLocation": {
           "type": "string",

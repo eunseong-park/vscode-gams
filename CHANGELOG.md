@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.1.0] - 2025-11-24
+### Added
+- "Insert New Section" command (`ctrl+shift+r`) to insert a new section with a formatted header.
+### Fixed
+- Fixed a bug in the document outline feature that caused it to fail when encountering a section without a name.
+
 ## [0.0.11] - 2025-11-24
 
 ### Added
