@@ -27,7 +27,14 @@ This extension provides basic GAMS language support in Visual Studio Code, actin
 
 ## Usage
 
-The extension automatically provides syntax highlighting for `.gms` and `.inc` files.
+The extension automatically provides syntax highlighting for `.gms` and `.inc` files. To enable syntax highlighting for MPSGE blocks, type "mpsge" after `$ontext`, for example:
+```gams
+$onText mpsge
+
+$MODEL:HARBERGER
+...
+$offText
+```
 
 You can execute GAMS commands using the Command Palette (`Ctrl+Shift+P`):
 

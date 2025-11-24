@@ -1,5 +1,5 @@
 {
-  "name": "gams",
+  "name": "vscode-gams",
   "displayName": "GAMS",
   "description": "GAMS Extension for Visual Studio Code",
   "version": "0.0.8",
