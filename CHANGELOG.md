@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.10] - 2025-11-24
+
+### Changed
+
+* Updated extension icon to `images/letter-gams.png`.
+
 ## [0.0.9] - 2025-11-24
 
 ### Added

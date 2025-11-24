@@ -2,9 +2,9 @@
   "name": "vscode-gams",
   "displayName": "GAMS",
   "description": "GAMS Extension for Visual Studio Code",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "eunseong-park",
-  "icon": "images/letter-g.png",
+  "icon": "images/letter-gams.png",
   "repository": "https://github.com/eunseong-park/vscode-gams",
   "engines": {
     "vscode": "^1.87.0"
