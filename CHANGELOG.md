@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.1.1] - 2025-11-25
+
+### Added
+- Implemented Code Folding for GAMS files, supporting:
+  - Comment-based sections (e.g., `*** Section Name ---`).
+  - GAMS `$ontext`/`$offtext` blocks.
+  - GAMS declaration blocks (e.g., `SET`, `PARAMETER`, `EQUATION`).
+
 ## [0.1.0] - 2025-11-24
 ### Added
 - "Insert New Section" command (`ctrl+shift+r`) to insert a new section with a formatted header.
