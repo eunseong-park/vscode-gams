@@ -35,6 +35,14 @@ $MODEL:HARBERGER
 $offText
 ```
 
+### Code Folding
+
+The GAMS extension provides intelligent code folding for better readability and navigation. You can collapse and expand:
+
+*   **Comment-based Sections**: Regions defined by `*** Section Name ---` and similar constructs.
+*   **GAMS Block Comments**: Sections enclosed by `$ontext` and `$offtext`.
+*   **GAMS Declaration Blocks**: Multi-line declarations for `SET`, `PARAMETER`, `VARIABLE`, `EQUATION`, etc., which are typically terminated by a semicolon (`;`).
+
 ### Commands
 
 You can execute GAMS commands using the Command Palette (`Ctrl+Shift+P`), assigned keyboard shortcuts, or by clicking the corresponding icons in the editor title.
@@ -43,6 +51,8 @@ You can execute GAMS commands using the Command Palette (`Ctrl+Shift+P`), assign
 *   **GAMS: Run GAMS with GDX creation** (`Shift+F9`): Executes the model and creates a GDX file.
 *   **GAMS: Show the GAMS listing file** (`F10`): Displays the listing file for the last run.
 *   **GAMS: Toggle Line Comment for GAMS**: Toggles line comments for the GAMS language.
+*   **GAMS: Insert a new section** (`Ctrl+Shift+R`): Inserts a new comment-based section (`*** Section Name ---`) into the active GAMS file. This command also supports inserting subsections.
+
 *   **GAMS: Toggle run project file**: Switches between running the active GAMS file or a project batch file.
 *   **GAMS: Open GAMS extension Settings**: Opens the settings for this extension.
 *   **Open GDX with GAMS IDE/Studio**: Right-click a `.gdx` file in the Explorer and select this option to open it with your configured GAMS IDE/Studio.

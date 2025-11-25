@@ -9,6 +9,7 @@ import { registerOpenGDXCommand } from './commands/openGDX';
 import { registerToggleLineCommentCommand } from './commands/toggleLineComment';
 import { registerInsertNewSectionCommand } from './commands/insertNewSection';
 import { GamsDocumentSymbolProvider } from './providers/documentSymbolProvider';
+import { GamsFoldingRangeProvider } from './providers/foldingRangeProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 	const extensionId = context.extension.id;
@@ -29,6 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.languages.registerDocumentSymbolProvider(
             { language: 'gams' },
             new GamsDocumentSymbolProvider()
+        )
+    );
+
+    // Register Folding Range Provider
+    context.subscriptions.push(
+        vscode.languages.registerFoldingRangeProvider(
+            { language: 'gams' },
+            new GamsFoldingRangeProvider()
         )
     );
 }
