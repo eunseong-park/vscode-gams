@@ -1,0 +1,168 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "GAMS",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#dcos"
+        },
+        {
+            "include": "#model_types"
+        },
+        {
+            "include": "#solve_keywords"
+        },
+        {
+            "include": "#system_attributes"
+        },
+        {
+            "include": "#numbers"
+        },
+        {
+            "include": "#table_header"
+        },
+        {
+            "include": "#identifiers"
+        },
+        {
+            "include": "#assignment"
+        },
+        {
+            "include": "#embedded_code"
+        }
+    ],
+    "repository": {
+        "embedded_code": {
+            "begin": "(?i)\\$onEmbeddedCode(V|S)?",
+            "end": "(?i)\\$offEmbeddedCode",
+            "name": "source.python.embedded.gams",
+            "patterns": [
+                {
+                    "include": "source.python"
+                }
+            ]
+        },
+        "assignment": {
+            "patterns": [
+                {
+                    "name": "variable.other.element.gams",
+                    "match": "(?<=[a-zA-Z0-9_\\s]\\/\\s*)[a-zA-Z0-9_\\*\\.]+"
+                },
+                {
+                    "name": "string.unquoted.gams",
+                    "match": "(?<=\\b(set|parameter|variable|equation|model)s?\\s+[a-zA-Z0-9_]+\\s+)[^\\/]*"
+                }
+            ]
+        },
+        "table_header": {
+            "patterns": [
+                {
+                    "name": "entity.name.section.table.header.gams",
+                    "match": "(?<=\\b(?i)table\\b.*)(^\\s*[\\w\\.\\*]+(\\s+[\\w\\.\\*]+)*$)"
+                }
+            ]
+        },
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.star.gams",
+                    "match": "^\\*.*$"
+                },
+                {
+                    "name": "comment.block.gams",
+                    "begin": "(?i)^\\$ontext",
+                    "end": "(?i)^\\$offtext"
+                },
+                {
+                    "name": "comment.line.double-exclamation.gams",
+                    "match": "!!.*$"
+                }
+            ]
+        },
+        "strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.single.gams",
+                    "begin": "'",
+                    "end": "'",
+                    "patterns": [
+                        {
+                            "match": "''"
+                        }
+                    ]
+                },
+                {
+                    "name": "string.quoted.double.gams",
+                    "begin": "\"",
+                    "end": "\"",
+                    "patterns": [
+                        {
+                            "match": "\\\\\"\""
+                        }
+                    ]
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.gams",
+                    "match": "\\b(?i)(abort|Acronyms?|Alias|all|and|break|cards?|continue|display|do|else|elseif|endfor|endif|endloop|endwhile|eps|execute_load(dc|handle|point)?|execute_unload(idx|di)?|for|gdxLoad|if|inf|logic|loops?|na|no|not|ord|ors?|repeat|sand|smax|smin|sors?|system|then|undf|until|while|xor|yes|equations?|files?|functions?|models?|parameters?|scalars?|sets?|table|variables?)\\b"
+                },
+                {
+                    "name": "support.function.gams",
+                    "match": "\\b(?i)(abs|arccos|arcsin|arctan|arctan2|Beta|BetaReg|Binomial|bool_and|bool_eqv|bool_imp|bool_not|bool_or|bool_xor|ceil|Centropy|cos|cosh|cvPower|div|div0|EDist|EmbeddedHandle|Entropy|errorf|ErrorLevel|execerror|execseed|exp|Fact|floor|ForceError|ForceErrorCnt|frac|Gamma|GammaReg|GamsRelease|GamsVersion|gday|gdow|ghour|gleap|Gmillisec|gminute|gmonth|gsecond|gyear|HandleCollect|HandleDelete|HandleStatus|HandleSubmit|HeapFree|HeapLimit|HeapSize|IfThen|jdate|jnow|JobHandle|JobKill|JobStatus|JobTerminate|jstart|jtime|LicenseLevel|LicenseStatus|log|log10|log2|LogBeta|LogGamma|Logit|mapval|MathLastEC|MathLastRC|MathOVal|max|MaxExecError|min|mod|NcpCM|NcpF|NcpVUpow|NcpVUsin|normal|NumCores|PI|PlatformCode|Poly|power|RandBinomial|RandLinear|RandTriangle|ReadyCollect|rel_eq|rel_ge|rel_gt|rel_le|rel_lt|rel_ne|round|rPower|Sigmoid|sign|SignPower|sin|sinh|sleep|slexp|sllog10|slrec|sqexp|sqlog10|sqr|sqrec|sqrt|tan|tanh|timeclose|timecomp|TimeElapsed|timeexec|timestart|trunc|uniform|UniformInt|vcPower)\\b"
+                }
+            ]
+        },
+        "dcos": {
+            "patterns": [
+                {
+                    "name": "keyword.other.gams",
+                    "match": "\\$(?i)(onExternalInput|offExternalInput|onExternalOutput|offExternalOutput|onIDCProtect|offIDCProtect|onImplicitAssign|offImplicitAssign|onMargin|offMargin|minCol|maxCol|comment|dollar|onDigit|offDigit|hidden|onText|offText|onUpper|offUpper|single|double|lines|title|sTitle|onSymList|offSymList|onUelList|offUelList|onSymXRef|offSymXRef|onUelXRef|offUelXRef|debug|onDollar|offDollar|phantom|version|call|callAsync|callAsyncIC|callAsyncNC|callTool|hiddenCall|hiddenCallTool|include|onInclude|offInclude|sysInclude|libInclude|insert|sysInsert|libInsert|batInclude|onCmsIncl|offCmsIncl|funcLibIn|goto|label|maxGoTo|if|ifI|ifE|shift|onNestCom|offNestCom|onInline|offInline|inlineCom|onEolCom|offEolCom|eolCom|onMultiR|onMulti|offMulti|onWarning|offWarning|onSparse|offSparse|stars|onMixed|offMixed|onRecurse|offRecurse|onUni|offUni|onEps|offEps|onEpsToZero|offEpsToZero|onDelim|offDelim|onEmpty|offEmpty|onStrictSingleton|offStrictSingleton|onEnd|offEnd|onListing|offListing|error|abort|kill|clear|slice|offLog|onLog|onTroll|offTroll|onOrder|offOrder|embeddedCode|embeddedCodeS|embeddedCodeV|pauseEmbeddedCode|continueEmbeddedCode|continueEmbeddedCodeS|continueEmbeddedCodeV|endEmbeddedCode|onEmbeddedCode|onEmbeddedCodeS|onEmbeddedCodeV|offEmbeddedCode|scratchFileName|onCheckErrorLevel|offCheckErrorLevel|onFiltered|offFiltered|onSuffixDLVars|offSuffixDLVars|onSuffixAlgebraVars|offSuffixAlgebraVars|onFold|offFold|gdxIn|gdxOut|declareAndLoad|gdxLoad|gdxLoadAll|gdxUnload|load|loadR|loadM|loadDc|loadDcR|loadDcM|loadFiltered|loadFilteredR|loadFilteredM|loadIdx|unload|setLocal|setGlobal|set|evalLocal|evalGlobal|eval|setEnv|dropLocal|dropGlobal|drop|dropEnv|setArgs|setNames|splitOption|setComps|escape|onGlobal|offGlobal|setDdList|prefixPath|show|showFiles|showMacros|showVariables|macro|onMacro|offMacro|onDotL|offDotL|onExpand|offExpand|offLocal|onLocal|onDotScale|offDotScale|expose|protect|hide|purge|compress|encrypt|decompress|run|stop|exit|log|echo|echoN|use205|use225|use999|diff|onEcho|onEchoV|onEchoS|offEcho|onPut|onPutV|onPutS|offPut|clearError|clearErrors|warning|terminate|remark|onUndf|offUndf|onEmbedded|offEmbedded|onVerbatim|offVerbatim|ifThen|ifThenI|ifThenE|elseIf|elseIfI|elseIfE|else|endIf|eject|onECImplicitLoad|offECImplicitLoad|save|xsave)\\b"
+                }
+            ]
+        },
+        "model_types": {
+            "patterns": [
+                {
+                    "name": "entity.name.type.gams",
+                    "match": "\\b(?i)(LP|MIP|RMIP|NLP|MCP|MPEC|RMPEC|CNS|DNLP|RMINLP|MINLP|QCP|MIQCP|RMIQCP|EMP)\\b"
+                }
+            ]
+        },
+        "solve_keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.solve.gams",
+                    "match": "\\b(?i)(solve|us|using|minimizing|maximizing)\\b"
+                }
+            ]
+        },
+        "system_attributes": {
+            "patterns": [
+                {
+                    "name": "variable.language.gams",
+                    "match": "\\.(?i)(Page|ILine|OPage|Elapsed|Memory|TStart|TClose|TComp|TExec|IncParentL|IncLine|Line|ListLine|PrLine|PrPage|LicenseLevel|IsAlphaBeta|MaxInput|IsNetworkLicense|Date|Time|Title|SFile|RTime|RDate|RFile|IFile|OFile|Version|Platform|GString|SString|PFile|VerID|Date1|Tab|IncParent|IncName|FileSys|FE|FN|FP|ReDirLog|NullFile|ErrorLevel|HostPlatform|GamsVersion|GdxFileNameIn|GdxFileNameOut|BuildCode|GamsRelease|PutFileName|JobHandle|UserName|ComputerName|GamsReleaseMaint|DirSep|MACAddress|UserConfigDir|UserDataDir|LicenseFileName)\\b"
+                }
+            ]
+        },
+        "numbers": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.gams",
+                    "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+                }
+            ]
+        }
+    },
+    "scopeName": "source.gams"
+}

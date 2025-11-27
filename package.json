@@ -123,7 +123,7 @@
       {
         "language": "gams",
         "scopeName": "source.gams",
-        "path": "./syntaxes/gams_org.tmGrammar.json"
+        "path": "./syntaxes/gams.tmLanguage.json"
       }
     ],
     "commands": [
