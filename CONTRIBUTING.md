@@ -39,3 +39,6 @@ Notes and recommendations
 - Linting: run `npm run lint` and consider using `npm run lint -- --fix` to apply safe fixes.
 
 If you have questions or want help adding tests or CI, open an issue or a PR — happy to help.
+
+Diagnostics: the extension writes runtime diagnostics to the "GAMS" Output Channel in VS Code.
+Open the Output panel (View → Output) and select `GAMS` from the dropdown to see info/warn/error messages from the extension.
