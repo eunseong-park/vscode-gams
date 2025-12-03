@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getGamsTerminal, getActiveGamsFileInfo } from '../utils';
+import { logger } from '../logger';
 
 export function registerRunCommand(context: vscode.ExtensionContext) {
     let disposableRun = vscode.commands.registerCommand('gams.run', () => {
@@ -19,9 +20,9 @@ export function registerRunCommand(context: vscode.ExtensionContext) {
         // If 'runProject' setting is true, use 'runBatchPath' (if provided) or the generated command
         // Otherwise, run the single file command
         if (config.runProject) {
-            console.log('Running GAMS in project mode');
+            logger.info('Running GAMS in project mode');
         } else {
-            console.log('Running single GAMS file');
+            logger.info('Running single GAMS file');
         }
         
         const terminal = getGamsTerminal(terminalCwd || dirPath, terminalLocation);

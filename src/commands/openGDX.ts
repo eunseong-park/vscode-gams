@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
 import { launchGamsIde } from '../utils';
+import { logger } from '../logger';
 
 /**
  * Opens a GDX file. If no file path is provided, it prompts the user to select one.
@@ -9,7 +10,7 @@ import { launchGamsIde } from '../utils';
  */
 async function openGDX(filePath: vscode.Uri | undefined) {
 	if (filePath === undefined) {
-		console.log('No file path provided, launching open file dialog');
+		logger.info('No file path provided, launching open file dialog');
 		let defaultUri;
 		const currentDocumentPath = vscode.window.activeTextEditor?.document.fileName;
 		if (currentDocumentPath !== undefined) {
@@ -28,12 +29,12 @@ async function openGDX(filePath: vscode.Uri | undefined) {
 			title: 'Open GDX File',
 		});
 		if (paths === undefined) {
-			console.log('No file picked, exiting');
+			logger.info('No file picked, exiting');
 			return;
 		}
 		filePath = paths[0];
 	}
-	console.log('Opening GDX file:', filePath.fsPath);
+	logger.info('Opening GDX file:', filePath.fsPath);
 	launchGamsIde(filePath.fsPath);
 }
 

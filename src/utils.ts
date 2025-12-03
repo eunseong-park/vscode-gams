@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as cp from 'child_process';
+import { logger } from './logger';
 
 export interface GamsFileInfo {
     filePath: string;
@@ -95,12 +96,12 @@ export function openLstFile(document: vscode.TextDocument, preservesFocus: boole
 
 export function launchGamsIde(...args: string[]) {
 	const config = vscode.workspace.getConfiguration('GAMS');
-	const idePath = config.get('idePath', 'gamside');
-	console.log('Spawning GAMS IDE/Studio process:', idePath, args.join(' '));
+    const idePath = config.get('idePath', 'gamside');
+    logger.info('Spawning GAMS IDE/Studio process:', idePath, args.join(' '));
     // Detached process to allow the extension to close without killing GAMS IDE
 	const process = cp.spawn(idePath, args, { detached: true });
 	process.on('error', (error) => {
-		console.log('Unexpected error:', error);
-		vscode.window.showErrorMessage("Unexpected error, check the output panel for more details.");
+        logger.error('Unexpected error:', error);
+        vscode.window.showErrorMessage("Unexpected error, check the output panel for more details.");
 	});
 }
