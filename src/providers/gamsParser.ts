@@ -127,3 +127,49 @@ export function invalidateDocumentCache(uri: vscode.Uri | string) {
 export function clearParseCache() {
     documentParseCache.clear();
 }
+
+// Apply incremental changes to the cached tokens. `contentChanges` is the array
+// from `TextDocumentChangeEvent.contentChanges` and refers to ranges in the old
+// document. The provided `document` is the new document after the changes.
+export function updateParsedDocument(document: vscode.TextDocument, contentChanges: readonly vscode.TextDocumentContentChangeEvent[]): GamsToken[] {
+    const key = document.uri.toString();
+    const cached = documentParseCache.get(key);
+    // If we don't have a cached parse yet, just parse fresh and store
+    if (!cached) {
+        const tokens = parseDocument(document);
+        documentParseCache.set(key, { version: document.version, tokens });
+        return tokens;
+    }
+
+    // Work on a mutable copy
+    let tokens = cached.tokens.slice();
+
+    // Process changes in order (they are provided in application order)
+    for (const change of contentChanges) {
+        const oldStart = change.range.start.line;
+        const oldEnd = change.range.end.line;
+        const newLines = change.text.split('\n').length; // number of new lines in replacement
+        const newEnd = oldStart + Math.max(0, newLines - 1);
+        const oldLineCount = Math.max(0, oldEnd - oldStart);
+        const delta = newLines - (oldLineCount + 1);
+
+        // Remove tokens within the old range [oldStart, oldEnd]
+        const before = tokens.filter(t => t.line < oldStart);
+        const after = tokens.filter(t => t.line > oldEnd).map(t => ({ ...t, line: t.line + delta }));
+
+        // Reparse the new text region from the current document lines
+        const newSliceLines: string[] = [];
+        for (let ln = oldStart; ln <= newEnd; ln++) {
+            if (ln >= 0 && ln < document.lineCount) newSliceLines.push(document.lineAt(ln).text);
+        }
+        const newTokensLocal = parseLines(newSliceLines);
+        // Adjust local token line numbers to global positions (oldStart..newEnd)
+        const newTokens = newTokensLocal.map(nt => ({ ...nt, line: nt.line + oldStart } as GamsToken));
+
+        tokens = before.concat(newTokens).concat(after);
+    }
+
+    // Update cache with new version and tokens
+    documentParseCache.set(key, { version: document.version, tokens });
+    return tokens;
+}

@@ -10,6 +10,7 @@ import { registerToggleLineCommentCommand } from './commands/toggleLineComment';
 import { registerInsertNewSectionCommand } from './commands/insertNewSection';
 import { GamsDocumentSymbolProvider } from './providers/documentSymbolProvider';
 import { GamsFoldingRangeProvider } from './providers/foldingRangeProvider';
+import { updateParsedDocument, invalidateDocumentCache } from './providers/gamsParser';
 
 export function activate(context: vscode.ExtensionContext) {
 	const extensionId = context.extension.id;
@@ -40,6 +41,17 @@ export function activate(context: vscode.ExtensionContext) {
             new GamsFoldingRangeProvider()
         )
     );
+
+    // Keep parser cache up-to-date on document edits and clear on close
+    context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(e => {
+        if (e.document.languageId !== 'gams') return;
+        updateParsedDocument(e.document, e.contentChanges);
+    }));
+
+    context.subscriptions.push(vscode.workspace.onDidCloseTextDocument(doc => {
+        if (doc.languageId !== 'gams') return;
+        invalidateDocumentCache(doc.uri);
+    }));
 }
 
 export function deactivate() { }
