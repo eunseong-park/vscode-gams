@@ -234,7 +234,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "node ./scripts/checkPrereqs.js",
+    "vscode:prepublish": "npm run compile",
     "compile": "node ./scripts/ensureDepsAndCompile.js",
     "watch": "node ./scripts/ensureDepsAndCompile.js --watch",
     "pretest": "npm run compile && npm run lint",
