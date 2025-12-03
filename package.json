@@ -235,8 +235,8 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "npx -p typescript tsc -p ./",
-    "watch": "npx -p typescript tsc -watch -p ./",
+    "compile": "node ./scripts/ensureDepsAndCompile.js",
+    "watch": "node ./scripts/ensureDepsAndCompile.js --watch",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
