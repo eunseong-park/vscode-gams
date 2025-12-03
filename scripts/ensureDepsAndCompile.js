@@ -4,7 +4,11 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const root = process.cwd();
-const requiredPackages = ['typescript', '@types/node', '@types/vscode', '@types/jest'];
+const requiredPackages = ['typescript', '@types/node', '@types/vscode'];
+
+// By default do NOT auto-install missing dependencies. Pass --auto-install to allow installs.
+const argsPassed = process.argv.slice(2);
+const allowAutoInstall = argsPassed.indexOf('--auto-install') !== -1;
 
 function hasPackage(name) {
   return fs.existsSync(path.join(root, 'node_modules', name));
@@ -13,6 +17,15 @@ function hasPackage(name) {
 const missing = requiredPackages.filter(p => !hasPackage(p));
 if (missing.length) {
   console.log('Missing dev dependencies:', missing.join(', '));
+  if (!allowAutoInstall) {
+    console.log('Auto-install is disabled. To install missing dev dependencies run:');
+    console.log('  npm ci    # preferred (uses package-lock.json)');
+    console.log('or');
+    console.log('  npm install');
+    console.log('If you want this script to install automatically, re-run with `--auto-install`.');
+    process.exit(2);
+  }
+
   const useCi = fs.existsSync(path.join(root, 'package-lock.json'));
   const args = useCi ? ['ci'] : ['install'];
   console.log(`Running npm ${args.join(' ')} to install devDependencies...`);
