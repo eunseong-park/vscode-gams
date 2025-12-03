@@ -243,7 +243,6 @@
     "test:unit": "echo \"No unit tests configured\" && exit 0"
   },
   "devDependencies": {
-    
     "@types/node": "18.x",
     "@types/vscode": "^1.87.0",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
@@ -252,7 +251,6 @@
     "@vscode/test-electron": "^2.3.9",
     "@vscode/vsce": "^3.1.1",
     "eslint": "^9.39.1",
-    
     "typescript": "^5.9.3"
   }
 }

@@ -9,13 +9,13 @@ function channel(): vscode.OutputChannel {
 }
 
 export const logger = {
-    info: (message: string, ...args: any[]) => {
+    info: (message: string, ...args: unknown[]) => {
         channel().appendLine(`[INFO] ${message} ${args.map(a => String(a)).join(' ')}`);
     },
-    warn: (message: string, ...args: any[]) => {
+    warn: (message: string, ...args: unknown[]) => {
         channel().appendLine(`[WARN] ${message} ${args.map(a => String(a)).join(' ')}`);
     },
-    error: (message: string, ...args: any[]) => {
+    error: (message: string, ...args: unknown[]) => {
         channel().appendLine(`[ERROR] ${message} ${args.map(a => String(a)).join(' ')}`);
     },
     show: (preserveFocus = true) => {

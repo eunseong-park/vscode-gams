@@ -12,7 +12,13 @@ __mocks__/
 .vscode-dev-profile/
 
 # Ignore local VS Code workspace files (user settings, workspace state)
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+.vscode/*.code-workspace
+.vscode/*state*.json
+.vscode/.history/
 
 # Logs and temp
 npm-debug.log*

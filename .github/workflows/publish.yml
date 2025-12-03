@@ -1,0 +1,32 @@
+name: Publish to Marketplace
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    # Only run publish job if a VSCE token is configured in repository secrets
+    if: ${{ secrets.VSCE_TOKEN != '' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Compile
+        run: npm run compile
+      - name: Publish to Marketplace
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+        run: npx -y @vscode/vsce publish --pat $VSCE_TOKEN
+
+# Safety notes:
+# - This job is guarded by the `if` conditional so it will be skipped when `VSCE_TOKEN` secret is missing.
+# - Do NOT echo secrets in logs. The job uses the token only via environment variable.
