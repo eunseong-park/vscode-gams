@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { getParsedDocument, GamsToken } from './gamsParser';
 import { getSymbolKindForBaseKeyword } from './symbolKindUtils';
-import { setSymbolLevel } from './symbolMeta';
+import { setSymbolLevel, getSymbolLevel } from './symbolMeta';
 
 export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public provideDocumentSymbols(
@@ -63,10 +63,15 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
                 const newSectionSymbol = new vscode.DocumentSymbol(sectionName, '', kind, range, selectionRange);
                 setSymbolLevel(newSectionSymbol, sectionLevel);
 
-                // Manage the sectionStack
-                while (sectionStack.length > 0 && (sectionStack[sectionStack.length - 1] as any).level &&
-                    (sectionLevel <= (sectionStack[sectionStack.length - 1] as any).level)) {
-                    sectionStack.pop();
+                // Manage the sectionStack using metadata stored via `symbolMeta`
+                while (sectionStack.length > 0) {
+                    const last = sectionStack[sectionStack.length - 1];
+                    const parentLevel = getSymbolLevel(last);
+                    if (parentLevel !== undefined && sectionLevel <= parentLevel) {
+                        sectionStack.pop();
+                    } else {
+                        break;
+                    }
                 }
 
                 const parent = sectionStack.length > 0 ? sectionStack[sectionStack.length - 1] : undefined;
