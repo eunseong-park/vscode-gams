@@ -78,7 +78,13 @@ export class GamsFoldingRangeProvider implements vscode.FoldingRangeProvider {
             }
 
             // For normal lines, if it ends with semicolon close the latest declaration
-            const endsWithSemicolon = (tk as any).processedNormalized ? (tk as any).processedNormalized.endsWith(';') : (tk as any).processed && (tk as any).processed.endsWith(';');
+            // Use type guards instead of `any` casts to check for processed text
+            let endsWithSemicolon = false;
+            if ('processedNormalized' in tk && typeof tk.processedNormalized === 'string') {
+                endsWithSemicolon = tk.processedNormalized.endsWith(';');
+            } else if ('processed' in tk && typeof tk.processed === 'string') {
+                endsWithSemicolon = tk.processed.endsWith(';');
+            }
             if (endsWithSemicolon) {
                 const lastBlock = foldableBlockStack[foldableBlockStack.length - 1];
                 if (lastBlock && lastBlock.type === 'declaration') {
