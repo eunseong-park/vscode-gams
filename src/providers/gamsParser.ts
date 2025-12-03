@@ -1,32 +1,10 @@
-import * as vscode from 'vscode';
+import type * as vscode from 'vscode';
 import { parseSectionHeader } from './sectionUtils';
 import { parseDeclaration, ParsedDeclaration } from './declarationUtils';
 
-// Normalize common dash characters and remove invisible separators
+// Preserve original line content exactly — do not strip or normalize characters
 function normalizeWhitespaceAndDashes(s: string): string {
-    if (!s) return s;
-    // Replace various dashes with ASCII hyphen
-    const DASH_MAP: { [k: number]: string } = {
-        0x2010: '-', // hyphen
-        0x2011: '-', // non-breaking hyphen
-        0x2012: '-', // figure dash
-        0x2013: '-', // en dash
-        0x2014: '-', // em dash
-        0x2212: '-', // minus sign
-    } as any;
-    let out = '';
-    for (let i = 0; i < s.length; i++) {
-        const code = s.charCodeAt(i);
-        if (DASH_MAP[code]) {
-            out += DASH_MAP[code];
-        } else if (code === 0x200B || code === 0xFEFF) {
-            // skip zero-width space / BOM
-            continue;
-        } else {
-            out += s[i];
-        }
-    }
-    return out;
+    return s;
 }
 
 export type GamsToken =
@@ -108,6 +86,7 @@ type PerLineCache = {
     version: number;
     lineCount: number;
     perLineTokens: Map<number, GamsToken[]>; // key = line index
+    perLineText: Map<number, string>; // original raw text per line for reuse checks
 };
 
 const documentPerLineCache: Map<string, PerLineCache> = new Map();
@@ -129,16 +108,18 @@ export function getParsedDocument(document: vscode.TextDocument): GamsToken[] {
         return assembleTokensFromPerLine(cached.perLineTokens);
     }
 
-    // Build per-line tokens fresh
+    // Build per-line tokens fresh and record per-line text
     const perLine = new Map<number, GamsToken[]>();
+    const perLineText = new Map<number, string>();
     for (let i = 0; i < document.lineCount; i++) {
         const lineText = document.lineAt(i).text;
         const local = parseLines([lineText]);
         // Adjust token line numbers to global
         const adjusted = local.map(t => ({ ...t, line: t.line + i } as GamsToken));
         perLine.set(i, adjusted);
+        perLineText.set(i, lineText);
     }
-    const cacheEntry: PerLineCache = { version: document.version, lineCount: document.lineCount, perLineTokens: perLine };
+    const cacheEntry: PerLineCache = { version: document.version, lineCount: document.lineCount, perLineTokens: perLine, perLineText };
     documentPerLineCache.set(key, cacheEntry);
     return assembleTokensFromPerLine(perLine);
 }
@@ -163,9 +144,11 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
         const tokens = getParsedDocument(document);
         return tokens;
     }
-    // Apply each change sequentially to the per-line map (merge adjacent/overlapping changes first)
-    const mergedChanges = mergeAdjacentChanges(contentChanges);
+    // Merge changes into a single composite replacement to minimize reparses
+    const mergedChanges = mergeCompositeChanges(contentChanges, document);
+    // Start from cached maps (clone to avoid mutating shared maps)
     let perLine = new Map<number, GamsToken[]>(cached.perLineTokens);
+    let perLineText = new Map<number, string>(cached.perLineText || []);
     let lineCount = cached.lineCount;
 
     for (const change of mergedChanges) {
@@ -176,22 +159,37 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
         const oldLineCount = Math.max(0, oldEnd - oldStart);
         const delta = newLines - (oldLineCount + 1);
 
-        // Build new perLine map: keep lines before oldStart, insert new parsed lines, shift the tail
+        // Build new perLine and perLineText maps: keep lines before oldStart, insert new parsed lines, shift the tail
         const newPerLine = new Map<number, GamsToken[]>();
+        const newPerLineText = new Map<number, string>();
         // copy before
         for (const [ln, toks] of perLine.entries()) {
-            if (ln < oldStart) newPerLine.set(ln, toks);
+            if (ln < oldStart) {
+                newPerLine.set(ln, toks);
+                const txt = perLineText.get(ln);
+                if (txt !== undefined) newPerLineText.set(ln, txt);
+            }
         }
 
         // parse and insert new lines from document into newPerLine at positions oldStart..newEnd
         for (let ln = oldStart; ln <= newEnd; ln++) {
             if (ln >= 0 && ln < document.lineCount) {
                 const lineText = document.lineAt(ln).text;
-                const local = parseLines([lineText]);
-                const adjusted = local.map(t => ({ ...t, line: t.line + ln } as GamsToken));
-                newPerLine.set(ln, adjusted);
+                // If the cached per-line text is identical, reuse token objects to avoid reparsing
+                const oldText = perLineText.get(ln);
+                if (oldText !== undefined && oldText === lineText) {
+                    const existing = perLine.get(ln) || [];
+                    newPerLine.set(ln, existing);
+                    newPerLineText.set(ln, lineText);
+                } else {
+                    const local = parseLines([lineText]);
+                    const adjusted = local.map(t => ({ ...t, line: t.line + ln } as GamsToken));
+                    newPerLine.set(ln, adjusted);
+                    newPerLineText.set(ln, lineText);
+                }
             } else {
                 newPerLine.set(ln, []);
+                newPerLineText.set(ln, '');
             }
         }
 
@@ -199,14 +197,17 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
         for (const [ln, toks] of perLine.entries()) {
             if (ln > oldEnd) {
                 newPerLine.set(ln + delta, toks.map(t => ({ ...t, line: t.line + delta } as GamsToken)));
+                const txt = perLineText.get(ln);
+                newPerLineText.set(ln + delta, txt !== undefined ? txt : '');
             }
         }
 
         perLine = newPerLine;
+        perLineText = newPerLineText;
         lineCount = lineCount + delta;
     }
 
-    const cacheEntry: PerLineCache = { version: document.version, lineCount, perLineTokens: perLine };
+    const cacheEntry: PerLineCache = { version: document.version, lineCount, perLineTokens: perLine, perLineText };
     documentPerLineCache.set(key, cacheEntry);
     return assembleTokensFromPerLine(perLine);
 }
@@ -225,7 +226,7 @@ function mergeAdjacentChanges(changes: readonly vscode.TextDocumentContentChange
         // If next starts before or at current.end + 1 then merge
         if (next.range.start.line <= current.range.end.line + 1) {
             // new merged range: start = current.start, end = next.end
-            const mergedRange = new vscode.Range(current.range.start, next.range.end);
+            const mergedRange = { start: current.range.start, end: next.range.end };
             const mergedText = current.text + next.text; // concatenation works for contiguous edits
             current = { range: mergedRange, text: mergedText } as vscode.TextDocumentContentChangeEvent;
         } else {
@@ -235,4 +236,39 @@ function mergeAdjacentChanges(changes: readonly vscode.TextDocumentContentChange
     }
     merged.push(current);
     return merged;
+}
+
+// Merge all changes into one composite change that replaces the minimal
+// contiguous range in the old document that covers all edits with the
+// corresponding lines from the new document after edits.
+function mergeCompositeChanges(changes: readonly vscode.TextDocumentContentChangeEvent[], document: vscode.TextDocument): vscode.TextDocumentContentChangeEvent[] {
+    if (!changes || changes.length === 0) return [];
+    // determine minimal start and maximal old end
+    let minStart = Number.MAX_SAFE_INTEGER;
+    let maxOldEnd = -1;
+    let totalDelta = 0;
+    for (const c of changes) {
+        const s = c.range.start.line;
+        const e = c.range.end.line;
+        minStart = Math.min(minStart, s);
+        maxOldEnd = Math.max(maxOldEnd, e);
+        const newLines = c.text.split('\n').length;
+        const oldLines = Math.max(0, e - s) + 1;
+        totalDelta += (newLines - oldLines);
+    }
+    const newEnd = Math.min(document.lineCount - 1, maxOldEnd + totalDelta);
+
+    // build replacement text from the new document's lines
+    const newLinesArr: string[] = [];
+    for (let ln = minStart; ln <= newEnd; ln++) {
+        if (ln >= 0 && ln < document.lineCount) newLinesArr.push(document.lineAt(ln).text);
+    }
+    const replacementText = newLinesArr.join('\n');
+
+    const composite: vscode.TextDocumentContentChangeEvent = {
+        range: { start: { line: minStart, character: 0 }, end: { line: maxOldEnd, character: Number.MAX_SAFE_INTEGER } },
+        text: replacementText
+    } as vscode.TextDocumentContentChangeEvent;
+
+    return [composite];
 }
