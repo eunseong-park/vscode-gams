@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { parseLines, parseDocument, GamsToken } from './gamsParser';
+import { getParsedDocument, GamsToken } from './gamsParser';
 import { getSymbolKindForBaseKeyword } from './symbolKindUtils';
 
 export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
@@ -15,7 +15,7 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
         token: vscode.CancellationToken
     ): vscode.DocumentSymbol[] {
         const symbols: vscode.DocumentSymbol[] = [];
-        const tokens = parseDocument(document);
+        const tokens = getParsedDocument(document);
 
         // Use shared section parser
         

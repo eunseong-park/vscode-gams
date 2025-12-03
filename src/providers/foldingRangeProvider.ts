@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { parseLines, parseDocument, GamsToken } from './gamsParser';
+import { getParsedDocument, GamsToken } from './gamsParser';
 
 export class GamsFoldingRangeProvider implements vscode.FoldingRangeProvider {
     provideFoldingRanges(
@@ -8,7 +8,7 @@ export class GamsFoldingRangeProvider implements vscode.FoldingRangeProvider {
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.FoldingRange[]> {
         const foldingRanges: vscode.FoldingRange[] = [];
-        const tokens = parseDocument(document);
+        const tokens = getParsedDocument(document);
 
         // Stack to manage active foldable blocks
         const foldableBlockStack: { type: 'section' | 'declaration' | 'commentBlock'; startLine: number }[] = [];

@@ -101,3 +101,29 @@ export function parseDocument(document: vscode.TextDocument): GamsToken[] {
     }
     return parseLines(lines);
 }
+
+// Simple per-document cache keyed by document URI + version. If document.version
+// hasn't changed we return the cached tokens. This avoids reparsing for repeated
+// provider calls when the document is unchanged.
+const documentParseCache: Map<string, { version: number; tokens: GamsToken[] }> = new Map();
+
+export function getParsedDocument(document: vscode.TextDocument): GamsToken[] {
+    const key = document.uri.toString();
+    const cached = documentParseCache.get(key);
+    if (cached && cached.version === document.version) {
+        return cached.tokens;
+    }
+
+    const tokens = parseDocument(document);
+    documentParseCache.set(key, { version: document.version, tokens });
+    return tokens;
+}
+
+export function invalidateDocumentCache(uri: vscode.Uri | string) {
+    const key = typeof uri === 'string' ? uri : uri.toString();
+    documentParseCache.delete(key);
+}
+
+export function clearParseCache() {
+    documentParseCache.clear();
+}
