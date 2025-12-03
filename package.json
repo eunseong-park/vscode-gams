@@ -235,8 +235,8 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "npx tsc -p ./",
-    "watch": "npx tsc -watch -p ./",
+    "compile": "npx -p typescript tsc -p ./",
+    "watch": "npx -p typescript tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
@@ -245,11 +245,13 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "testPathIgnorePatterns": ["/out/", "/node_modules/", "/.vscode-test/"]
+    "testPathIgnorePatterns": [
+      "/out/",
+      "/node_modules/",
+      "/.vscode-test/"
+    ]
   },
   "devDependencies": {
-    "jest": "^29.0.0",
-    "ts-jest": "^29.0.0",
     "@types/jest": "^29.0.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
@@ -260,9 +262,10 @@
     "@vscode/test-electron": "^2.3.9",
     "@vscode/vsce": "^3.1.1",
     "eslint": "^9.0.0",
-    "typescript": "^5.5.2"
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.9.3"
   },
-  "dependencies": {},
   "overrides": {
     "ajv": "8.17.1"
   }
