@@ -3,3 +3,18 @@ dist
 node_modules
 .vscode-test/
 *.vsix
+
+# Local test & mock artifacts
+__tests__/
+__mocks__/
+
+# Dev helpers
+.vscode-dev-profile/
+
+# Ignore local VS Code workspace files (user settings, workspace state)
+.vscode/
+
+# Logs and temp
+npm-debug.log*
+.DS_Store
+coverage/
