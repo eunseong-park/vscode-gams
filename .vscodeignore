@@ -11,4 +11,5 @@ vsc-extension-quickstart.md
 **/.vscode-test.*
 CHANGELOG.md
 README.md
+scripts/**
 
