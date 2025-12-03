@@ -16,9 +16,24 @@ if (missing.length) {
   const useCi = fs.existsSync(path.join(root, 'package-lock.json'));
   const args = useCi ? ['ci'] : ['install'];
   console.log(`Running npm ${args.join(' ')} to install devDependencies...`);
-  const res = spawnSync('npm', args, { stdio: 'inherit' });
-  if (res.status !== 0) {
-    process.exit(res.status || 1);
+  let npmRes = spawnSync('npm', args, { encoding: 'utf8' });
+  if (npmRes.error) console.error('Error running npm:', npmRes.error);
+  if (npmRes.stdout) console.log(npmRes.stdout);
+  if (npmRes.stderr) console.error(npmRes.stderr);
+  if (npmRes.status !== 0) {
+    // try fallback from `npm ci` to `npm install`
+    if (args[0] === 'ci') {
+      console.log('`npm ci` failed; attempting `npm install` as a fallback...');
+      npmRes = spawnSync('npm', ['install'], { encoding: 'utf8' });
+      if (npmRes.error) console.error('Error running npm install:', npmRes.error);
+      if (npmRes.stdout) console.log(npmRes.stdout);
+      if (npmRes.stderr) console.error(npmRes.stderr);
+    }
+  }
+  if (npmRes.status !== 0) {
+    console.error('\nFailed to install devDependencies automatically.');
+    console.error('Please run `npm ci` (or `npm install`) in this folder and retry `vsce package`.');
+    process.exit(npmRes.status || 1);
   }
 }
 
