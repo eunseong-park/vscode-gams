@@ -11,21 +11,12 @@ This extension provides basic GAMS language support in Visual Studio Code, actin
 
 ## Installation
 
-- **CI Badge:**
-
-- ![CI](https://github.com/eunseong-park/vscode-gams/actions/workflows/ci.yml/badge.svg)
-
 1.  **VS Code Marketplace:**
     *   Open VS Code and go to the Extensions view (`Ctrl+Shift+X`).
     *   Search for "GAMS" and click "Install".
 2.  **VSIX File:**
     *   Download the `.vsix` file from the [releases page](https://github.com/eunseong-park/vscode-gams/releases).
     *   In the Extensions view (`Ctrl+Shift+X`), click the `...` menu and select "Install from VSIX...".
-    *   Or install locally from a downloaded artifact using:
-
-```powershell
-code --install-extension path\to\vscode-gams-0.1.2.vsix
-```
 
 ## Requirements
 
