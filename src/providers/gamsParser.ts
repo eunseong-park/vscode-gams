@@ -102,30 +102,54 @@ export function parseDocument(document: vscode.TextDocument): GamsToken[] {
     return parseLines(lines);
 }
 
-// Simple per-document cache keyed by document URI + version. If document.version
-// hasn't changed we return the cached tokens. This avoids reparsing for repeated
-// provider calls when the document is unchanged.
-const documentParseCache: Map<string, { version: number; tokens: GamsToken[] }> = new Map();
+// Per-document per-line cache. We keep tokens parsed per-line so incremental
+// edits only reparse affected lines and reuse unchanged lines' tokens.
+type PerLineCache = {
+    version: number;
+    lineCount: number;
+    perLineTokens: Map<number, GamsToken[]>; // key = line index
+};
+
+const documentPerLineCache: Map<string, PerLineCache> = new Map();
+
+function assembleTokensFromPerLine(perLine: Map<number, GamsToken[]>): GamsToken[] {
+    const tokens: GamsToken[] = [];
+    const keys = Array.from(perLine.keys()).sort((a, b) => a - b);
+    for (const k of keys) {
+        const arr = perLine.get(k)!;
+        for (const t of arr) tokens.push(t);
+    }
+    return tokens;
+}
 
 export function getParsedDocument(document: vscode.TextDocument): GamsToken[] {
     const key = document.uri.toString();
-    const cached = documentParseCache.get(key);
+    const cached = documentPerLineCache.get(key);
     if (cached && cached.version === document.version) {
-        return cached.tokens;
+        return assembleTokensFromPerLine(cached.perLineTokens);
     }
 
-    const tokens = parseDocument(document);
-    documentParseCache.set(key, { version: document.version, tokens });
-    return tokens;
+    // Build per-line tokens fresh
+    const perLine = new Map<number, GamsToken[]>();
+    for (let i = 0; i < document.lineCount; i++) {
+        const lineText = document.lineAt(i).text;
+        const local = parseLines([lineText]);
+        // Adjust token line numbers to global
+        const adjusted = local.map(t => ({ ...t, line: t.line + i } as GamsToken));
+        perLine.set(i, adjusted);
+    }
+    const cacheEntry: PerLineCache = { version: document.version, lineCount: document.lineCount, perLineTokens: perLine };
+    documentPerLineCache.set(key, cacheEntry);
+    return assembleTokensFromPerLine(perLine);
 }
 
 export function invalidateDocumentCache(uri: vscode.Uri | string) {
     const key = typeof uri === 'string' ? uri : uri.toString();
-    documentParseCache.delete(key);
+    documentPerLineCache.delete(key);
 }
 
 export function clearParseCache() {
-    documentParseCache.clear();
+    documentPerLineCache.clear();
 }
 
 // Apply incremental changes to the cached tokens. `contentChanges` is the array
@@ -133,18 +157,17 @@ export function clearParseCache() {
 // document. The provided `document` is the new document after the changes.
 export function updateParsedDocument(document: vscode.TextDocument, contentChanges: readonly vscode.TextDocumentContentChangeEvent[]): GamsToken[] {
     const key = document.uri.toString();
-    const cached = documentParseCache.get(key);
-    // If we don't have a cached parse yet, just parse fresh and store
+    const cached = documentPerLineCache.get(key);
+    // If we don't have a per-line cache yet, create one by parsing whole document
     if (!cached) {
-        const tokens = parseDocument(document);
-        documentParseCache.set(key, { version: document.version, tokens });
+        const tokens = getParsedDocument(document);
         return tokens;
     }
 
-    // Work on a mutable copy
-    let tokens = cached.tokens.slice();
+    // Apply each change sequentially to the per-line map
+    let perLine = new Map<number, GamsToken[]>(cached.perLineTokens);
+    let lineCount = cached.lineCount;
 
-    // Process changes in order (they are provided in application order)
     for (const change of contentChanges) {
         const oldStart = change.range.start.line;
         const oldEnd = change.range.end.line;
@@ -153,23 +176,37 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
         const oldLineCount = Math.max(0, oldEnd - oldStart);
         const delta = newLines - (oldLineCount + 1);
 
-        // Remove tokens within the old range [oldStart, oldEnd]
-        const before = tokens.filter(t => t.line < oldStart);
-        const after = tokens.filter(t => t.line > oldEnd).map(t => ({ ...t, line: t.line + delta }));
-
-        // Reparse the new text region from the current document lines
-        const newSliceLines: string[] = [];
-        for (let ln = oldStart; ln <= newEnd; ln++) {
-            if (ln >= 0 && ln < document.lineCount) newSliceLines.push(document.lineAt(ln).text);
+        // Build new perLine map: keep lines before oldStart, insert new parsed lines, shift the tail
+        const newPerLine = new Map<number, GamsToken[]>();
+        // copy before
+        for (const [ln, toks] of perLine.entries()) {
+            if (ln < oldStart) newPerLine.set(ln, toks);
         }
-        const newTokensLocal = parseLines(newSliceLines);
-        // Adjust local token line numbers to global positions (oldStart..newEnd)
-        const newTokens = newTokensLocal.map(nt => ({ ...nt, line: nt.line + oldStart } as GamsToken));
 
-        tokens = before.concat(newTokens).concat(after);
+        // parse and insert new lines from document into newPerLine at positions oldStart..newEnd
+        for (let ln = oldStart; ln <= newEnd; ln++) {
+            if (ln >= 0 && ln < document.lineCount) {
+                const lineText = document.lineAt(ln).text;
+                const local = parseLines([lineText]);
+                const adjusted = local.map(t => ({ ...t, line: t.line + ln } as GamsToken));
+                newPerLine.set(ln, adjusted);
+            } else {
+                newPerLine.set(ln, []);
+            }
+        }
+
+        // copy and shift tail
+        for (const [ln, toks] of perLine.entries()) {
+            if (ln > oldEnd) {
+                newPerLine.set(ln + delta, toks.map(t => ({ ...t, line: t.line + delta } as GamsToken)));
+            }
+        }
+
+        perLine = newPerLine;
+        lineCount = lineCount + delta;
     }
 
-    // Update cache with new version and tokens
-    documentParseCache.set(key, { version: document.version, tokens });
-    return tokens;
+    const cacheEntry: PerLineCache = { version: document.version, lineCount, perLineTokens: perLine };
+    documentPerLineCache.set(key, cacheEntry);
+    return assembleTokensFromPerLine(perLine);
 }
