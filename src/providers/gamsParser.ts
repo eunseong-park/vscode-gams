@@ -96,7 +96,7 @@ function assembleTokensFromPerLine(perLine: Map<number, GamsToken[]>): GamsToken
     const keys = Array.from(perLine.keys()).sort((a, b) => a - b);
     for (const k of keys) {
         const arr = perLine.get(k)!;
-        for (const t of arr) tokens.push(t);
+        for (const t of arr) {tokens.push(t);}
     }
     return tokens;
 }
@@ -167,7 +167,7 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
             if (ln < oldStart) {
                 newPerLine.set(ln, toks);
                 const txt = perLineText.get(ln);
-                if (txt !== undefined) newPerLineText.set(ln, txt);
+                if (txt !== undefined) {newPerLineText.set(ln, txt);}
             }
         }
 
@@ -214,9 +214,9 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
 
 // Merge adjacent or overlapping content changes to reduce reparses.
 function mergeAdjacentChanges(changes: readonly vscode.TextDocumentContentChangeEvent[]) : vscode.TextDocumentContentChangeEvent[] {
-    if (!changes || changes.length <= 1) return Array.from(changes);
+    if (!changes || changes.length <= 1) {return Array.from(changes);}
     const sorted = Array.from(changes).sort((a,b) => {
-        if (a.range.start.line !== b.range.start.line) return a.range.start.line - b.range.start.line;
+        if (a.range.start.line !== b.range.start.line) {return a.range.start.line - b.range.start.line;}
         return a.range.start.character - b.range.start.character;
     });
     const merged: vscode.TextDocumentContentChangeEvent[] = [];
@@ -242,7 +242,7 @@ function mergeAdjacentChanges(changes: readonly vscode.TextDocumentContentChange
 // contiguous range in the old document that covers all edits with the
 // corresponding lines from the new document after edits.
 function mergeCompositeChanges(changes: readonly vscode.TextDocumentContentChangeEvent[], document: vscode.TextDocument): vscode.TextDocumentContentChangeEvent[] {
-    if (!changes || changes.length === 0) return [];
+    if (!changes || changes.length === 0) {return [];}
     // determine minimal start and maximal old end
     let minStart = Number.MAX_SAFE_INTEGER;
     let maxOldEnd = -1;
@@ -261,7 +261,7 @@ function mergeCompositeChanges(changes: readonly vscode.TextDocumentContentChang
     // build replacement text from the new document's lines
     const newLinesArr: string[] = [];
     for (let ln = minStart; ln <= newEnd; ln++) {
-        if (ln >= 0 && ln < document.lineCount) newLinesArr.push(document.lineAt(ln).text);
+        if (ln >= 0 && ln < document.lineCount) {newLinesArr.push(document.lineAt(ln).text);}
     }
     const replacementText = newLinesArr.join('\n');
 

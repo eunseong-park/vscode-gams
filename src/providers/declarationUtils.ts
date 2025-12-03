@@ -6,9 +6,9 @@ export interface ParsedDeclaration {
 }
 
 export function parseDeclaration(line: string): ParsedDeclaration | null {
-	if (!line) return null;
+	if (!line) {return null;}
 	const m = declarationRegex.exec(line);
-	if (!m) return null;
+	if (!m) {return null;}
 	let baseKeyword = m[1].toUpperCase();
 	if (baseKeyword.includes('VARIABLE')) {
 		baseKeyword = 'VARIABLE';
