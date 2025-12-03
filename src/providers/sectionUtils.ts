@@ -9,9 +9,9 @@ export interface SectionHeader {
 const sectionRegex = /^\s*(\*+)\s*(.*?)\s+[-]{3,}/;
 
 export function parseSectionHeader(line: string): SectionHeader | null {
-    if (!line) return null;
+    if (!line) {return null;}
     const m = sectionRegex.exec(line);
-    if (!m) return null;
+    if (!m) {return null;}
     const level = m[1].length;
     const title = (m[2] || '').trim() || '(empty)';
     return { level, title };
