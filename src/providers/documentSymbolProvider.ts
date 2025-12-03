@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getParsedDocument, GamsToken } from './gamsParser';
 import { getSymbolKindForBaseKeyword } from './symbolKindUtils';
+import { setSymbolLevel } from './symbolMeta';
 
 export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
     public provideDocumentSymbols(
@@ -60,7 +61,7 @@ export class GamsDocumentSymbolProvider implements vscode.DocumentSymbolProvider
 
                 let kind: vscode.SymbolKind = vscode.SymbolKind.String;
                 const newSectionSymbol = new vscode.DocumentSymbol(sectionName, '', kind, range, selectionRange);
-                (newSectionSymbol as any).level = sectionLevel;
+                setSymbolLevel(newSectionSymbol, sectionLevel);
 
                 // Manage the sectionStack
                 while (sectionStack.length > 0 && (sectionStack[sectionStack.length - 1] as any).level &&

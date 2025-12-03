@@ -163,12 +163,12 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
         const tokens = getParsedDocument(document);
         return tokens;
     }
-
-    // Apply each change sequentially to the per-line map
+    // Apply each change sequentially to the per-line map (merge adjacent/overlapping changes first)
+    const mergedChanges = mergeAdjacentChanges(contentChanges);
     let perLine = new Map<number, GamsToken[]>(cached.perLineTokens);
     let lineCount = cached.lineCount;
 
-    for (const change of contentChanges) {
+    for (const change of mergedChanges) {
         const oldStart = change.range.start.line;
         const oldEnd = change.range.end.line;
         const newLines = change.text.split('\n').length; // number of new lines in replacement
@@ -209,4 +209,30 @@ export function updateParsedDocument(document: vscode.TextDocument, contentChang
     const cacheEntry: PerLineCache = { version: document.version, lineCount, perLineTokens: perLine };
     documentPerLineCache.set(key, cacheEntry);
     return assembleTokensFromPerLine(perLine);
+}
+
+// Merge adjacent or overlapping content changes to reduce reparses.
+function mergeAdjacentChanges(changes: readonly vscode.TextDocumentContentChangeEvent[]) : vscode.TextDocumentContentChangeEvent[] {
+    if (!changes || changes.length <= 1) return Array.from(changes);
+    const sorted = Array.from(changes).sort((a,b) => {
+        if (a.range.start.line !== b.range.start.line) return a.range.start.line - b.range.start.line;
+        return a.range.start.character - b.range.start.character;
+    });
+    const merged: vscode.TextDocumentContentChangeEvent[] = [];
+    let current = sorted[0];
+    for (let i=1;i<sorted.length;i++) {
+        const next = sorted[i];
+        // If next starts before or at current.end + 1 then merge
+        if (next.range.start.line <= current.range.end.line + 1) {
+            // new merged range: start = current.start, end = next.end
+            const mergedRange = new vscode.Range(current.range.start, next.range.end);
+            const mergedText = current.text + next.text; // concatenation works for contiguous edits
+            current = { range: mergedRange, text: mergedText } as vscode.TextDocumentContentChangeEvent;
+        } else {
+            merged.push(current);
+            current = next;
+        }
+    }
+    merged.push(current);
+    return merged;
 }
