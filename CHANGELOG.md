@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.1.3] - 2025-12-04
+
+### Changed
+- Commands and keybindings now use case-insensitive matching for file extensions, ensuring menu items appear regardless of filename casing (for example `file.GdX` or `file.GMS`).
+- Opening GDX files is more reliable across platforms.
+- Status bar items (`GAMS Settings`, `Run Project`) only show when editing GAMS files.
+- The `Run Project` toggle now saves to the workspace settings when possible.
+
+### Fixed
+- Minor fixes and reliability improvements.
+
 ## [0.1.1] - 2025-11-25
 
 ### Added
