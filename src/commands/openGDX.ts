@@ -25,14 +25,18 @@ async function openGDX(filePath: vscode.Uri | undefined) {
 			canSelectFolders: false,
 			canSelectMany: false,
 			defaultUri: defaultUri,
-			filters: { 'GDX': ['gdx'] },
 			title: 'Open GDX File',
 		});
-		if (paths === undefined) {
+		if (!paths || paths.length === 0) {
 			logger.info('No file picked, exiting');
 			return;
 		}
-		filePath = paths[0];
+		const selected = paths[0];
+		if (path.extname(selected.fsPath).toLowerCase() !== '.gdx') {
+			vscode.window.showErrorMessage('Please select a file with the .gdx extension.');
+			return;
+		}
+		filePath = selected;
 	}
 	logger.info('Opening GDX file:', filePath.fsPath);
 	launchGamsIde(filePath.fsPath);

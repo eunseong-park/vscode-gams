@@ -178,17 +178,17 @@
       {
         "command": "gams.run",
         "key": "f9",
-        "when": "editorLangId == gams && resourceExtname == .gms"
+        "when": "editorLangId == gams && resourceFilename =~ /\\.gms$/i"
       },
       {
         "command": "gams.runWithGdxCreation",
         "key": "shift+f9",
-        "when": "editorLangId == gams && resourceExtname == .gms && config.GAMS.runProject == false"
+        "when": "editorLangId == gams && resourceFilename =~ /\\.gms$/i && config.GAMS.runProject == false"
       },
       {
         "command": "gams.showListing",
         "key": "f10",
-        "when": "editorLangId == gams && resourceExtname == .gms"
+        "when": "editorLangId == gams && resourceFilename =~ /\\.gms$/i"
       },
       {
         "command": "gams.toggleLineComment",
@@ -206,17 +206,17 @@
         {
           "command": "gams.run",
           "group": "navigation@1",
-          "when": "editorLangId == gams && resourceExtname == .gms"
+          "when": "editorLangId == gams && resourceFilename =~ /\\.gms$/i"
         },
         {
           "command": "gams.runWithGdxCreation",
           "group": "navigation@2",
-          "when": "editorLangId == gams && resourceExtname == .gms && config.GAMS.runProject == false"
+          "when": "editorLangId == gams && resourceFilename =~ /\\.gms$/i && config.GAMS.runProject == false"
         },
         {
           "command": "gams.showListing",
           "group": "navigation@3",
-          "when": "editorLangId == gams && resourceExtname == .gms"
+          "when": "editorLangId == gams && resourceFilename =~ /\\.gms$/i"
         },
         {
           "command": "gams.openCorrGDX",
@@ -228,7 +228,7 @@
         {
           "command": "gams.openGDX",
           "group": "navigation",
-          "when": "resourceExtname == .gdx"
+          "when": "resourceFilename =~ /\\.gdx$/i"
         }
       ]
     }
