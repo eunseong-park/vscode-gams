@@ -9,7 +9,19 @@ export function registerOpenSettingsCommand(context: vscode.ExtensionContext, ex
     settingsStatusBarItem.command = 'gams.openSettings';
     settingsStatusBarItem.text = '$(gear) GAMS Settings';
     settingsStatusBarItem.tooltip = 'Open GAMS Extension Settings';
-    settingsStatusBarItem.show();
 
-    context.subscriptions.push(disposableSettings, settingsStatusBarItem);
+    // Show/hide settings status bar item only when editing GAMS files
+    const updateVisibility = () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor && editor.document.languageId === 'gams') {
+            settingsStatusBarItem.show();
+        } else {
+            settingsStatusBarItem.hide();
+        }
+    };
+
+    const activeEditorListener = vscode.window.onDidChangeActiveTextEditor(updateVisibility);
+    updateVisibility();
+
+    context.subscriptions.push(disposableSettings, settingsStatusBarItem, activeEditorListener);
 }
