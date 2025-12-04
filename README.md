@@ -77,3 +77,11 @@ Available settings:
 ## Acknowledgements
 
 This extension's language grammar is based on the original GAMS syntax highlighting work by [lolow](https://github.com/lolow/gams).
+
+## Author
+
+- Maintained by [eunseong-park](https://github.com/eunseong-park)
+
+## Disclaimer
+
+This extension is community-maintained and is not affiliated with or endorsed by GAMS Corporation. A separately installed and licensed GAMS distribution is required to run models; this extension does not include GAMS.
