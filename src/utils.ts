@@ -98,12 +98,46 @@ export function launchGamsIde(...args: string[]) {
 	const config = vscode.workspace.getConfiguration('GAMS');
     const idePath = config.get('idePath', 'gamside');
     logger.info('Spawning GAMS IDE/Studio process:', idePath, args.join(' '));
-    // Detached process to allow the extension to close without killing GAMS IDE
-	const process = cp.spawn(idePath, args, { detached: true });
-	process.on('error', (error) => {
-        logger.error('Unexpected error:', error);
-        vscode.window.showErrorMessage("Unexpected error, check the output panel for more details.");
-	});
+    
+    // Check if the idePath is an AppImage
+    const isAppImage = idePath.endsWith('.AppImage');
+    const spawnArgs = isAppImage ? ['--appimage-extract-and-run', ...args] : args;
+    
+    logger.info('Arguments:', JSON.stringify(spawnArgs));
+    // Use spawn with detached option to allow the extension to close without killing GAMS IDE
+    // spawn handles arguments as array, so spaces in paths are handled correctly
+    // Pass env to inherit parent process environment (includes DISPLAY, XDG vars, etc.)
+	try {
+		const child = cp.spawn(idePath, spawnArgs, { 
+			detached: true, 
+			stdio: ['ignore', 'pipe', 'pipe'],
+			env: process.env
+		});
+		// Unref to allow parent process to exit without waiting for child
+		child.unref();
+		logger.info('IDE process spawned successfully with PID:', child.pid);
+		
+		// Log stdout and stderr to help debug issues
+		if (child.stdout) {
+			child.stdout.on('data', (data: Buffer) => {
+				logger.info('IDE stdout:', data.toString());
+			});
+		}
+		if (child.stderr) {
+			child.stderr.on('data', (data: Buffer) => {
+				// Many apps write info messages to stderr, so log as info instead of error
+				logger.info('IDE output:', data.toString());
+			});
+		}
+		
+		child.on('error', (error: Error) => {
+			logger.error('Failed to launch IDE:', error);
+			vscode.window.showErrorMessage("Failed to launch GAMS IDE, check the output panel for more details.");
+		});
+	} catch (error) {
+		logger.error('Exception while spawning IDE:', error);
+		vscode.window.showErrorMessage("Exception while launching GAMS IDE, check the output panel for more details.");
+	}
 }
 
 /**

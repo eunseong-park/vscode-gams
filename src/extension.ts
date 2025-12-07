@@ -10,6 +10,7 @@ import { registerToggleLineCommentCommand } from './commands/toggleLineComment';
 import { registerInsertNewSectionCommand } from './commands/insertNewSection';
 import { GamsDocumentSymbolProvider } from './providers/documentSymbolProvider';
 import { GamsFoldingRangeProvider } from './providers/foldingRangeProvider';
+import { GamsTaskProvider } from './providers/gamsTaskProvider';
 import { updateParsedDocument, invalidateDocumentCache, getParsedDocument } from './providers/gamsParser';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -59,6 +60,10 @@ export function activate(context: vscode.ExtensionContext) {
         // Rebuild parse cache for the saved document
         getParsedDocument(doc);
     }));
+
+    context.subscriptions.push(
+		vscode.tasks.registerTaskProvider(GamsTaskProvider.GamsTaskType, new GamsTaskProvider())
+	);
 }
 
 export function deactivate() { }
