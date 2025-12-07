@@ -64,6 +64,11 @@
           "default": "",
           "description": "Specifies the working directory for the terminal. If empty, the terminal's working directory will be the folder containing the .gms file."
         },
+        "GAMS.executablePath": {
+          "type": "string",
+          "default": "gams",
+          "description": "Specifies the path to the GAMS executable. Use this when GAMS is not available on the PATH or to use a specific GAMS version. Example: C:\\GAMS\\43\\gams.exe"
+        },
         "GAMS.commandLineParameters": {
           "type": "string",
           "default": "",

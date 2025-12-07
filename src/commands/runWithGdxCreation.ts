@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getGamsTerminal, getActiveGamsFileInfo } from '../utils';
+import { getActiveGamsFileInfo, parseCommandLineParameters, executeGamsTask } from '../utils';
 
 export function registerRunWithGdxCreationCommand(context: vscode.ExtensionContext) {
     let disposableRunWithGdxCreation = vscode.commands.registerCommand('gams.runWithGdxCreation', () => {
@@ -11,14 +11,12 @@ export function registerRunWithGdxCreationCommand(context: vscode.ExtensionConte
         const { filePath, dirPath, lstFilePath, gdxFilePath } = fileInfo;
         const terminalCwd: string | undefined = config.get<string>('terminalCwd');
         const commandLineParameters: string = config.get<string>('commandLineParameters', '');
+        const executablePath: string = config.get<string>('executablePath', 'gams');
 
-        const command = `gams "${filePath}" o "${lstFilePath}" gdx "${gdxFilePath}" ${commandLineParameters}`;
-
-        // Default to 'Panel' for terminal location. This could be made configurable in settings if needed.
-        const terminal = getGamsTerminal(terminalCwd || dirPath, 'Panel');
-        terminal.show(true);
-        terminal.sendText(command, true);
-
+        const cwd = terminalCwd || dirPath;
+        const args = [filePath, 'o', lstFilePath, 'gdx', gdxFilePath, ...parseCommandLineParameters(commandLineParameters)];
+        
+        executeGamsTask(executablePath, args, cwd);
     });
 
     context.subscriptions.push(disposableRunWithGdxCreation);

@@ -105,3 +105,87 @@ export function launchGamsIde(...args: string[]) {
         vscode.window.showErrorMessage("Unexpected error, check the output panel for more details.");
 	});
 }
+
+/**
+ * Parses command line parameters string into an array of arguments.
+ * Handles quoted arguments (double quotes) to preserve spaces.
+ */
+export function parseCommandLineParameters(paramsString: string): string[] {
+    if (!paramsString || paramsString.trim() === '') {
+        return [];
+    }
+    
+    const args: string[] = [];
+    const regex = /[^\s"]+|"([^"]*)"/gi;
+    let match: RegExpExecArray | null;
+    
+    while ((match = regex.exec(paramsString)) !== null) {
+        // match[1] is defined if the match was a quoted string
+        args.push(match[1] !== undefined ? match[1] : match[0]);
+    }
+    
+    return args;
+}
+
+/**
+ * Executes GAMS using VS Code Task API with ProcessExecution.
+ * This approach handles executable paths with spaces across all shells.
+ */
+export function executeGamsTask(
+    executablePath: string,
+    args: string[],
+    cwd: string
+): Thenable<vscode.TaskExecution> {
+    const execution = new vscode.ProcessExecution(executablePath, args, { cwd });
+    
+    const task = new vscode.Task(
+        { type: 'gams', task: 'GAMS' },
+        vscode.TaskScope.Workspace,
+        'GAMS',
+        'GAMS',
+        execution,
+        []
+    );
+    
+    task.presentationOptions = {
+        reveal: vscode.TaskRevealKind.Always,
+        focus: false,
+        panel: vscode.TaskPanelKind.Dedicated,
+        showReuseMessage: false,
+        clear: false
+    };
+    
+    logger.info(`Executing GAMS task: ${executablePath} ${args.join(' ')}`);
+    return vscode.tasks.executeTask(task);
+}
+
+/**
+ * Executes a batch/shell script using VS Code Task API with ShellExecution.
+ * Used for project mode with custom batch files.
+ */
+export function executeShellTask(
+    command: string,
+    cwd: string
+): Thenable<vscode.TaskExecution> {
+    const execution = new vscode.ShellExecution(command, { cwd });
+    
+    const task = new vscode.Task(
+        { type: 'gams', task: 'GAMS' },
+        vscode.TaskScope.Workspace,
+        'GAMS',
+        'GAMS',
+        execution,
+        []
+    );
+    
+    task.presentationOptions = {
+        reveal: vscode.TaskRevealKind.Always,
+        focus: false,
+        panel: vscode.TaskPanelKind.Dedicated,
+        showReuseMessage: false,
+        clear: false
+    };
+    
+    logger.info(`Executing shell task: ${command}`);
+    return vscode.tasks.executeTask(task);
+}
