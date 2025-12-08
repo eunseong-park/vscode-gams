@@ -52,25 +52,6 @@
     "configuration": {
       "title": "GAMS",
       "properties": {
-        "GAMS.terminalLocation": {
-          "type": "string",
-          "default": "Panel",
-          "enum": [
-            "Panel",
-            "Active",
-            "Beside",
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine"
-          ],
-          "description": "Determine the location of the terminal. If empty, the terminal will be opened in the default location (Panel). Possible values are Panel, Active, Beside, One, ..., Nine."
-        },
         "GAMS.terminalCwd": {
           "type": "string",
           "default": "",

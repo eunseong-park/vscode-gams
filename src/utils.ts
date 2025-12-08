@@ -23,45 +23,6 @@ export function getActiveGamsFileInfo(): GamsFileInfo | undefined {
     return { filePath, dirPath, lstFilePath, gdxFilePath };
 }
 
-export function getGamsTerminal(cwd: string, terminalLocationSetting: string): vscode.Terminal {
-    let terminal = vscode.window.terminals.find(t => t.name === "GAMS");
-
-    if (!terminal) {
-        const viewColumnMapping = {
-            "active": vscode.ViewColumn.Active,
-            "beside": vscode.ViewColumn.Beside,
-            "one": vscode.ViewColumn.One,
-            "two": vscode.ViewColumn.Two,
-            "three": vscode.ViewColumn.Three,
-            "four": vscode.ViewColumn.Four,
-            "five": vscode.ViewColumn.Five,
-            "six": vscode.ViewColumn.Six,
-            "seven": vscode.ViewColumn.Seven,
-            "eight": vscode.ViewColumn.Eight,
-            "nine": vscode.ViewColumn.Nine
-        };
-        type ViewColumnKey = keyof typeof viewColumnMapping;
-
-        let termLoc: vscode.TerminalLocation | { viewColumn: vscode.ViewColumn };
-        if (terminalLocationSetting === "Panel") {
-            termLoc = vscode.TerminalLocation.Panel;
-        } else {
-            const key = terminalLocationSetting.toLowerCase() as ViewColumnKey;
-            // Default to Beside if key is not found or terminalLocation is invalid
-            const column = viewColumnMapping[key] || vscode.ViewColumn.Beside; 
-            termLoc = { viewColumn: column };
-        }
-        
-        const terminalOptions: vscode.TerminalOptions = {
-            name: "GAMS",
-            cwd: cwd,
-            location: termLoc
-        };
-        terminal = vscode.window.createTerminal(terminalOptions);
-    }
-    return terminal;
-}
-
 export function openLstFile(document: vscode.TextDocument, preservesFocus: boolean) {
     const config = vscode.workspace.getConfiguration('GAMS');
     const listingFileLocation = config.get<string>('listingFileLocation', 'Beside');

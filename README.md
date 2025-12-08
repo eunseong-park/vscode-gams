@@ -20,7 +20,9 @@ This extension provides basic GAMS language support in Visual Studio Code, actin
 
 ## Requirements
 
-The `gams` executable must be available on your system's PATH environment variable. For example, if GAMS is installed at `C:\GAMS\45`, you would add `C:\GAMS\45` to your system's PATH.
+The `gams` executable needs to be accessible by the extension. You can achieve this in two ways:
+1.  **System PATH:** Ensure the directory containing the `gams` executable is added to your system's PATH environment variable. For example, if GAMS is installed at `C:\GAMS\45`, you would add `C:\GAMS\45` to your system's PATH.
+2.  **Extension Setting:** Alternatively, you can specify the full path to the GAMS executable in the `GAMS.executablePath` extension setting (e.g., `C:\GAMS\43\gams.exe`). This is useful if GAMS is not on your PATH or if you want to use a specific GAMS version.
 
 ## Usage
 
@@ -47,15 +49,14 @@ The GAMS extension provides intelligent code folding for better readability and 
 
 You can execute GAMS commands using the Command Palette (`Ctrl+Shift+P`), assigned keyboard shortcuts, or by clicking the corresponding icons in the editor title.
 
-*   **GAMS: Run GAMS** (`F9`): Executes the current GAMS model.
-*   **GAMS: Run GAMS with GDX creation** (`Shift+F9`): Executes the model and creates a GDX file.
-*   **GAMS: Show the GAMS listing file** (`F10`): Displays the listing file for the last run.
-*   **GAMS: Toggle Line Comment for GAMS**: Toggles line comments for the GAMS language.
-*   **GAMS: Insert a new section** (`Ctrl+Shift+R`): Inserts a new comment-based section (`*** Section Name ---`) into the active GAMS file. This command also supports inserting subsections.
-
-*   **GAMS: Toggle run project file**: Switches between running the active GAMS file or a project batch file.
-*   **GAMS: Open GAMS extension Settings**: Opens the settings for this extension.
-*   **Open GDX with GAMS IDE/Studio**: Right-click a `.gdx` file in the Explorer and select this option to open it with your configured GAMS IDE/Studio.
+*   `GAMS: Run GAMS` (`F9`): Executes the current GAMS model.
+*   `GAMS: Run GAMS with GDX creation` (`Shift+F9`): Executes the model and creates a GDX file.
+*   `GAMS: Show the GAMS listing file` (`F10`): Displays the listing file for the last run.
+*   `GAMS: Toggle Line Comment for GAMS` (`Ctrl+/`): Toggles line comments for the GAMS language.
+*   `GAMS: Insert a new section` (`Ctrl+Shift+R`): Inserts a new comment-based section (`*** Section Name ---`) into the active GAMS file.
+*   `GAMS: Toggle run project file`: Switches between running the active GAMS file or a project-specific batch file.
+*   `GAMS: Open GAMS extension Settings`: Opens the extension's settings page in VS Code.
+*   `Open GDX with GAMS IDE/Studio`: Opens a `.gdx` file using the configured GAMS IDE/Studio (available in the Explorer context menu).
 
 ## Extension Settings
 
@@ -63,8 +64,8 @@ To configure the extension, go to `File > Preferences > Settings` (or `Code > Pr
 
 Available settings:
 
+*   `GAMS.executablePath`: Specifies the path to the GAMS executable. Use this when GAMS is not available on the PATH or to use a specific GAMS version. Example: `C:\GAMS\43\gams.exe`.
 *   `GAMS.listingFileLocation`: Determine the location where the GAMS listing file should open. Possible values are `Beside`, `Active`, `One`, `Two`, `Three`, `Four`, `Five`, `Six`, `Seven`, `Eight`, `Nine`.
-*   `GAMS.terminalLocation`: Determine the location of the terminal. Possible values are `Panel`, `Active`, `Beside`, `One`, ..., `Nine`.
 *   `GAMS.terminalCwd`: Specifies the working directory for the terminal. If empty, the terminal's working directory will be the folder containing the `.gms` file.
 *   `GAMS.commandLineParameters`: Determine the command line parameters that will be passed to the GAMS executable.
 *   `GAMS.preserveFocus`: If selected, the focus remains on the active tab while the listing file is opened. Otherwise, the focus changes to the newly opened listing file.
@@ -80,7 +81,7 @@ This extension's language grammar is based on the original GAMS syntax highlight
 
 ## Author
 
-- Maintained by [eunseong-park](https://github.com/eunseong-park)
+Maintained by [eunseong-park](https://github.com/eunseong-park)
 
 ## Disclaimer
 
