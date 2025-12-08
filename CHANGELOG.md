@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.1.4] - 2025-12-08
+
+### Changed
+- `Toggle Line Comment` command now closely matches VS Code's native behavior, improving multi-selection and toggle logic.
+- GAMS execution now uses VS Code's Tasks API (`vscode.ShellExecution` for batch files and `vscode.ProcessExecution` for GAMS executable) for better integration and robustness, allowing users to specify `GAMS.executablePath` for reliable execution regardless of system PATH configuration.
+
+### Removed
+- Obsolete `GAMS.terminalLocation` setting and related internal code.
+
 ## [0.1.3] - 2025-12-04
 
 ### Changed
@@ -7,11 +16,6 @@
 - Opening GDX files is more reliable across platforms.
 - Status bar items (`GAMS Settings`, `Run Project`) only show when editing GAMS files.
 - The `Run Project` toggle now saves to the workspace settings when possible.
-- `Toggle Line Comment` command now closely matches VS Code's native behavior, improving multi-selection and toggle logic.
-- GAMS execution now uses VS Code's Tasks API (`vscode.ShellExecution` for batch files and `vscode.ProcessExecution` for GAMS executable) for better integration and robustness, allowing users to specify `GAMS.executablePath` for reliable execution regardless of system PATH configuration.
-
-### Removed
-- Obsolete `GAMS.terminalLocation` setting and related internal code.
 
 ### Fixed
 - Minor fixes and reliability improvements.
