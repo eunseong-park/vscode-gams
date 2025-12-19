@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as cp from 'child_process';
+import * as fs from 'fs';
 import { logger } from './logger';
 
 export interface GamsFileInfo {
@@ -57,12 +58,51 @@ export function openLstFile(document: vscode.TextDocument, preservesFocus: boole
 
 export function launchGamsIde(...args: string[]) {
 	const config = vscode.workspace.getConfiguration('GAMS');
-    const idePath = config.get('idePath', 'gamside');
-    logger.info('Spawning GAMS IDE/Studio process:', idePath, args.join(' '));
+    const idePathRaw = config.get('idePath', 'gamside');
+    const ideConfigArgumentsRaw = config.get('ideArguments', '');
+    
+    let idePath = idePathRaw;
+    let extraArgs: string[] = [];
+
+    // Parse the command line to separate executable from arguments
+    const tokens = parseCommandLineParameters(idePathRaw);
+    
+    if (tokens.length > 0) {
+        // Try to find the executable by combining tokens
+        let found = false;
+        let candidatePath = '';
+        
+        for (let i = 0; i < tokens.length; i++) {
+            // Reconstruct path parts - naive reconstruction assuming single spaces
+            candidatePath = tokens.slice(0, i + 1).join(' ');
+            
+            if (fs.existsSync(candidatePath)) {
+                idePath = candidatePath;
+                extraArgs = tokens.slice(i + 1);
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+             // Fallback logic
+             // If the first token looks like a command (not a path), assume it's the executable
+             // e.g. "gamside -arg"
+             // We check if it is NOT absolute path
+             if (!path.isAbsolute(tokens[0]) && tokens.length > 1) {
+                 idePath = tokens[0];
+                 extraArgs = tokens.slice(1);
+             }
+        }
+    }
+
+    const ideConfigArgs = parseCommandLineParameters(ideConfigArgumentsRaw);
+    const finalArgs = [...extraArgs, ...ideConfigArgs, ...args];
+    logger.info('Spawning GAMS IDE/Studio process:', idePath, finalArgs.join(' '));
     
     // Check if the idePath is an AppImage
     const isAppImage = idePath.endsWith('.AppImage');
-    const spawnArgs = isAppImage ? ['--appimage-extract-and-run', ...args] : args;
+    const spawnArgs = isAppImage ? ['--appimage-extract-and-run', ...finalArgs] : finalArgs;
     
     logger.info('Arguments:', JSON.stringify(spawnArgs));
     // Use spawn with detached option to allow the extension to close without killing GAMS IDE
