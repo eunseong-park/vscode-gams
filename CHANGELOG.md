@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.1] - 2026-11-05 - Pre-release
 
 ### Added
 - **GAMS: Select GAMS Installation** and a status bar item: lists the GAMS versions found (on `PATH` and in the standard folders), shows the version in use (`GAMS 54.6`, or `GAMS: not found`), and saves the choice in `gams.sysdir` for this workspace or all workspaces. The item sits with the run status item, which shows the running job while a model runs.

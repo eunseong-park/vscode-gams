@@ -2,7 +2,7 @@
   "name": "vscode-gams",
   "displayName": "GAMS",
   "description": "GAMS language support, run/compile, GDX viewer, debugger and more: a port of GAMS Studio features to VS Code (unofficial).",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "publisher": "eunseong-park",
   "license": "GPL-3.0-or-later",
   "engines": {
