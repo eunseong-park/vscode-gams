@@ -25,11 +25,18 @@ Most of the time you do nothing. The extension looks in this order:
 
 1. The setting `gams.sysdir`.
 2. A `gams` program found on your `PATH`.
-3. The newest GAMS in `/opt/gams`, in `C:\GAMS` (also `C:\GAMS\win64`), or in the macOS GAMS framework folder.
+3. The newest GAMS in one of the standard folders:
+   - Linux: `/opt/gams/...`
+   - Windows: `C:\GAMS\...` and `C:\GAMS\win64\...`
+   - macOS: `/Library/Frameworks/GAMS.framework/Versions/.../Resources`
 
-If GAMS is somewhere else, press `Ctrl+,`, search for `gams.sysdir` and enter the folder that contains `gams` (or `gams.exe`). Example: `C:\GAMS\49`.
+If GAMS is somewhere else, press `Ctrl+,`, search for `gams.sysdir` and enter the folder that contains `gams` (or `gams.exe`). Example: `C:\GAMS\49`. The path of the `gams` program itself works too.
 
 If a run fails with "No GAMS installation found", the message has a button **Open Settings**.
+
+**Several GAMS versions installed?** The extension picks the newest one, judged by the version number in the folder name (`54` before `51` before `49`). To use another version, set `gams.sysdir` to its folder.
+
+**Working over SSH, in WSL or in a container?** The extension runs on the remote machine, so it looks for GAMS there. Set `gams.sysdir` in the **Remote** tab of the Settings editor (`Ctrl+,`), so each machine keeps its own GAMS folder.
 
 ## How do I run my first model?
 

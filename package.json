@@ -658,7 +658,7 @@
           "gams.sysdir": {
             "type": "string",
             "default": "",
-            "markdownDescription": "GAMS system directory (the folder that contains `gams`/`gams.exe`; a path to the executable itself is accepted). If empty it is auto-detected: `gams` on PATH, then the newest `/opt/gams/*`, then `C:/GAMS/*` and `C:/GAMS/win64/*`."
+            "markdownDescription": "GAMS system directory (the folder that contains `gams`/`gams.exe`; a path to the executable itself is accepted). If empty it is auto-detected: `gams` on PATH, then the newest `/opt/gams/*`, `C:/GAMS/*` / `C:/GAMS/win64/*` or `/Library/Frameworks/GAMS.framework/Versions/*/Resources` (macOS). With several versions the newest is used; set this to choose another. In a remote window (SSH, WSL) set it under the Remote tab."
           },
           "gams.defaultParameters": {
             "type": "array",
