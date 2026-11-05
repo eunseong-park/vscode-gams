@@ -1209,3 +1209,54 @@ fn opt_diagnostic_names_the_missing_sysdir() {
     assert!(d[0]["message"].as_str().unwrap().contains("solver unknown"), "{d:?}");
     cl.shutdown();
 }
+
+/// `.inc` files have the language id `gams-inc` (own Explorer icon) and must get every `gams` feature.
+#[test]
+fn gams_inc_language_gets_the_gams_features() {
+    let dir = tmp_dir("gams_inc_lang");
+    let text = "Set i 'cities' / a, b /;\n$include b.inc\nParameter p(i) 'price';\np(i) = 1;\nx = (a];\nPar\n";
+    std::fs::write(dir.join("b.inc"), "Scalar s / 1 /;\n").unwrap();
+    let gms = dir.join("a.gms");
+    let inc = dir.join("a.inc");
+    let mut cl = Client::start(None);
+    cl.open(&gms, "gams", text);
+    cl.open(&inc, "gams-inc", text);
+    let pos = |l: u32, c: u32| json!({ "line": l, "character": c });
+    let whole = json!({ "start": pos(0, 0), "end": pos(99, 0) });
+    let ask = |cl: &mut Client, p: &Path| -> Vec<String> {
+        let d = tdoc(p);
+        let reqs: Vec<(&str, Value)> = vec![
+            ("textDocument/semanticTokens/full", json!({ "textDocument": d })),
+            ("textDocument/documentSymbol", json!({ "textDocument": d })),
+            ("textDocument/foldingRange", json!({ "textDocument": d })),
+            ("textDocument/documentLink", json!({ "textDocument": d })),
+            ("textDocument/hover", json!({ "textDocument": d, "position": pos(3, 0) })),
+            ("textDocument/definition", json!({ "textDocument": d, "position": pos(3, 0) })),
+            ("textDocument/completion", json!({ "textDocument": d, "position": pos(5, 3) })),
+            ("gams/matchingParenthesis", json!({ "textDocument": d, "position": pos(4, 4) })),
+            ("gams/bracketDepths", json!({ "textDocument": d, "range": whole })),
+        ];
+        reqs.into_iter()
+            .map(|(m, v)| {
+                let mut r = cl.request(m, v);
+                if let Some(o) = r.as_object_mut() {
+                    o.remove("resultId"); // a counter per response
+                }
+                r.to_string().replace(uri(p).as_str(), "<doc>")
+            })
+            .collect()
+    };
+    let a = ask(&mut cl, &gms);
+    let b = ask(&mut cl, &inc);
+    assert_eq!(a, b);
+    // the answers are real ones (an unknown language gets empty answers)
+    assert!(a[0].contains("\"data\":[") && !a[0].contains("\"data\":[]"), "{}", a[0]);
+    assert!(a[3].contains("b.inc"), "{}", a[3]);
+    assert!(a[4].contains("Parameter p"), "{}", a[4]);
+    assert!(a[6].contains("Parameter"), "{}", a[6]);
+    assert!(a[7] != "null", "{}", a[7]);
+    cl.open(&dir.join("a.ref"), "gams-ref", text);
+    let other = cl.request("gams/bracketDepths", json!({ "textDocument": tdoc(&dir.join("a.ref")), "range": whole }));
+    assert!(other.as_array().unwrap().is_empty());
+    cl.shutdown();
+}

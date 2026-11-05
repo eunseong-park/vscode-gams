@@ -7,6 +7,7 @@ import {
   docsDirOf, docsEnv, HelpRequest, HelpTarget, onlineUrl, resolveHelp, versionFromSysdir, keywordIndex, anchorExists, solverOptionNames, STUDIO_SECTION, ResolveEnv,
 } from './helpData';
 import { HelpPanel } from './helpPanel';
+import { isGamsSource } from '../languages';
 
 export interface HelpResult {
   target: HelpTarget;
@@ -70,7 +71,7 @@ export async function requestAt(doc: vscode.TextDocument, pos: vscode.Position):
   const lineText = doc.lineAt(pos.line).text;
   const w = wordAt(lineText, pos.character);
   let kind: WordKind = 'other';
-  if (w && doc.languageId === 'gams') kind = (await kindAt(doc, new vscode.Position(pos.line, w.start))) ?? guessKind(lineText, w.start);
+  if (w && isGamsSource(doc)) kind = (await kindAt(doc, new vscode.Position(pos.line, w.start))) ?? guessKind(lineText, w.start);
   let optionNames: Set<string> | undefined;
   const sd = doc.languageId === 'gams-opt' && !/\.pf$/i.test(doc.fileName) ? sysdir() : undefined;
   if (sd) optionNames = solverOptionNames(sd, solverOfOptionFile(doc.fileName));

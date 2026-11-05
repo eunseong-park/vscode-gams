@@ -17,6 +17,7 @@
   "main": "./dist/extension.js",
   "activationEvents": [
     "onLanguage:gams",
+    "onLanguage:gams-inc",
     "onLanguage:gams-opt",
     "onLanguage:gams-lst",
     "onTaskType:gams",
@@ -44,13 +45,27 @@
         ],
         "extensions": [
           ".gms",
-          ".inc",
           ".dmp"
         ],
         "configuration": "./language-configuration.json",
         "icon": {
-          "light": "./images/letter-g.png",
-          "dark": "./images/letter-g.png"
+          "light": "./images/icons/gms.svg",
+          "dark": "./images/icons/gms.svg"
+        }
+      },
+      {
+        "id": "gams-inc",
+        "aliases": [
+          "GAMS Include",
+          "gams-inc"
+        ],
+        "extensions": [
+          ".inc"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/icons/inc.svg",
+          "dark": "./images/icons/inc.svg"
         }
       },
       {
@@ -78,8 +93,8 @@
           "*.[1-9][0-9][0-9][0-9]"
         ],
         "icon": {
-          "light": "./images/letter-g.png",
-          "dark": "./images/letter-g.png"
+          "light": "./images/icons/opt.svg",
+          "dark": "./images/icons/opt.svg"
         }
       },
       {
@@ -92,14 +107,75 @@
           ".lst"
         ],
         "icon": {
-          "light": "./images/letter-g.png",
-          "dark": "./images/letter-g.png"
+          "light": "./images/icons/lst.svg",
+          "dark": "./images/icons/lst.svg"
+        }
+      },
+      {
+        "id": "gams-gdx",
+        "aliases": [
+          "GAMS Data (GDX)",
+          "gams-gdx"
+        ],
+        "extensions": [
+          ".gdx"
+        ],
+        "icon": {
+          "light": "./images/icons/gdx.svg",
+          "dark": "./images/icons/gdx.svg"
+        }
+      },
+      {
+        "id": "gams-ref",
+        "aliases": [
+          "GAMS Reference",
+          "gams-ref"
+        ],
+        "extensions": [
+          ".ref"
+        ],
+        "icon": {
+          "light": "./images/icons/ref.svg",
+          "dark": "./images/icons/ref.svg"
+        }
+      },
+      {
+        "id": "gams-lxi",
+        "aliases": [
+          "GAMS Listing Index",
+          "gams-lxi"
+        ],
+        "extensions": [
+          ".lxi"
+        ],
+        "icon": {
+          "light": "./images/icons/lxi.svg",
+          "dark": "./images/icons/lxi.svg"
+        }
+      },
+      {
+        "id": "gams-gsp",
+        "aliases": [
+          "GAMS Project",
+          "gams-gsp"
+        ],
+        "extensions": [
+          ".gsp"
+        ],
+        "icon": {
+          "light": "./images/icons/gsp.svg",
+          "dark": "./images/icons/gsp.svg"
         }
       }
     ],
     "grammars": [
       {
         "language": "gams",
+        "scopeName": "source.gams",
+        "path": "./syntaxes/gams.tmLanguage.json"
+      },
+      {
+        "language": "gams-inc",
         "scopeName": "source.gams",
         "path": "./syntaxes/gams.tmLanguage.json"
       }
@@ -356,62 +432,62 @@
       {
         "command": "gams.run",
         "key": "f9",
-        "when": "editorLangId == gams && !inDebugMode"
+        "when": "editorLangId =~ /^gams(-inc)?$/ && !inDebugMode"
       },
       {
         "command": "gams.compile",
         "key": "shift+f9",
-        "when": "editorLangId == gams && !inDebugMode"
+        "when": "editorLangId =~ /^gams(-inc)?$/ && !inDebugMode"
       },
       {
         "command": "gams.runWithOptions",
         "key": "f10",
-        "when": "editorLangId == gams && !inDebugMode"
+        "when": "editorLangId =~ /^gams(-inc)?$/ && !inDebugMode"
       },
       {
         "command": "gams.compileWithOptions",
         "key": "shift+f10",
-        "when": "editorLangId == gams && !inDebugMode"
+        "when": "editorLangId =~ /^gams(-inc)?$/ && !inDebugMode"
       },
       {
         "command": "gams.contextHelp",
         "key": "f1",
-        "when": "editorTextFocus && editorLangId =~ /^gams/ && config.gams.help.f1"
+        "when": "editorTextFocus && editorLangId =~ /^gams(-inc|-opt|-lst)?$/ && config.gams.help.f1"
       },
       {
         "command": "gams.toggleLineComment",
         "key": "ctrl+/",
         "mac": "cmd+/",
-        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+        "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^gams(-inc)?$/"
       },
       {
         "command": "gams.addLineComment",
         "key": "ctrl+k ctrl+c",
         "mac": "cmd+k cmd+c",
-        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+        "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^gams(-inc)?$/"
       },
       {
         "command": "gams.removeLineComment",
         "key": "ctrl+k ctrl+u",
         "mac": "cmd+k cmd+u",
-        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+        "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^gams(-inc)?$/"
       },
       {
         "command": "gams.toggleBlockComment",
         "key": "shift+alt+a",
-        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+        "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^gams(-inc)?$/"
       },
       {
         "command": "gams.insertNewSection",
         "key": "ctrl+shift+r",
         "mac": "cmd+shift+r",
-        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+        "when": "editorTextFocus && !editorReadonly && editorLangId =~ /^gams(-inc)?$/"
       },
       {
         "command": "gams.jumpToMatchingParenthesis",
         "key": "ctrl+b",
         "mac": "cmd+b",
-        "when": "editorTextFocus && editorLangId =~ /^gams/ && config.gams.editor.studioParentheses"
+        "when": "editorTextFocus && editorLangId =~ /^gams(-inc)?$/ && config.gams.editor.studioParentheses"
       }
     ],
     "menus": {
@@ -457,12 +533,12 @@
         },
         {
           "command": "gams.run",
-          "when": "resourceLangId == gams",
+          "when": "resourceLangId =~ /^gams(-inc)?$/",
           "group": "navigation@1"
         },
         {
           "command": "gams.compile",
-          "when": "resourceLangId == gams",
+          "when": "resourceLangId =~ /^gams(-inc)?$/",
           "group": "navigation@2"
         }
       ],
@@ -474,17 +550,17 @@
         },
         {
           "command": "gams.contextHelp",
-          "when": "editorLangId =~ /^gams/",
+          "when": "editorLangId =~ /^gams(-inc|-opt|-lst)?$/",
           "group": "gams@9"
         },
         {
           "command": "gams.toggleLineComment",
-          "when": "editorLangId == gams && !editorReadonly",
+          "when": "editorLangId =~ /^gams(-inc)?$/ && !editorReadonly",
           "group": "gams@5"
         },
         {
           "command": "gams.toggleBlockComment",
-          "when": "editorLangId == gams && !editorReadonly",
+          "when": "editorLangId =~ /^gams(-inc)?$/ && !editorReadonly",
           "group": "gams@6"
         }
       ],
@@ -511,19 +587,19 @@
         },
         {
           "command": "gams.run",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.compile",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.runWithOptions",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.compileWithOptions",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.interrupt",
@@ -535,15 +611,15 @@
         },
         {
           "command": "gams.debug",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.stepDebug",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.profile",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.debug.openSnapshot",
@@ -551,15 +627,15 @@
         },
         {
           "command": "gams.toggleLineComment",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.toggleBlockComment",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.insertNewSection",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.openInStudio",
@@ -567,11 +643,11 @@
         },
         {
           "command": "gams.addLineComment",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         },
         {
           "command": "gams.removeLineComment",
-          "when": "editorLangId == gams"
+          "when": "editorLangId =~ /^gams(-inc)?$/"
         }
       ],
       "view/title": [
@@ -1035,6 +1111,72 @@
             "keyword.other.field.mpsge.gams"
           ]
         }
+      },
+      {
+        "language": "gams-inc",
+        "scopes": {
+          "gamsDco": [
+            "keyword.control.directive.gams",
+            "punctuation.definition.directive.gams"
+          ],
+          "gamsDcoBody": [
+            "string.unquoted.argument.gams"
+          ],
+          "gamsComment": [
+            "comment.line.asterisk.gams",
+            "comment.block.gams",
+            "comment.line.double-exclamation.gams",
+            "comment.line.asterisk.mpsge.gams"
+          ],
+          "gamsTitle": [
+            "string.unquoted.title.gams"
+          ],
+          "gamsEmbedded": [
+            "support.function.embedded.gams",
+            "support.variable.system.compile-time.gams",
+            "support.constant.system.compile-time.gams",
+            "variable.other.compile-time.gams",
+            "support.variable.system.gams"
+          ],
+          "gamsAssignLabel": [
+            "variable.other.enummember.gams",
+            "string.quoted.single.gams",
+            "string.quoted.double.gams"
+          ],
+          "gamsAssignValue": [
+            "constant.numeric.gams"
+          ],
+          "gamsKeyword": [
+            "keyword.other.reserved.gams",
+            "keyword.control.solve.gams",
+            "keyword.other.solve.gams",
+            "support.type.model.gams",
+            "keyword.control.option.gams",
+            "variable.parameter.option.gams",
+            "keyword.other.put.gams",
+            "keyword.other.execute.gams",
+            "keyword.control.embedded.gams"
+          ],
+          "gamsDeclaration": [
+            "storage.type.declaration.gams"
+          ],
+          "gamsIdentifier": [
+            "variable.other.declaration.gams"
+          ],
+          "gamsDescription": [
+            "comment.block.documentation.gams",
+            "comment.line.exclamation.mpsge.gams"
+          ],
+          "gamsTableHeader": [
+            "variable.other.enummember.table-header.gams"
+          ],
+          "gamsMpsgeSection": [
+            "storage.type.section.mpsge.gams"
+          ],
+          "gamsMpsgeField": [
+            "keyword.other.field.mpsge.gams"
+          ]
+        }
       }
     ],
     "viewsContainers": {
@@ -1068,6 +1210,9 @@
     "breakpoints": [
       {
         "language": "gams"
+      },
+      {
+        "language": "gams-inc"
       }
     ],
     "debuggers": [
@@ -1075,7 +1220,8 @@
         "type": "gams",
         "label": "GAMS",
         "languages": [
-          "gams"
+          "gams",
+          "gams-inc"
         ],
         "configurationAttributes": {
           "launch": {
@@ -1154,6 +1300,10 @@
       "[gams]": {
         "editor.matchBrackets": "never",
         "editor.bracketPairColorization.enabled": false
+      },
+      "[gams-inc]": {
+        "editor.matchBrackets": "never",
+        "editor.bracketPairColorization.enabled": false
       }
     },
     "taskDefinitions": [
@@ -1219,7 +1369,7 @@
     "mocha": "^10.8.2",
     "typescript": "^5.6.3"
   },
-  "icon": "images/letter-gams.png",
+  "icon": "images/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/eunseong-park/vscode-gams.git"

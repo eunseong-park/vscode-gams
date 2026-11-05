@@ -86,6 +86,17 @@ impl Doc {
     fn is_lst(&self) -> bool {
         self.lang == "gams-lst"
     }
+    /// GAMS source code: `.gms`/`.dmp` (`gams`) and `.inc` (`gams-inc`, own language id only for its own icon).
+    fn is_gams(&self) -> bool {
+        is_gams_lang(&self.lang)
+    }
+}
+
+/// Language ids of GAMS source code; the client sends `gams-inc` for `.inc` files, which get every `gams` feature.
+const GAMS_LANGS: [&str; 2] = ["gams", "gams-inc"];
+
+fn is_gams_lang(lang: &str) -> bool {
+    GAMS_LANGS.contains(&lang)
 }
 
 /// Lazily read lines of files (open documents win over the disk) for one request.
@@ -503,7 +514,7 @@ impl Server {
     /// Opening a `.gms` loads `<stem>.ref` next to it when it is at least as new as the `.gms`.
     fn autoload_ref(&mut self, uri: &Uri) {
         let Some(path) = uri_to_path(uri) else { return };
-        if self.docs.get(uri).is_none_or(|d| d.lang != "gams") || self.refs.iter().any(|r| same_path(&r.gms, &path)) {
+        if self.docs.get(uri).is_none_or(|d| !d.is_gams()) || self.refs.iter().any(|r| same_path(&r.gms, &path)) {
             return;
         }
         let r = path.with_extension("ref");
@@ -540,7 +551,7 @@ impl Server {
     /// embedded code are prose: their words are no symbol references.
     fn is_code_at(&mut self, uri: &Uri, pos: Position, line: &str) -> bool {
         let Some(doc) = self.docs.get_mut(uri) else { return false };
-        if doc.lang != "gams" {
+        if !doc.is_gams() {
             return true;
         }
         let col = word_at(line, pos.character).map_or(pos.character, |(a, _, _)| a);
@@ -931,7 +942,7 @@ impl Server {
     fn matching_parenthesis(&mut self, p: Value) -> Res {
         let p: TextDocumentPositionParams = params(p)?;
         let Some(doc) = self.docs.get_mut(&p.text_document.uri) else { return ok(Value::Null) };
-        if doc.lang != "gams" {
+        if !doc.is_gams() {
             return ok(Value::Null);
         }
         let infos = doc.infos();
@@ -956,7 +967,7 @@ impl Server {
         }
         let p: P = params(p)?;
         let Some(doc) = self.docs.get_mut(&p.text_document.uri) else { return ok(Vec::<Value>::new()) };
-        if doc.lang != "gams" {
+        if !doc.is_gams() {
             return ok(Vec::<Value>::new());
         }
         let all = doc.brackets();
@@ -977,7 +988,7 @@ impl Server {
         let path = uri_to_path(&uri);
         let Some(doc) = self.docs.get(&uri) else { return ok(Vec::<DocumentLink>::new()) };
         if !doc.is_lst() {
-            if doc.lang != "gams" {
+            if !doc.is_gams() {
                 return ok(Vec::<DocumentLink>::new());
             }
             // `$include` & co: Ctrl+click opens the file (Studio `CodeEdit::checkLinks`)
@@ -1019,7 +1030,7 @@ impl Server {
     fn includes_on_line(&mut self, uri: &Uri, ln: u32) -> Vec<(includes::Include, PathBuf)> {
         let sp = self.search_paths(uri);
         let Some(doc) = self.docs.get_mut(uri) else { return vec![] };
-        if doc.lang != "gams" {
+        if !doc.is_gams() {
             return vec![];
         }
         let infos = doc.infos();
@@ -1101,7 +1112,7 @@ impl Server {
 
     fn completion(&mut self, p: Value) -> Res {
         let p: CompletionParams = params(p)?;
-        if self.docs.get(&p.text_document_position.text_document.uri).is_some_and(|d| d.lang == "gams") {
+        if self.docs.get(&p.text_document_position.text_document.uri).is_some_and(|d| d.is_gams()) {
             return self.gms_completion(p);
         }
         let (uri, pos) = (p.text_document_position.text_document.uri, p.text_document_position.position);

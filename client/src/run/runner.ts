@@ -15,6 +15,7 @@ import { attachRun } from './runLifecycle';
 import { beginBusy } from './busy';
 import { HRefContext, ResolvedTarget } from './logParser';
 import { editorOptions, openListing, openListingAfterRun } from '../legacy/legacyVscode';
+import { isGamsFile } from '../languages';
 
 /** A run started from a GAMS task (task provider): fixed file, output mirrored to a pseudoterminal. */
 export interface TaskRun {
@@ -247,7 +248,7 @@ export class Runner implements vscode.Disposable {
     let active = task?.file;
     if (!active) {
       const editor = vscode.window.activeTextEditor;
-      if (!editor || editor.document.languageId !== 'gams' || editor.document.uri.scheme !== 'file') {
+      if (!editor || !isGamsFile(editor.document)) {
         void vscode.window.showErrorMessage('Open a saved GAMS file (.gms) to run.');
         return;
       }

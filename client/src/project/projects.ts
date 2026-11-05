@@ -9,6 +9,7 @@ import * as vscode from 'vscode';
 import { notifyMainFile, onClientStarted } from '../lsp';
 import { GspProject, parseGsp, projectParams, samePath, writeGsp } from './gsp';
 import { findIncluders, projectMainFor, resolveMainFile } from './mainFile';
+import { isGamsFile } from '../languages';
 
 const MAIN_KEY = 'gams.mainFile';
 
@@ -102,7 +103,7 @@ export class ProjectManager implements vscode.TreeDataProvider<string>, vscode.D
     }
     const active = vscode.window.activeTextEditor?.document;
     const rem = this.remembered();
-    if (active?.uri.scheme === 'file' && active.languageId === 'gams' && rem && !wanted.has(path.normalize(active.uri.fsPath))) {
+    if (active && isGamsFile(active) && rem && !wanted.has(path.normalize(active.uri.fsPath))) {
       try {
         const text = vscode.workspace.textDocuments.find((d) => samePath(d.uri.fsPath, rem))?.getText() ?? fs.readFileSync(rem, 'utf8');
         if (findIncluders(active.uri.fsPath, [{ path: rem, text }]).length) wanted.set(path.normalize(active.uri.fsPath), rem);
@@ -121,7 +122,7 @@ export class ProjectManager implements vscode.TreeDataProvider<string>, vscode.D
 
   private updateStatus(): void {
     const ed = vscode.window.activeTextEditor;
-    if (!ed || ed.document.languageId !== 'gams' || ed.document.uri.scheme !== 'file') {
+    if (!ed || !isGamsFile(ed.document)) {
       this.status.hide();
       return;
     }

@@ -2,7 +2,7 @@
 
 ## What does the extension color?
 
-Files with `.gms`, `.inc` and `.dmp` are GAMS code. Listing files (`.lst`) and option files (`.opt`, `.op2` to `.op9`, `.pf`) have their own modes. Colors follow your VS Code theme.
+Files with `.gms`, `.inc` and `.dmp` are GAMS code. Include files (`.inc`) have their own language mode, "GAMS Include" (`gams-inc`), so that they get their own icon in the Explorer; they work exactly like `.gms` files. If you put language-specific settings under `"[gams]"` in your settings, add the same under `"[gams-inc]"` for include files. Listing files (`.lst`) and option files (`.opt`, `.op2` to `.op9`, `.pf`) have their own modes. Each GAMS file type (also `.gdx`, `.ref`, `.lxi` and `.gsp`) has its own icon in the Explorer. Colors follow your VS Code theme.
 
 Do you want the colors of GAMS Studio? Set `gams.studioColors` to `auto`, `light`, `dark`, `distinct-light`, `dracula-dark`, `solarized-light` or `solarized-dark`. `auto` picks light or dark to match your theme. Set it to `off` to go back. The extension writes color rules into your user settings and removes only its own rules again.
 

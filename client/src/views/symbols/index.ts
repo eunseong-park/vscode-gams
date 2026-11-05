@@ -6,6 +6,7 @@ import { detectSysdir } from '../../sysdir';
 import { compileForReference } from '../../run/refUpdate';
 import { CoalescedRunner } from '../../run/busy';
 import { SymbolsProvider } from './provider';
+import { isGamsFile } from '../../languages';
 
 const STALE_TEXT = 'stale (edited since last run)';
 
@@ -28,7 +29,7 @@ export function registerSymbolsView(
   };
   provider.onState();
 
-  const isGams = (d: vscode.TextDocument): boolean => d.languageId === 'gams' && d.uri.scheme === 'file';
+  const isGams = (d: vscode.TextDocument): boolean => isGamsFile(d);
   const refreshFor = (ed: vscode.TextEditor | undefined): void => {
     if (ed && isGams(ed.document)) void provider.refresh(ed.document.uri);
   };

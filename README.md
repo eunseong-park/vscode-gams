@@ -1,4 +1,4 @@
-# GAMS for VS Code
+<h1><img src="images/banner.png" alt="GAMS for VS Code" width="800"></h1>
 
 Edit, run, debug and inspect GAMS models in Visual Studio Code. Includes a GDX viewer, an outline, help on `F1` and many features known from GAMS Studio.
 

@@ -8,6 +8,7 @@ import * as vscode from 'vscode';
 import { requireSysdir } from '../sysdirUi';
 import { terminalCwdSetting } from '../legacy/legacyVscode';
 import { runWorkDir } from '../legacy/legacy';
+import { isGamsSource } from '../languages';
 
 export interface ResolvedRunTarget {
   main: string;
@@ -35,7 +36,7 @@ export function setTargetResolver(fn: TargetResolver | undefined, isProjectFile?
 export async function saveAllDirty(): Promise<boolean> {
   for (const d of vscode.workspace.textDocuments) {
     if (!d.isDirty || d.uri.scheme !== 'file') continue;
-    if (d.languageId === 'gams' || projectFileTest?.(d.uri.fsPath) || /\.(gms|inc|dmp|gsp)$/i.test(d.uri.fsPath)) {
+    if (isGamsSource(d) || projectFileTest?.(d.uri.fsPath) || /\.(gms|inc|dmp|gsp)$/i.test(d.uri.fsPath)) {
       if (!(await d.save())) {
         void vscode.window.showWarningMessage(`Couldn't save file ${d.uri.fsPath}`);
         return false;

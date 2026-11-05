@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { helpHoverMiddleware } from './help/hover';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node';
+import { gamsSelector } from './languages';
 
 let client: LanguageClient | undefined;
 const refUpdated = new vscode.EventEmitter<vscode.Uri>();
@@ -86,8 +87,8 @@ export async function startLanguageClient(
   const serverOptions: ServerOptions = { command: bin, args: [], transport: TransportKind.stdio };
   const clientOptions: LanguageClientOptions = {
     documentSelector: [
-      { scheme: 'file', language: 'gams' },
-      { scheme: 'untitled', language: 'gams' },
+      ...gamsSelector('file'),
+      ...gamsSelector('untitled'),
       { scheme: 'file', language: 'gams-lst' },
       { scheme: 'file', language: 'gams-opt' },
       { scheme: 'untitled', language: 'gams-opt' },

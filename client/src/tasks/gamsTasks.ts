@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { Runner } from '../run/runner';
 import { GamsTaskDef, resolveTaskDef } from './taskDef';
+import { isGamsFile } from '../languages';
 
 class GamsPty implements vscode.Pseudoterminal {
   private readonly writeEmitter = new vscode.EventEmitter<string>();
@@ -53,7 +54,7 @@ class GamsPty implements vscode.Pseudoterminal {
 
 function activeGamsFile(): string | undefined {
   const d = vscode.window.activeTextEditor?.document;
-  return d && d.languageId === 'gams' && d.uri.scheme === 'file' ? d.uri.fsPath : undefined;
+  return d && isGamsFile(d) ? d.uri.fsPath : undefined;
 }
 
 function makeTask(runner: Runner, def: GamsTaskDef, scope: vscode.WorkspaceFolder | vscode.TaskScope, name: string): vscode.Task {

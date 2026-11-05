@@ -16,6 +16,7 @@ import { beginBusy } from '../run/busy';
 import { sharedDiagnostics } from '../run/diagnostics';
 import { OutputBatcher } from '../run/outputBatcher';
 import { prepareRun } from '../run/prepare';
+import { gamsSelector, isGamsFile } from '../languages';
 
 export class ProfileController implements vscode.Disposable {
   private run?: ProfileRun;
@@ -37,7 +38,7 @@ export class ProfileController implements vscode.Disposable {
       vscode.commands.registerCommand('gams.profile.summary', () => this.showSummary()),
       vscode.commands.registerCommand('gams.profile.clear', () => this.clear()),
       vscode.window.onDidChangeVisibleTextEditors(() => this.decorateAll()),
-      vscode.languages.registerHoverProvider({ language: 'gams' }, { provideHover: (d, p) => this.hover(d, p) }),
+      vscode.languages.registerHoverProvider(gamsSelector(), { provideHover: (d, p) => this.hover(d, p) }),
     );
   }
 
@@ -65,7 +66,7 @@ export class ProfileController implements vscode.Disposable {
 
   private async profileInner(): Promise<void> {
     const ed = vscode.window.activeTextEditor;
-    if (!ed || ed.document.languageId !== 'gams' || ed.document.uri.scheme !== 'file') {
+    if (!ed || !isGamsFile(ed.document)) {
       void vscode.window.showErrorMessage('Open a saved GAMS file (.gms) to profile.');
       return;
     }

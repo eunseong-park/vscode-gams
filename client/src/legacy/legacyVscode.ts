@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { legacyCwd, legacyProjectFile, legacyRunMode, LegacySettings, editorOpenOptions } from './legacy';
+import { isGamsSource } from '../languages';
 
 type Inspected<T> = { globalValue?: T; workspaceValue?: T; workspaceFolderValue?: T } | undefined;
 /** Value set by the user (folder > workspace > user); defaults are ignored. */
@@ -108,7 +109,7 @@ export function registerLegacy(): vscode.Disposable[] {
     const rp = readLegacy().runProject;
     status.text = `$(checklist) Run Project: ${rp === true ? 'On' : 'Off'}`;
     const ed = vscode.window.activeTextEditor;
-    if (rp !== undefined && ed && ed.document.languageId === 'gams') status.show();
+    if (rp !== undefined && ed && isGamsSource(ed.document)) status.show();
     else status.hide();
   };
   update();

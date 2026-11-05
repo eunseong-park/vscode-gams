@@ -3,10 +3,11 @@
 import * as vscode from 'vscode';
 import type { HoverMiddleware } from 'vscode-languageclient';
 import { hasDocTarget } from './contextHelp';
+import { isGamsSource } from '../languages';
 
 export const helpHoverMiddleware: HoverMiddleware['provideHover'] = async (document, position, token, next) => {
   const hover = await next(document, position, token);
-  if (!hover || document.languageId !== 'gams') return hover;
+  if (!hover || !isGamsSource(document)) return hover;
   try {
     if (!(await hasDocTarget(document, position))) return hover;
     const args = encodeURIComponent(JSON.stringify([{ uri: document.uri.toString(), line: position.line, character: position.character }]));

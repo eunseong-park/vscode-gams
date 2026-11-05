@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import type { LanguageClient } from 'vscode-languageclient/node';
 import { batchVisibleLines, BracketDepth, covered, groupByType, LineSpan, RangeJson, THEME_COLOR_IDS } from './bracketColorsCore';
 import { VersionedDebounce } from './parenthesesCore';
+import { isGamsSource } from '../languages';
 
 const DELAY_MS = 80;
 const MARGIN_LINES = 60;
@@ -61,7 +62,7 @@ export function registerBracketColors(getClient: () => LanguageClient | undefine
   };
 
   const update = (editor: vscode.TextEditor | undefined, force = false): void => {
-    if (!editor || editor.document.languageId !== 'gams') return;
+    if (!editor || !isGamsSource(editor.document)) return;
     if (!enabled()) {
       clear(editor);
       return;

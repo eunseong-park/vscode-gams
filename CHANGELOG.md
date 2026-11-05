@@ -4,10 +4,13 @@
 
 ### Added
 - **GAMS: Select GAMS Installation** and a status bar item: lists the GAMS versions found (on `PATH` and in the standard folders), shows the version in use (`GAMS 54.6`, or `GAMS: not found`), and saves the choice in `gams.sysdir` for this workspace or all workspaces. The item sits with the run status item, which shows the running job while a model runs.
+- New icon set: a new Marketplace icon and an own Explorer icon for every GAMS file type (`.gms`, `.inc`, `.opt`, `.lst`, `.gdx`, `.ref`, `.lxi`, `.gsp`); source files are orange, generated files dark.
+- Icon-only languages `gams-gdx` (GAMS Data (GDX), `.gdx`), `gams-ref` (GAMS Reference, `.ref`), `gams-lxi` (GAMS Listing Index, `.lxi`) and `gams-gsp` (GAMS Project, `.gsp`), so these files get their icons. `.gdx` still opens in the GDX viewer.
 
 ### Changed
 - Documentation: new section on where the extension looks for GAMS and how to set it.
 - GitHub workflows use Node 22.
+- `.inc` files now have their own language id `gams-inc` ("GAMS Include"), for their own icon. They keep every feature of `gams` (highlighting, language server, run/compile, debugger, commands and keybindings). Language-specific settings under `"[gams]"` no longer apply to `.inc` files: add them under `"[gams-inc]"` as well. A `files.associations` entry that maps a pattern to `gams` still works (that file gets language `gams`).
 
 ## [0.3.0] - Pre-release: rebuilt from scratch as a port of GAMS Studio
 

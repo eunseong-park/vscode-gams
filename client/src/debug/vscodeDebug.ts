@@ -15,6 +15,7 @@ import { beginBusy } from '../run/busy';
 import { sharedDiagnostics } from '../run/diagnostics';
 import { prepareRun } from '../run/prepare';
 import { GamsDebugSession, GamsLaunchArguments, GdxAccess } from './debugSession';
+import { isGamsFile, isGamsSource } from '../languages';
 
 export const DEBUG_TYPE = 'gams';
 const GDX_VIEW_TYPE = 'gams.gdxViewer';
@@ -85,7 +86,7 @@ class ConfigProvider implements vscode.DebugConfigurationProvider {
   async resolveDebugConfiguration(_f: vscode.WorkspaceFolder | undefined, config: vscode.DebugConfiguration): Promise<vscode.DebugConfiguration | undefined> {
     if (!config.type && !config.request && !config.name) {
       const ed = vscode.window.activeTextEditor;
-      if (ed?.document.languageId !== 'gams') return config; // VS Code shows launch.json creation
+      if (!isGamsSource(ed?.document)) return config; // VS Code shows launch.json creation
       config = { type: DEBUG_TYPE, request: 'launch', name: 'GAMS: Debug current file', program: '${file}' };
     }
     return config;
@@ -124,7 +125,7 @@ class ConfigProvider implements vscode.DebugConfigurationProvider {
 
 async function startDebug(stopOnEntry: boolean): Promise<void> {
   const ed = vscode.window.activeTextEditor;
-  if (!ed || ed.document.languageId !== 'gams' || ed.document.uri.scheme !== 'file') {
+  if (!ed || !isGamsFile(ed.document)) {
     void vscode.window.showErrorMessage('Open a saved GAMS file (.gms) to debug.');
     return;
   }

@@ -13,6 +13,7 @@ import { requireSysdir } from '../sysdirUi';
 import { DEFAULT_NEOS_URL } from './neosClient';
 import { NeosJob, NeosResult } from './neosJob';
 import { NEOS_TERMS_URL, NeosPriority, maySkipConfirmation, userSetting, validateEmail } from './neosParams';
+import { isGamsFile } from '../languages';
 
 const KEY_TERMS = 'gams.neos.termsAccepted';
 /** The server URL for which "don't ask again" was chosen (the older boolean key is ignored: it was not bound to a server). */
@@ -76,7 +77,7 @@ export function registerNeos(context: vscode.ExtensionContext, runner: Runner): 
 
 export async function runNeos(context: vscode.ExtensionContext, runner: Runner): Promise<void> {
   const editor = vscode.window.activeTextEditor;
-  if (!editor || editor.document.languageId !== 'gams' || editor.document.uri.scheme !== 'file') {
+  if (!editor || !isGamsFile(editor.document)) {
     void vscode.window.showErrorMessage('Open a saved GAMS file (.gms) to run on NEOS.');
     return;
   }

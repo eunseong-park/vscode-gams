@@ -15,8 +15,20 @@ suite('Activation and language ids', () => {
   });
 
   test('language ids by extension', async () => {
-    const ids: Array<[string, string]> = [['mini.gms', 'gams'], ['mini_data.inc', 'gams'], ['mini.lst', 'gams-lst'], ['cplex.opt', 'gams-opt']];
+    const ids: Array<[string, string]> = [
+      ['mini.gms', 'gams'], ['mini_data.inc', 'gams-inc'], ['mini.lst', 'gams-lst'], ['cplex.opt', 'gams-opt'],
+      ['mini.ref', 'gams-ref'], ['mini.lxi', 'gams-lxi'],
+    ];
     for (const [f, id] of ids) assert.strictEqual((await vscode.workspace.openTextDocument(file(f))).languageId, id, f);
+    const all = await vscode.languages.getLanguages();
+    for (const id of ['gams', 'gams-inc', 'gams-opt', 'gams-lst', 'gams-gdx', 'gams-ref', 'gams-lxi', 'gams-gsp']) assert.ok(all.includes(id), id);
+  });
+
+  test('.gdx opens in the GDX viewer by default', async () => {
+    await vscode.commands.executeCommand('vscode.open', file('mini.gdx'));
+    const tab = await waitFor('gdx tab', () => vscode.window.tabGroups.all.flatMap((g) => g.tabs).find((t) => t.input instanceof vscode.TabInputCustom && t.input.uri.fsPath.endsWith('mini.gdx')));
+    assert.strictEqual((tab.input as vscode.TabInputCustom).viewType, 'gams.gdxViewer');
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
   });
 
   test('.gdx opens in the custom editor', async () => {

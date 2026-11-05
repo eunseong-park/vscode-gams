@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import type { LanguageClient } from 'vscode-languageclient/node';
 import { getTheme } from '../theme/studioColors';
 import { jumpTarget, MatchResponse, ParenColors, pickParenColors, VersionedDebounce } from './parenthesesCore';
+import { isGamsSource } from '../languages';
 
 const DELAY_MS = 50;
 
@@ -49,7 +50,7 @@ export function registerParentheses(getClient: () => LanguageClient | undefined)
 
   const request = async (editor: vscode.TextEditor): Promise<MatchResponse | null> => {
     const client = getClient();
-    if (!client || editor.document.languageId !== 'gams') return null;
+    if (!client || !isGamsSource(editor.document)) return null;
     try {
       return await client.sendRequest<MatchResponse | null>('gams/matchingParenthesis', {
         textDocument: { uri: editor.document.uri.toString() },
@@ -71,7 +72,7 @@ export function registerParentheses(getClient: () => LanguageClient | undefined)
 
   const update = (editor: vscode.TextEditor | undefined): void => {
     if (!editor) return;
-    if (!enabled() || editor.document.languageId !== 'gams') {
+    if (!enabled() || !isGamsSource(editor.document)) {
       apply(editor, [], []);
       return;
     }
