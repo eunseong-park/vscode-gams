@@ -1,0 +1,94 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test
+
+  rust:
+    # gams-capi loads the GAMS libraries at runtime (libloading) and GDX is pure Rust (gdx-rs), so
+    # the whole workspace builds and tests without GAMS. Tests that need an installation skip.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server
+      - run: cargo build --manifest-path server/Cargo.toml --workspace --all-targets
+      - run: cargo clippy --manifest-path server/Cargo.toml --workspace --all-targets
+      # GDX files are read by the pure Rust crate gdx-rs, so all tests run without GAMS; tests
+      # that need an installation (opt library) skip at runtime with a note.
+      - run: cargo test --manifest-path server/Cargo.toml --workspace -- --nocapture
+      # Oracle tests against the GDX C library of a GAMS installation (self-hosted runner with
+      # GAMS_SYSDIR set); they also skip at runtime when the library is missing.
+      - name: GDX oracle tests (need GAMS)
+        run: |
+          if [ -n "$GAMS_SYSDIR" ] && [ -d "$GAMS_SYSDIR" ]; then
+            cargo test --release --manifest-path server/Cargo.toml -p gdx-rs -p gams-gdx --features gdx-rs/capi-oracle,gams-gdx/capi-oracle -- --nocapture
+          else
+            echo "SKIP: GAMS_SYSDIR not set/found; skipping the GDX C library oracle tests"
+          fi
+      - run: cargo clippy --manifest-path server/Cargo.toml -p gdx-rs -p gams-gdx --all-targets --features gdx-rs/capi-oracle,gams-gdx/capi-oracle
+
+  macos:
+    # Apple silicon runner; also cross-builds the Intel server. Nothing here needs GAMS.
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: cargo test --manifest-path server/Cargo.toml --workspace -- --nocapture
+      - run: cargo build --release --manifest-path server/Cargo.toml -p gams-lsp --target aarch64-apple-darwin
+      - run: cargo build --release --manifest-path server/Cargo.toml -p gams-lsp --target x86_64-apple-darwin
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: cargo test --manifest-path server/Cargo.toml --workspace -- --nocapture
+      - run: cargo build --release --manifest-path server/Cargo.toml -p gams-lsp
+
+  # TODO: packaging with a GAMS install (a license is needed for anything that runs `gams`).
+  # The offline GAMS docs only point at https://www.gams.com/download/ (no stable direct
+  # download URL is documented), so no download step is hard-coded here.

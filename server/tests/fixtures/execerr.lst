@@ -1,0 +1,40 @@
+-  Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+
+
+*** [removed]
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:25:04 Page 2
+Exec error + odd chars
+C o m p i l a t i o n
+
+
+   2  Scalar z /0/, y;
+   5  y = 1/z;
+   6  Display y;
+   7  abort$(y=y) "custom abort message";
+
+
+COMPILATION TIME     =        0.000 SECONDS      2 MB  54.6.1 20a39885 LEX-LEG
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:25:04 Page 3
+Exec error + odd chars
+E x e c u t i o n
+
+
+**** Exec Error at line 5: division by zero (0)
+
+----      6 PARAMETER y                    =         UNDF  
+
+----      7 custom abort message
+**** Exec Error at line 7: Execution halted: abort$1 'custom abort message'
+
+
+*** [removed]
+*** [removed]
+
+
+**** FILE SUMMARY
+
+Input      /work/execerr.gms
+Output     /work/execerr.lst
+
+**** USER ERROR(S) ENCOUNTERED

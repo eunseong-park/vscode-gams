@@ -1,0 +1,216 @@
+1 138 d SETS declared 6 6 5 0 1 /work/mini.gms
+2 138 d SETS defined 6 6 15 0 1 /work/mini.gms
+3 139 s SETS declared 7 7 5 0 1 /work/mini.gms
+4 139 s SETS defined 7 7 15 0 1 /work/mini.gms
+5 140 stock PARAMETERS declared 10 10 9 0 1 /work/mini.gms
+6 138 d SETS ref 10 10 11 0 1 /work/mini.gms
+7 140 stock PARAMETERS defined 10 10 31 0 1 /work/mini.gms
+8 141 need PARAMETERS declared 11 11 8 0 1 /work/mini.gms
+9 139 s SETS ref 11 11 10 0 1 /work/mini.gms
+10 141 need PARAMETERS defined 11 11 31 0 1 /work/mini.gms
+11 142 fee PARAMETERS declared 13 13 10 0 1 /work/mini.gms
+12 138 d SETS ref 13 13 12 0 1 /work/mini.gms
+13 139 s SETS ref 13 13 14 0 1 /work/mini.gms
+14 142 fee PARAMETERS defined 13 13 31 0 1 /work/mini.gms
+15 143 flow VARIABLES declared 19 19 8 0 1 /work/mini.gms
+16 138 d SETS ref 19 19 10 0 1 /work/mini.gms
+17 139 s SETS ref 19 19 12 0 1 /work/mini.gms
+18 144 total VARIABLES declared 20 20 9 0 1 /work/mini.gms
+19 143 flow VARIABLES ref 21 21 23 0 1 /work/mini.gms
+20 145 obj EQUATIONS declared 24 24 7 0 1 /work/mini.gms
+21 146 cap EQUATIONS declared 25 25 7 0 1 /work/mini.gms
+22 138 d SETS ref 25 25 9 0 1 /work/mini.gms
+23 147 dem EQUATIONS declared 26 26 7 0 1 /work/mini.gms
+24 139 s SETS ref 26 26 9 0 1 /work/mini.gms
+25 145 obj EQUATIONS defined 28 28 14 0 1 /work/mini.gms
+26 144 total VARIABLES ref 28 28 14 0 1 /work/mini.gms
+27 138 d SETS control 28 28 26 0 1 /work/mini.gms
+28 139 s SETS control 28 28 28 0 1 /work/mini.gms
+29 142 fee PARAMETERS ref 28 28 33 0 1 /work/mini.gms
+30 138 d SETS ref 28 28 36 0 1 /work/mini.gms
+31 139 s SETS ref 28 28 38 0 1 /work/mini.gms
+32 143 flow VARIABLES ref 28 28 43 0 1 /work/mini.gms
+33 138 d SETS ref 28 28 46 0 1 /work/mini.gms
+34 139 s SETS ref 28 28 48 0 1 /work/mini.gms
+35 138 d SETS control 29 29 7 0 1 /work/mini.gms
+36 146 cap EQUATIONS defined 29 29 13 0 1 /work/mini.gms
+37 139 s SETS control 29 29 16 0 1 /work/mini.gms
+38 143 flow VARIABLES ref 29 29 21 0 1 /work/mini.gms
+39 138 d SETS ref 29 29 24 0 1 /work/mini.gms
+40 139 s SETS ref 29 29 26 0 1 /work/mini.gms
+41 140 stock PARAMETERS ref 29 29 37 0 1 /work/mini.gms
+42 138 d SETS ref 29 29 40 0 1 /work/mini.gms
+43 139 s SETS control 30 30 7 0 1 /work/mini.gms
+44 147 dem EQUATIONS defined 30 30 13 0 1 /work/mini.gms
+45 138 d SETS control 30 30 16 0 1 /work/mini.gms
+46 143 flow VARIABLES ref 30 30 21 0 1 /work/mini.gms
+47 138 d SETS ref 30 30 24 0 1 /work/mini.gms
+48 139 s SETS ref 30 30 26 0 1 /work/mini.gms
+49 141 need PARAMETERS ref 30 30 36 0 1 /work/mini.gms
+50 139 s SETS ref 30 30 39 0 1 /work/mini.gms
+51 148 ship MODELS declared 32 32 11 0 1 /work/mini.gms
+52 148 ship MODELS defined 32 32 12 0 1 /work/mini.gms
+53 145 obj EQUATIONS ref 32 32 17 0 1 /work/mini.gms
+54 146 cap EQUATIONS ref 32 32 17 0 1 /work/mini.gms
+55 147 dem EQUATIONS ref 32 32 17 0 1 /work/mini.gms
+56 148 ship MODELS ref 33 33 11 0 1 /work/mini.gms
+57 144 total VARIABLES ref 33 33 37 0 1 /work/mini.gms
+58 147 dem EQUATIONS impl-asn 33 33 38 0 1 /work/mini.gms
+59 146 cap EQUATIONS impl-asn 33 33 38 0 1 /work/mini.gms
+60 143 flow VARIABLES impl-asn 33 33 38 0 1 /work/mini.gms
+61 144 total VARIABLES impl-asn 33 33 38 0 1 /work/mini.gms
+62 145 obj EQUATIONS impl-asn 33 33 38 0 1 /work/mini.gms
+63 148 ship MODELS impl-asn 33 33 38 0 1 /work/mini.gms
+64 143 flow VARIABLES ref 34 34 15 0 1 /work/mini.gms
+65 144 total VARIABLES ref 34 34 24 0 1 /work/mini.gms
+0 148 size of symboltable
+1 mapval 1 FUNCT 0 0 
+2 ceil 1 FUNCT 0 0 
+3 floor 1 FUNCT 0 0 
+4 round 1 FUNCT 0 0 
+5 mod 1 FUNCT 0 0 
+6 trunc 1 FUNCT 0 0 
+7 sign 1 FUNCT 0 0 
+8 min 1 FUNCT 0 0 
+9 max 1 FUNCT 0 0 
+10 sqr 1 FUNCT 0 0 
+11 exp 1 FUNCT 0 0 
+12 log 1 FUNCT 0 0 
+13 log10 1 FUNCT 0 0 
+14 sqrt 1 FUNCT 0 0 
+15 abs 1 FUNCT 0 0 
+16 cos 1 FUNCT 0 0 
+17 sin 1 FUNCT 0 0 
+18 arctan 1 FUNCT 0 0 
+19 errorf 1 FUNCT 0 0 
+20 uniform 1 FUNCT 0 0 
+21 normal 1 FUNCT 0 0 
+22 power 1 FUNCT 0 0 
+23 jdate 1 FUNCT 0 0 
+24 jtime 1 FUNCT 0 0 
+25 jstart 1 FUNCT 0 0 
+26 jnow 1 FUNCT 0 0 
+27 execerror 1 FUNCT 0 0 
+28 gyear 1 FUNCT 0 0 
+29 gmonth 1 FUNCT 0 0 
+30 gday 1 FUNCT 0 0 
+31 gdow 1 FUNCT 0 0 
+32 gleap 1 FUNCT 0 0 
+33 ghour 1 FUNCT 0 0 
+34 gminute 1 FUNCT 0 0 
+35 gsecond 1 FUNCT 0 0 
+36 execseed 1 FUNCT 0 0 
+37 timestart 1 FUNCT 0 0 
+38 timecomp 1 FUNCT 0 0 
+39 timeexec 1 FUNCT 0 0 
+40 timeclose 1 FUNCT 0 0 
+41 frac 1 FUNCT 0 0 
+42 ErrorLevel 1 FUNCT 0 0 
+43 HeapSize 1 FUNCT 0 0 
+44 Fact 1 FUNCT 0 0 
+45 UniformInt 1 FUNCT 0 0 
+46 PI 1 FUNCT 0 0 
+47 NcpF 1 FUNCT 0 0 
+48 NcpCM 1 FUNCT 0 0 
+49 Entropy 1 FUNCT 0 0 
+50 Sigmoid 1 FUNCT 0 0 
+51 log2 1 FUNCT 0 0 
+52 bool_not 1 FUNCT 0 0 
+53 bool_and 1 FUNCT 0 0 
+54 bool_or 1 FUNCT 0 0 
+55 bool_xor 1 FUNCT 0 0 
+56 bool_imp 1 FUNCT 0 0 
+57 bool_eqv 1 FUNCT 0 0 
+58 rel_eq 1 FUNCT 0 0 
+59 rel_gt 1 FUNCT 0 0 
+60 rel_ge 1 FUNCT 0 0 
+61 rel_lt 1 FUNCT 0 0 
+62 rel_le 1 FUNCT 0 0 
+63 rel_ne 1 FUNCT 0 0 
+64 IfThen 1 FUNCT 0 0 
+65 rPower 1 FUNCT 0 0 
+66 EDist 1 FUNCT 0 0 
+67 div 1 FUNCT 0 0 
+68 div0 1 FUNCT 0 0 
+69 sllog10 1 FUNCT 0 0 
+70 sqlog10 1 FUNCT 0 0 
+71 slexp 1 FUNCT 0 0 
+72 sqexp 1 FUNCT 0 0 
+73 slrec 1 FUNCT 0 0 
+74 sqrec 1 FUNCT 0 0 
+75 cvPower 1 FUNCT 0 0 
+76 vcPower 1 FUNCT 0 0 
+77 Centropy 1 FUNCT 0 0 
+78 Gmillisec 1 FUNCT 0 0 
+79 MaxExecError 1 FUNCT 0 0 
+80 TimeElapsed 1 FUNCT 0 0 
+81 Gamma 1 FUNCT 0 0 
+82 LogGamma 1 FUNCT 0 0 
+83 Beta 1 FUNCT 0 0 
+84 LogBeta 1 FUNCT 0 0 
+85 GammaReg 1 FUNCT 0 0 
+86 BetaReg 1 FUNCT 0 0 
+87 sinh 1 FUNCT 0 0 
+88 cosh 1 FUNCT 0 0 
+89 tanh 1 FUNCT 0 0 
+90 MathLastRC 1 FUNCT 0 0 
+91 MathLastEC 1 FUNCT 0 0 
+92 MathOVal 1 FUNCT 0 0 
+93 SignPower 1 FUNCT 0 0 
+94 HandleStatus 1 FUNCT 0 0 
+95 NcpVUsin 1 FUNCT 0 0 
+96 NcpVUpow 1 FUNCT 0 0 
+97 Binomial 1 FUNCT 0 0 
+98 HandleSubmit 1 FUNCT 0 0 
+99 GamsVersion 1 FUNCT 0 0 
+100 HandleDelete 1 FUNCT 0 0 
+101 tan 1 FUNCT 0 0 
+102 arccos 1 FUNCT 0 0 
+103 arcsin 1 FUNCT 0 0 
+104 arctan2 1 FUNCT 0 0 
+105 sleep 1 FUNCT 0 0 
+106 HeapFree 1 FUNCT 0 0 
+107 HandleCollect 1 FUNCT 0 0 
+108 GamsRelease 1 FUNCT 0 0 
+109 Poly 1 FUNCT 0 0 
+110 LicenseStatus 1 FUNCT 0 0 
+111 LicenseLevel 1 FUNCT 0 0 
+112 HeapLimit 1 FUNCT 0 0 
+113 RandLinear 1 FUNCT 0 0 
+114 RandTriangle 1 FUNCT 0 0 
+115 ForceError 1 FUNCT 0 0 
+116 ForceErrorCnt 1 FUNCT 0 0 
+117 RandBinomial 1 FUNCT 0 0 
+118 JobHandle 1 FUNCT 0 0 
+119 JobStatus 1 FUNCT 0 0 
+120 JobKill 1 FUNCT 0 0 
+121 JobTerminate 1 FUNCT 0 0 
+122 NumCores 1 FUNCT 0 0 
+123 EmbeddedHandle 1 FUNCT 0 0 
+124 PlatformCode 1 FUNCT 0 0 
+125 Logit 1 FUNCT 0 0 
+126 LSEMax 1 FUNCT 0 0 
+127 LSEMaxSc 1 FUNCT 0 0 
+128 LSEMin 1 FUNCT 0 0 
+129 LSEMinSc 1 FUNCT 0 0 
+130  unknown* 1 FUNCT 0 0 
+131 SameAs 10 PRED 2 0 0 0 
+132 Diag 10 PRED 2 0 0 0 
+133 Solvers 10 PRED 1 0 0 
+134 LicenseCodes 10 PRED 1 0 0 
+135 SolverCapabilities 10 PRED 2 0 0 0 
+136 SortedUels 10 PRED 2 0 0 0 
+137 FILE 8 FILE 0 0 Current file name for FILE.xxx use
+138 d 2 SET 1 2 0 depots
+139 s 2 SET 1 2 0 shops
+140 stock 4 PARAM 1 2 138 units available
+141 need 4 PARAM 1 2 139 units wanted
+142 fee 4 PARAM 2 4 138 139 cost per unit
+143 flow 5 VAR 2 0 138 139 units shipped
+144 total 5 VAR 0 0 total cost
+145 obj 6 EQU 0 0 cost definition
+146 cap 6 EQU 1 0 138 depot capacity
+147 dem 6 EQU 1 0 139 shop demand
+148 ship 7 MODEL 0 3 
+0 1 size of input files
+1 1 INPUT      0 0 /work/mini.gms

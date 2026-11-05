@@ -1,0 +1,68 @@
+-  Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+
+
+*** [removed]
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:02 Page 2
+Mini Shipping Problem, error variant
+C o m p i l a t i o n
+
+
+   2  Sets
+   3     d 'depots' / north, south /
+   4     s 'shops'  / east, west /;
+INCLUDE    /work/mini_err_inc.inc
+   6  * include with an error
+   7  Parameter bad(d) / north 1, nowhere 2 /;
+****                                    $170
+**** LINE      2 INCLUDE     /work/mini_err_inc.inc
+**** LINE      5 INPUT       /work/mini_err.gms
+**** 170  Domain violation for element
+   8  scalar q; q = undefd + 1;
+****                     $140
+**** LINE      3 INCLUDE     /work/mini_err_inc.inc
+**** LINE      5 INPUT       /work/mini_err.gms
+**** 140  Unknown symbol
+   9  Parameter stock(d) / north 90, south 60 /;
+  10  Variables x;
+  11  Equation e;
+  12  e.. x =e= stock('north') + missing;
+****                                   $140
+**** LINE      9 INPUT       /work/mini_err.gms
+**** 140  Unknown symbol
+  13  Model m / e /;
+  14  Solve m using lp minimizing x;
+****                               $257
+**** LINE     11 INPUT       /work/mini_err.gms
+**** 257  Solve statement not checked because of previous errors
+  15  $include does_not_exist.inc
+****                            $282
+**** LINE     12 INPUT       /work/mini_err.gms
+**** 282  Unable to open include file
+****         Hint: Does the filename need to be quoted?
+
+**** 5 ERROR(S)   0 WARNING(S)
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:02 Page 3
+Mini Shipping Problem, error variant
+Include File Summary
+
+
+   SEQ   GLOBAL TYPE      PARENT   LOCAL  INCLVL  FILENAME
+
+     1        1 INPUT          0       0       0  /work/mini_err.gms
+     2        5 INCLUDE        1       5       1  /work/mini_err_inc.inc
+
+
+COMPILATION TIME     =        0.001 SECONDS      3 MB  54.6.1 20a39885 LEX-LEG
+
+
+*** [removed]
+*** [removed]
+
+
+**** FILE SUMMARY
+
+Input      /work/mini_err.gms
+Output     /work/mini_err.lst
+
+**** USER ERROR(S) ENCOUNTERED

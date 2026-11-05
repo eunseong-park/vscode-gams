@@ -1,0 +1,1239 @@
+{
+  "name": "vscode-gams",
+  "displayName": "GAMS",
+  "description": "GAMS language support, run/compile, GDX viewer, debugger and more: a port of GAMS Studio features to VS Code (unofficial).",
+  "version": "0.3.0",
+  "publisher": "eunseong-park",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Debuggers",
+    "Data Science",
+    "Visualization"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:gams",
+    "onLanguage:gams-opt",
+    "onLanguage:gams-lst",
+    "onTaskType:gams",
+    "workspaceContains:**/*.connect.{yaml,yml}"
+  ],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "gams.gdxViewer",
+        "displayName": "GDX Viewer",
+        "priority": "default",
+        "selector": [
+          {
+            "filenamePattern": "*.gdx"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "gams",
+        "aliases": [
+          "GAMS",
+          "gams"
+        ],
+        "extensions": [
+          ".gms",
+          ".inc",
+          ".dmp"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/letter-g.png",
+          "dark": "./images/letter-g.png"
+        }
+      },
+      {
+        "id": "gams-opt",
+        "aliases": [
+          "GAMS Option File",
+          "gams-opt"
+        ],
+        "configuration": "./language-configuration-opt.json",
+        "extensions": [
+          ".opt",
+          ".op2",
+          ".op3",
+          ".op4",
+          ".op5",
+          ".op6",
+          ".op7",
+          ".op8",
+          ".op9",
+          ".pf"
+        ],
+        "filenamePatterns": [
+          "*.o[1-9][0-9]",
+          "*.[1-9][0-9][0-9]",
+          "*.[1-9][0-9][0-9][0-9]"
+        ],
+        "icon": {
+          "light": "./images/letter-g.png",
+          "dark": "./images/letter-g.png"
+        }
+      },
+      {
+        "id": "gams-lst",
+        "aliases": [
+          "GAMS Listing",
+          "gams-lst"
+        ],
+        "extensions": [
+          ".lst"
+        ],
+        "icon": {
+          "light": "./images/letter-g.png",
+          "dark": "./images/letter-g.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "gams",
+        "scopeName": "source.gams",
+        "path": "./syntaxes/gams.tmLanguage.json"
+      }
+    ],
+    "yamlValidation": [
+      {
+        "fileMatch": "*.connect.yaml",
+        "url": "./schemas/connect/connect.schema.json"
+      },
+      {
+        "fileMatch": "*.connect.yml",
+        "url": "./schemas/connect/connect.schema.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "yaml",
+        "path": "./snippets/connect.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "gams.runConnect",
+        "title": "Run Connect File",
+        "category": "GAMS",
+        "icon": "$(play)"
+      },
+      {
+        "command": "gams.treatAsConnect",
+        "title": "Treat as Connect File",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.setMainFile",
+        "title": "Set as Main File",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.gdxDiff",
+        "title": "GDX Diff...",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.gdxCompare",
+        "title": "Compare with…",
+        "category": "GAMS",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "gams.gdxOpenDiffView",
+        "title": "Open gdxdiff Result as Colored Diff",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.openGdxSymbol",
+        "title": "Open GDX Symbol",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.gdxSearch.symbol",
+        "title": "Find Symbol in GDX Files",
+        "category": "GAMS",
+        "icon": "$(search)"
+      },
+      {
+        "command": "gams.gdxSearch.element",
+        "title": "Find Element in GDX Files",
+        "category": "GAMS",
+        "icon": "$(symbol-key)"
+      },
+      {
+        "command": "gams.gdxFiles.refresh",
+        "title": "Refresh GDX Files",
+        "category": "GAMS",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "gams.gdxFiles.open",
+        "title": "Open",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.gdxFiles.compare",
+        "title": "Compare with...",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.openModelLibrary",
+        "title": "GAMS: Open Model Library"
+      },
+      {
+        "command": "gams.run",
+        "title": "Run",
+        "category": "GAMS",
+        "icon": "$(play)"
+      },
+      {
+        "command": "gams.runNeos",
+        "title": "Run on NEOS",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.neosResetConsent",
+        "title": "Reset NEOS Terms Confirmation",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.compile",
+        "title": "Compile",
+        "category": "GAMS",
+        "icon": "$(debug-start)"
+      },
+      {
+        "command": "gams.runWithOptions",
+        "title": "Run with Parameters...",
+        "category": "GAMS",
+        "icon": "$(play-circle)"
+      },
+      {
+        "command": "gams.compileWithOptions",
+        "title": "Compile with Parameters...",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.interrupt",
+        "title": "Interrupt",
+        "category": "GAMS",
+        "icon": "$(debug-pause)"
+      },
+      {
+        "command": "gams.stop",
+        "title": "Stop",
+        "category": "GAMS",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "gams.showLog",
+        "title": "Show Log",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.symbols.refresh",
+        "title": "Refresh Symbols",
+        "category": "GAMS",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "gams.symbols.filter",
+        "title": "Filter Symbols...",
+        "category": "GAMS",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "gams.symbols.clearFilter",
+        "title": "Clear Symbol Filter",
+        "category": "GAMS",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "gams.debug",
+        "title": "Run Debugger",
+        "category": "GAMS",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "gams.stepDebug",
+        "title": "Step Debugger",
+        "category": "GAMS",
+        "icon": "$(debug-step-into)"
+      },
+      {
+        "command": "gams.debug.openSnapshot",
+        "title": "Open Snapshot in GDX Viewer",
+        "category": "GAMS",
+        "icon": "$(table)"
+      },
+      {
+        "command": "gams.profile",
+        "title": "Run with Profiler",
+        "category": "GAMS",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "gams.profile.summary",
+        "title": "Show Profile Summary",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.profile.clear",
+        "title": "Clear Profile",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.contextHelp",
+        "title": "Help for Word at Cursor",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.toggleLineComment",
+        "title": "Toggle Line Comment (column 1)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.addLineComment",
+        "title": "Add Line Comment (column 1)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.removeLineComment",
+        "title": "Remove Line Comment (column 1)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.toggleBlockComment",
+        "title": "Toggle Block Comment ($onText/$offText)",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.insertNewSection",
+        "title": "Insert New Section",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.openInStudio",
+        "title": "Open in GAMS Studio",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.jumpToMatchingParenthesis",
+        "title": "Jump to Matching Parenthesis",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.showListing",
+        "title": "Show Listing File",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.openCorrGDX",
+        "title": "Open Corresponding GDX File",
+        "category": "GAMS"
+      },
+      {
+        "command": "gams.toggleRunProject",
+        "title": "Toggle Run Project (deprecated)",
+        "category": "GAMS"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "gams.run",
+        "key": "f9",
+        "when": "editorLangId == gams && !inDebugMode"
+      },
+      {
+        "command": "gams.compile",
+        "key": "shift+f9",
+        "when": "editorLangId == gams && !inDebugMode"
+      },
+      {
+        "command": "gams.runWithOptions",
+        "key": "f10",
+        "when": "editorLangId == gams && !inDebugMode"
+      },
+      {
+        "command": "gams.compileWithOptions",
+        "key": "shift+f10",
+        "when": "editorLangId == gams && !inDebugMode"
+      },
+      {
+        "command": "gams.contextHelp",
+        "key": "f1",
+        "when": "editorTextFocus && editorLangId =~ /^gams/ && config.gams.help.f1"
+      },
+      {
+        "command": "gams.toggleLineComment",
+        "key": "ctrl+/",
+        "mac": "cmd+/",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+      },
+      {
+        "command": "gams.addLineComment",
+        "key": "ctrl+k ctrl+c",
+        "mac": "cmd+k cmd+c",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+      },
+      {
+        "command": "gams.removeLineComment",
+        "key": "ctrl+k ctrl+u",
+        "mac": "cmd+k cmd+u",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+      },
+      {
+        "command": "gams.toggleBlockComment",
+        "key": "shift+alt+a",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+      },
+      {
+        "command": "gams.insertNewSection",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == gams"
+      },
+      {
+        "command": "gams.jumpToMatchingParenthesis",
+        "key": "ctrl+b",
+        "mac": "cmd+b",
+        "when": "editorTextFocus && editorLangId =~ /^gams/ && config.gams.editor.studioParentheses"
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "gams.gdxFiles.open",
+          "when": "view == gams.gdxFiles && viewItem == gdxFile",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gams.gdxFiles.compare",
+          "when": "view == gams.gdxFiles && viewItem == gdxFile && gams.gdxCompareAvailable",
+          "group": "navigation@2"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "gams.setMainFile",
+          "when": "resourceExtname == .gms",
+          "group": "gams@0"
+        },
+        {
+          "command": "gams.gdxDiff",
+          "when": "resourceExtname == .gdx",
+          "group": "gams@1"
+        },
+        {
+          "command": "gams.gdxCompare",
+          "when": "resourceExtname == .gdx",
+          "group": "gams@2"
+        },
+        {
+          "command": "gams.openInStudio",
+          "when": "resourceExtname =~ /\\.(gms|gdx|lst)$/i && (config.gams.studio.allowRemote || !remoteName)",
+          "group": "gams@3"
+        }
+      ],
+      "editor/title/run": [
+        {
+          "command": "gams.runConnect",
+          "when": "gams.connectFile",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gams.run",
+          "when": "resourceLangId == gams",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gams.compile",
+          "when": "resourceLangId == gams",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "gams.treatAsConnect",
+          "when": "resourceLangId == yaml && !gams.connectFile",
+          "group": "gams@1"
+        },
+        {
+          "command": "gams.contextHelp",
+          "when": "editorLangId =~ /^gams/",
+          "group": "gams@9"
+        },
+        {
+          "command": "gams.toggleLineComment",
+          "when": "editorLangId == gams && !editorReadonly",
+          "group": "gams@5"
+        },
+        {
+          "command": "gams.toggleBlockComment",
+          "when": "editorLangId == gams && !editorReadonly",
+          "group": "gams@6"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "gams.gdxFiles.open",
+          "when": "false"
+        },
+        {
+          "command": "gams.gdxFiles.compare",
+          "when": "false"
+        },
+        {
+          "command": "gams.openGdxSymbol",
+          "when": "false"
+        },
+        {
+          "command": "gams.runConnect",
+          "when": "gams.connectFile"
+        },
+        {
+          "command": "gams.treatAsConnect",
+          "when": "resourceLangId == yaml"
+        },
+        {
+          "command": "gams.run",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.compile",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.runWithOptions",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.compileWithOptions",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.interrupt",
+          "when": "gams.running"
+        },
+        {
+          "command": "gams.stop",
+          "when": "gams.running"
+        },
+        {
+          "command": "gams.debug",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.stepDebug",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.profile",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.debug.openSnapshot",
+          "when": "debugType == gams"
+        },
+        {
+          "command": "gams.toggleLineComment",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.toggleBlockComment",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.insertNewSection",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.openInStudio",
+          "when": "config.gams.studio.allowRemote || !remoteName"
+        },
+        {
+          "command": "gams.addLineComment",
+          "when": "editorLangId == gams"
+        },
+        {
+          "command": "gams.removeLineComment",
+          "when": "editorLangId == gams"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "gams.gdxSearch.symbol",
+          "when": "view == gams.gdxFiles",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gams.gdxSearch.element",
+          "when": "view == gams.gdxFiles",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gams.gdxFiles.refresh",
+          "when": "view == gams.gdxFiles",
+          "group": "navigation@3"
+        },
+        {
+          "command": "gams.symbols.filter",
+          "when": "view == gams.symbols",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gams.symbols.clearFilter",
+          "when": "view == gams.symbols",
+          "group": "navigation@2"
+        },
+        {
+          "command": "gams.symbols.refresh",
+          "when": "view == gams.symbols",
+          "group": "navigation@3"
+        }
+      ],
+      "debug/toolBar": [
+        {
+          "command": "gams.debug.openSnapshot",
+          "when": "debugType == gams",
+          "group": "navigation@9"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "gams.openInStudio",
+          "when": "resourceExtname =~ /\\.(gms|gdx|lst)$/i && (config.gams.studio.allowRemote || !remoteName)",
+          "group": "navigation@9"
+        }
+      ]
+    },
+    "configuration": [
+      {
+        "title": "GAMS",
+        "properties": {
+          "gams.gdxSearch.exclude": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "markdownDescription": "Extra glob patterns excluded from workspace GDX search and the GDX Files view (in addition to `files.exclude` and `search.exclude`), e.g. `**/scratch/**`."
+          },
+          "gams.gdxSearch.maxFiles": {
+            "type": "number",
+            "default": 5000,
+            "minimum": 1,
+            "description": "Maximum number of .gdx files considered by workspace GDX search."
+          },
+          "gams.gdxSearch.sort": {
+            "type": "string",
+            "enum": [
+              "name",
+              "file",
+              "mtime"
+            ],
+            "default": "name",
+            "description": "Initial sort order of \"Find Symbol in GDX Files\" (name, file or modification time)."
+          },
+          "gams.userModelLibraryDir": {
+            "type": "string",
+            "default": "",
+            "description": "Folder searched recursively for user model libraries (*.glb). Default: ~/Documents/GAMS/modellibs."
+          },
+          "gams.modelLibraryTargetDir": {
+            "type": "string",
+            "default": "",
+            "description": "Default target folder when copying a library model (default: first workspace folder)."
+          },
+          "gams.sysdir": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "GAMS system directory (the folder that contains `gams`/`gams.exe`; a path to the executable itself is accepted). If empty it is auto-detected: `gams` on PATH, then the newest `/opt/gams/*`, then `C:/GAMS/*` and `C:/GAMS/win64/*`."
+          },
+          "gams.defaultParameters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "markdownDescription": "Additional GAMS command line parameters appended to every run, e.g. `lo=3`, `--myflag=1`. An entry may hold several parameters (`lo=3 reslim=10`). Studio's own defaults (`logoption=3 ide=1 errorlog=99 errmsg=1 pagesize=0 lstTitleleftaligned=1`) are always passed first."
+          },
+          "gams.serverPath": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Path to the language server binary. Empty uses the bundled `server/bin/gams-lsp`, falling back to `server/target/debug/gams-lsp`."
+          },
+          "gams.log.maxLines": {
+            "type": "number",
+            "default": 50000,
+            "minimum": 0,
+            "markdownDescription": "Maximum number of lines kept in the GAMS Log document. When a run writes more, the oldest lines are dropped from the document and the complete log is written to `<filestem>.log` in the working directory (the first line of the document says so). `0`: no limit."
+          },
+          "gams.showLogOnRun": {
+            "type": "boolean",
+            "default": true,
+            "description": "Open the clickable GAMS log document when a run starts."
+          },
+          "gams.openListingAfterRun": {
+            "type": "boolean",
+            "default": false,
+            "description": "Open the listing file (.lst) after a run finished. Off by default (GAMS Studio opens the listing only on request)."
+          },
+          "gams.editor.openLocation": {
+            "type": "string",
+            "default": "beside",
+            "enum": [
+              "beside",
+              "active",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "markdownDescription": "Editor group where the listing file and the GAMS log open: `beside`, `active` or a group number `1`..`9`. If unset, the deprecated `GAMS.listingFileLocation` is used."
+          },
+          "gams.editor.preserveFocus": {
+            "type": "boolean",
+            "default": true,
+            "description": "Keep the focus in the current editor when the listing file or the GAMS log opens. If unset, the deprecated `GAMS.preserveFocus` is used."
+          },
+          "gams.studioColors": {
+            "type": "string",
+            "default": "off",
+            "enum": [
+              "off",
+              "auto",
+              "light",
+              "dark",
+              "distinct-light",
+              "dracula-dark",
+              "solarized-light",
+              "solarized-dark"
+            ],
+            "enumDescriptions": [
+              "Use the colors of the active VS Code color theme.",
+              "Studio's default theme matching the VS Code color theme: Studio \"Light\" for light themes, Studio \"Dark\" otherwise.",
+              "GAMS Studio theme \"Light\".",
+              "GAMS Studio theme \"Dark\".",
+              "GAMS Studio theme \"Distinct - light\".",
+              "GAMS Studio theme \"Dracula - dark\".",
+              "GAMS Studio theme \"Solarized - light\".",
+              "GAMS Studio theme \"Solarized - dark\"."
+            ],
+            "markdownDescription": "Use the GAMS Studio syntax colors (and bold/italic styles) for GAMS files. **Note:** when enabled this writes rules for the `gams*` semantic token types and `*.gams` TextMate scopes into your user `editor.semanticTokenColorCustomizations` and `editor.tokenColorCustomizations` settings; choosing `off` removes only those entries again. `auto` follows the light/dark kind of the active VS Code color theme."
+          },
+          "gams.updateReferencesOnSave": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Re-create the reference file (`action=c`, a compile-only GAMS run) every time a `.gms` file of the loaded model is saved, so that the Symbols view and the language features stay current. **Each save starts a GAMS compile, which uses a GAMS license session.** Off by default."
+          },
+          "gams.neos.email": {
+            "type": "string",
+            "scope": "application",
+            "default": "",
+            "markdownDescription": "Email address sent to the [NEOS Server](https://neos-server.org) with every `GAMS: Run on NEOS` submission (required by NEOS). It is never filled in automatically."
+          },
+          "gams.neos.priority": {
+            "type": "string",
+            "enum": [
+              "short",
+              "long"
+            ],
+            "default": "short",
+            "markdownDescription": "NEOS priority. `short`: limited to 5 minutes, the log is streamed while the job runs. `long`: no time limit, the job number and password are shown in the log and the log arrives with the final results."
+          },
+          "gams.neos.server": {
+            "type": "string",
+            "scope": "application",
+            "default": "https://neos-server.org:3333",
+            "markdownDescription": "URL of the NEOS XML-RPC server (GAMS Studio default). Must be `https`; `http` is accepted for localhost only."
+          },
+          "gams.neos.forceGdx": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Ask NEOS to return a GDX file (`gdx=default`), as the GAMS Studio NEOS dialog option \"Create a GDX file\"."
+          },
+          "gams.connect.arguments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "markdownDescription": "`key=value` arguments passed to `gamsconnect` after the YAML file. Each `%key%` in the Connect file is replaced by `value` (case-insensitive) before the file is parsed."
+          },
+          "gams.gdxDiff.coloredView": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "After `GAMS: GDX Diff...` run gdxdiff, open the result in the colored side-by-side diff view (extension feature). Turn off to open the plain GDX viewer like GAMS Studio."
+          },
+          "gams.stopGracePeriod": {
+            "type": "number",
+            "default": 10,
+            "minimum": 0,
+            "markdownDescription": "Seconds `GAMS: Stop` waits after sending the GAMS interrupt before killing the job. A job that ends normally frees its network-license session immediately; a killed job keeps it reserved for about 5 minutes. Pressing Stop again kills at once. `0` = immediate kill (GAMS Studio behaviour)."
+          },
+          "gams.help.source": {
+            "type": "string",
+            "enum": [
+              "offline",
+              "online"
+            ],
+            "default": "offline",
+            "enumDescriptions": [
+              "Show the documentation installed with GAMS (<sysdir>/docs, version-matched) in a GAMS Help panel; falls back to the online documentation if it is missing.",
+              "Open https://www.gams.com/<major>/docs/... in the external browser."
+            ],
+            "markdownDescription": "Where `GAMS: Help for Word at Cursor` (F1) shows the documentation."
+          },
+          "gams.help.f1": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Bind `F1` in GAMS editors to `GAMS: Help for Word at Cursor` (context help like GAMS Studio). When off, `F1` keeps opening the Command Palette there; the Command Palette is always available on `Ctrl+Shift+P`."
+          },
+          "gams.studio.path": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Path to the GAMS Studio executable used by **Open in GAMS Studio**. If empty it is detected: `<sysdir>/studio/studio.AppImage` (Linux), `<sysdir>/studio/studio.exe` (Windows) or `/Applications/GAMS Studio.app` (macOS)."
+          },
+          "gams.studio.arguments": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Additional command line arguments for GAMS Studio, e.g. `-platform xcb`."
+          },
+          "gams.studio.allowRemote": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Allow **Open in GAMS Studio** in remote windows (SSH, WSL, containers). Studio then starts on the remote machine and needs a display there."
+          },
+          "gams.editor.studioParentheses": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Replaces VS Code's bracket colorization/matching in GAMS files with GAMS Studio's behavior: the parenthesis pair next to the cursor is highlighted (red for mismatched or unmatched ones), and Ctrl+B in GAMS editors jumps to the matching parenthesis instead of toggling the sidebar. Set to `false` to restore VS Code behavior (re-enable `editor.matchBrackets` for `[gams]` yourself)."
+          },
+          "gams.editor.bracketNestingColors": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "Color nested brackets `( ) [ ] { }` in GAMS files by nesting level, using the colors of VS Code's bracket pair colorization (`editorBracketHighlight.*` theme colors) but the bracket structure of GAMS Studio's syntax highlighter: brackets in comments (also end-of-line comments with a custom `$eolCom`), quoted strings, unquoted symbol descriptions and `$onText` blocks are not colored. VS Code's own colorizer is turned off for `[gams]` (it cannot skip descriptions and custom end-of-line comments); set this to `false` to have no nesting colors in GAMS files."
+          }
+        }
+      },
+      {
+        "title": "GAMS (0.1.x, deprecated)",
+        "properties": {
+          "GAMS.terminalCwd": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: working directory of the run batch file (`GAMS.runProject`) and of normal runs (unless a .gsp project sets one). Prefer a project (`.gsp`) work directory or a task `options.cwd`."
+          },
+          "GAMS.executablePath": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, replaced in 0.3.0 (see the README, 'Upgrading from 0.1.x'). It is migrated once on activation.",
+            "markdownDescription": "Deprecated: migrated to `gams.sysdir` on activation (kept only for migration)."
+          },
+          "GAMS.commandLineParameters": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, replaced in 0.3.0 (see the README, 'Upgrading from 0.1.x'). It is migrated once on activation.",
+            "markdownDescription": "Deprecated: migrated to `gams.defaultParameters` on activation (kept only for migration)."
+          },
+          "GAMS.preserveFocus": {
+            "type": "boolean",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: fallback for `gams.editor.preserveFocus`."
+          },
+          "GAMS.runProject": {
+            "type": "boolean",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: with `GAMS.runBatchPath` set, **Run** (F9) executes that batch file in a terminal instead of GAMS. Prefer a GAMS task chained with a shell task (`dependsOn`) in tasks.json."
+          },
+          "GAMS.runBatchPath": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: batch file run by **Run** when `GAMS.runProject` is on. See the notification at start for creating a task from it."
+          },
+          "GAMS.projectLst": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: listing opened by **GAMS: Show Listing File** when `GAMS.runProject` is on."
+          },
+          "GAMS.projectGDX": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: GDX file opened by **GAMS: Open Corresponding GDX File** when `GAMS.runProject` is on."
+          },
+          "GAMS.idePath": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, replaced in 0.3.0 (see the README, 'Upgrading from 0.1.x'). It is migrated once on activation.",
+            "markdownDescription": "Deprecated: migrated to `gams.studio.path` on activation (kept only for migration)."
+          },
+          "GAMS.ideArguments": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, replaced in 0.3.0 (see the README, 'Upgrading from 0.1.x'). It is migrated once on activation.",
+            "markdownDescription": "Deprecated: migrated to `gams.studio.arguments` on activation (kept only for migration)."
+          },
+          "GAMS.listingFileLocation": {
+            "type": "string",
+            "deprecationMessage": "Setting of GAMS 0.1.x, still supported but deprecated: use projects, the gams.editor.* settings or GAMS tasks instead.",
+            "markdownDescription": "Deprecated, still supported: fallback for `gams.editor.openLocation` (`Beside`, `Active`, `One`..`Nine`)."
+          }
+        }
+      }
+    ],
+    "semanticTokenTypes": [
+      {
+        "id": "gamsDco",
+        "superType": "macro",
+        "description": "Dollar control option (Studio: Dollar Control Option)"
+      },
+      {
+        "id": "gamsDcoBody",
+        "superType": "string",
+        "description": "Dollar control option argument"
+      },
+      {
+        "id": "gamsComment",
+        "superType": "comment",
+        "description": "Comment (Studio: Comment)"
+      },
+      {
+        "id": "gamsTitle",
+        "superType": "keyword",
+        "description": "Title (Studio: Title)"
+      },
+      {
+        "id": "gamsEmbedded",
+        "superType": "function",
+        "description": "Embedded code / system attributes (Studio: Embedded code)"
+      },
+      {
+        "id": "gamsAssignLabel",
+        "superType": "enumMember",
+        "description": "Element (Studio: Element)"
+      },
+      {
+        "id": "gamsAssignValue",
+        "superType": "number",
+        "description": "Element text/value (Studio: Element text/value)"
+      },
+      {
+        "id": "gamsKeyword",
+        "superType": "keyword",
+        "description": "Keyword (Studio: Keyword)"
+      },
+      {
+        "id": "gamsDeclaration",
+        "superType": "keyword",
+        "description": "Declaration keyword (Studio: Declaration Keyword)"
+      },
+      {
+        "id": "gamsIdentifier",
+        "superType": "variable",
+        "description": "Identifier (Studio: Identifier)"
+      },
+      {
+        "id": "gamsDescription",
+        "superType": "comment",
+        "description": "Symbol text (Studio: Symbol text)"
+      },
+      {
+        "id": "gamsTableHeader",
+        "superType": "enumMember",
+        "description": "Table header (Studio: Table header)"
+      },
+      {
+        "id": "gamsMpsgeSection",
+        "superType": "keyword",
+        "description": "MPSGE section keyword, e.g. $PROD: (extension; Studio colors: Declaration Keyword)"
+      },
+      {
+        "id": "gamsMpsgeField",
+        "superType": "property",
+        "description": "MPSGE record field label, e.g. Q: (extension; Studio colors: Keyword)"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "gams",
+        "scopes": {
+          "gamsDco": [
+            "keyword.control.directive.gams",
+            "punctuation.definition.directive.gams"
+          ],
+          "gamsDcoBody": [
+            "string.unquoted.argument.gams"
+          ],
+          "gamsComment": [
+            "comment.line.asterisk.gams",
+            "comment.block.gams",
+            "comment.line.double-exclamation.gams",
+            "comment.line.asterisk.mpsge.gams"
+          ],
+          "gamsTitle": [
+            "string.unquoted.title.gams"
+          ],
+          "gamsEmbedded": [
+            "support.function.embedded.gams",
+            "support.variable.system.compile-time.gams",
+            "support.constant.system.compile-time.gams",
+            "variable.other.compile-time.gams",
+            "support.variable.system.gams"
+          ],
+          "gamsAssignLabel": [
+            "variable.other.enummember.gams",
+            "string.quoted.single.gams",
+            "string.quoted.double.gams"
+          ],
+          "gamsAssignValue": [
+            "constant.numeric.gams"
+          ],
+          "gamsKeyword": [
+            "keyword.other.reserved.gams",
+            "keyword.control.solve.gams",
+            "keyword.other.solve.gams",
+            "support.type.model.gams",
+            "keyword.control.option.gams",
+            "variable.parameter.option.gams",
+            "keyword.other.put.gams",
+            "keyword.other.execute.gams",
+            "keyword.control.embedded.gams"
+          ],
+          "gamsDeclaration": [
+            "storage.type.declaration.gams"
+          ],
+          "gamsIdentifier": [
+            "variable.other.declaration.gams"
+          ],
+          "gamsDescription": [
+            "comment.block.documentation.gams",
+            "comment.line.exclamation.mpsge.gams"
+          ],
+          "gamsTableHeader": [
+            "variable.other.enummember.table-header.gams"
+          ],
+          "gamsMpsgeSection": [
+            "storage.type.section.mpsge.gams"
+          ],
+          "gamsMpsgeField": [
+            "keyword.other.field.mpsge.gams"
+          ]
+        }
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "gams",
+          "title": "GAMS",
+          "icon": "$(symbol-namespace)"
+        }
+      ]
+    },
+    "views": {
+      "gams": [
+        {
+          "id": "gams.symbols",
+          "name": "Symbols",
+          "contextualTitle": "GAMS Symbols"
+        },
+        {
+          "id": "gams.projects",
+          "name": "Projects",
+          "contextualTitle": "GAMS Projects"
+        },
+        {
+          "id": "gams.gdxFiles",
+          "name": "GDX Files",
+          "contextualTitle": "GAMS GDX Files"
+        }
+      ]
+    },
+    "breakpoints": [
+      {
+        "language": "gams"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "gams",
+        "label": "GAMS",
+        "languages": [
+          "gams"
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "GAMS model to run (.gms).",
+                "default": "${file}"
+              },
+              "parameters": {
+                "type": [
+                  "array",
+                  "string"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "description": "Additional GAMS command line parameters (appended after DebugPort and gams.defaultParameters).",
+                "default": []
+              },
+              "cwd": {
+                "type": "string",
+                "description": "Working directory (default: the directory of program)."
+              },
+              "stopOnEntry": {
+                "type": "boolean",
+                "description": "Stop at the first executable line (GAMS Studio: Step Debugger).",
+                "default": false
+              },
+              "maxRecords": {
+                "type": "number",
+                "description": "Records shown per symbol in the Variables view.",
+                "default": 100
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "gams",
+            "request": "launch",
+            "name": "GAMS: Debug current file",
+            "program": "${file}"
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "GAMS: Debug",
+            "description": "Debug a GAMS model",
+            "body": {
+              "type": "gams",
+              "request": "launch",
+              "name": "GAMS: Debug",
+              "program": "^\"\\${file}\"",
+              "parameters": []
+            }
+          },
+          {
+            "label": "GAMS: Step Debug",
+            "description": "Debug a GAMS model, stopping at the first line",
+            "body": {
+              "type": "gams",
+              "request": "launch",
+              "name": "GAMS: Step Debug",
+              "program": "^\"\\${file}\"",
+              "stopOnEntry": true
+            }
+          }
+        ]
+      }
+    ],
+    "configurationDefaults": {
+      "[gams]": {
+        "editor.matchBrackets": "never",
+        "editor.bracketPairColorization.enabled": false
+      }
+    },
+    "taskDefinitions": [
+      {
+        "type": "gams",
+        "required": [],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "GAMS file to run. Default: ${file} (the active GAMS file; the project's main file applies as for F9).",
+            "default": "${file}"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Additional GAMS parameters (key=value), applied after gams.defaultParameters."
+          },
+          "compile": {
+            "type": "boolean",
+            "default": false,
+            "description": "Compile only (action=c) instead of running."
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "lint": "tsc --noEmit -p .",
+    "compile-tests": "tsc -p . --noEmit false --outDir out",
+    "test": "npm run compile-tests && mocha \"out/test/unit/**/*.test.js\"",
+    "test:integration": "npm run compile-tests && node out/test/runTest.js",
+    "test:integration:headless": "xvfb-run -a npm run test:integration",
+    "check:docs-overlap": "node scripts/check-doc-overlap.js",
+    "check:fixture-origin": "node scripts/check-fixture-origin.js",
+    "gen:notices": "node scripts/gen-notices.js",
+    "package": "node esbuild.js --production && vsce package",
+    "build:server": "node scripts/build-server.js",
+    "package:linux": "node scripts/package.js linux-x64",
+    "build:server:win32": "node scripts/build-server.js x86_64-pc-windows-gnu",
+    "package:win32": "node scripts/package.js win32-x64",
+    "package:linux-arm64": "node scripts/package.js linux-arm64",
+    "package:darwin-arm64": "node scripts/package.js darwin-arm64",
+    "package:darwin-x64": "node scripts/package.js darwin-x64",
+    "vscode:prepublish": "node esbuild.js --production"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.17.0",
+    "@types/vscode": "^1.95.0",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^4.1.0",
+    "ajv": "^8.20.0",
+    "esbuild": "^0.24.0",
+    "js-yaml": "^4.3.2",
+    "mocha": "^10.8.2",
+    "typescript": "^5.6.3"
+  },
+  "icon": "images/letter-gams.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eunseong-park/vscode-gams.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eunseong-park/vscode-gams/issues"
+  },
+  "homepage": "https://github.com/eunseong-park/vscode-gams#readme",
+  "keywords": [
+    "gams",
+    "gdx",
+    "gams studio",
+    "optimization",
+    "mathematical programming",
+    "mpsge",
+    "operations research",
+    "lst",
+    "connect",
+    "neos"
+  ]
+}

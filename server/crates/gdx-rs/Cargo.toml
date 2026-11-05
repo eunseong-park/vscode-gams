@@ -1,0 +1,20 @@
+[package]
+name = "gdx-rs"
+version.workspace = true
+edition.workspace = true
+# Port of the MIT-licensed GAMS GDX library (https://github.com/GAMS-dev/gdx, see
+# LICENSE-GDX-MIT); distributed as part of this GPL-3.0-or-later project.
+license = "GPL-3.0-or-later AND MIT"
+description = "Pure Rust reader/writer for GAMS Data eXchange (GDX) files, ported from GAMS-dev/gdx"
+
+[features]
+# Reference implementation for tests: binds the GAMS C library (libgdxcclib64) at runtime.
+capi-oracle = ["dep:libloading"]
+
+[dependencies]
+flate2 = { version = "1", default-features = false, features = ["rust_backend"] }
+libloading = { version = "0.8.9", optional = true }
+
+[[example]]
+name = "bench_read"
+required-features = ["capi-oracle"]

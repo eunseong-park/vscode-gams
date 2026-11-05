@@ -1,0 +1,9 @@
+node_modules/
+out/
+dist/
+*.vsix
+server/target/
+server/bin/
+.vscode-test/
+CLAUDE.md
+*.local.md

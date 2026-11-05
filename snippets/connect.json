@@ -1,0 +1,49 @@
+{
+  "GAMS Connect: Excel to GDX": {
+    "prefix": "gams-connect-excel-to-gdx",
+    "description": "ExcelReader + GDXWriter (options from the GAMS Connect documentation examples)",
+    "body": [
+      "- ExcelReader:",
+      "    file: ${1:cox3.xlsx}",
+      "    symbols:",
+      "      - name: ${2:dat}",
+      "        range: ${3:Sheet1!A1}",
+      "        rowDimension: ${4:2}",
+      "        columnDimension: ${5:1}",
+      "- GDXWriter:",
+      "    file: ${6:out.gdx}",
+      "    symbols: all",
+      "$0"
+    ]
+  },
+  "GAMS Connect: CSV to GDX": {
+    "prefix": "gams-connect-csv-to-gdx",
+    "description": "CSVReader + GDXWriter (options from the GAMS Connect documentation examples)",
+    "body": [
+      "- CSVReader:",
+      "    file: ${1:distance.csv}",
+      "    name: ${2:distance}",
+      "    indexColumns: [${3:1, 2}]",
+      "    valueColumns: [${4:3}]",
+      "- GDXWriter:",
+      "    file: ${5:out.gdx}",
+      "    symbols: all",
+      "$0"
+    ]
+  },
+  "GAMS Connect: GDX to Excel": {
+    "prefix": "gams-connect-gdx-to-excel",
+    "description": "GDXReader + ExcelWriter (options from the GAMS Connect documentation examples)",
+    "body": [
+      "- GDXReader:",
+      "    file: ${1:in.gdx}",
+      "    symbols: all",
+      "- ExcelWriter:",
+      "    file: ${2:results.xlsx}",
+      "    clearSheet: ${3:True}",
+      "    symbols:",
+      "      - name: ${4:binrep}",
+      "$0"
+    ]
+  }
+}

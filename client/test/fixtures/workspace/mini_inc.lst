@@ -1,0 +1,212 @@
+-  Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+
+
+*** [removed]
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 2
+Mini Shipping Problem, $include variant
+C o m p i l a t i o n
+
+
+   2  Sets
+   3     d 'depots' / north, south /
+   4     s 'shops'  / east, west /;
+INCLUDE    /work/mini_data.inc
+   6  * data for the include variant
+   7  Parameters
+   8     stock(d) 'units available' / north 90, south 60 /
+   9     need(s)  'units wanted'    / east 70, west 50 /;
+  10  Table fee(d,s) 'cost per unit'
+  11            east  west
+  12     north  2.5   1.75
+  13     south  1.9   2.6 ;
+  14  Variables
+  15     flow(d,s) 'units shipped'
+  16     total     'total cost';
+  17  Positive Variable flow;
+  18  Equations
+  19     obj        'cost definition'
+  20     cap(d)     'depot capacity'
+  21     dem(s)     'shop demand';
+  22  obj..   total =e= sum((d,s), fee(d,s)*flow(d,s));
+  23  cap(d).. sum(s, flow(d,s)) =l= stock(d);
+  24  dem(s).. sum(d, flow(d,s)) =g= need(s);
+  25  Model ship / all /;
+  26  Solve ship using lp minimizing total;
+  27  Display flow.l, total.l;
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 3
+Mini Shipping Problem, $include variant
+Include File Summary
+
+
+   SEQ   GLOBAL TYPE      PARENT   LOCAL  INCLVL  FILENAME
+
+     1        1 INPUT          0       0       0  /work/mini_inc.gms
+     2        5 INCLUDE        1       5       1  /work/mini_data.inc
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  54.6.1 20a39885 LEX-LEG
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 4
+Mini Shipping Problem, $include variant
+Equation Listing    SOLVE ship Using LP From line 26
+
+
+---- obj  =E=  cost definition
+
+obj..  - 2.5*flow(north,east) - 1.75*flow(north,west) - 1.9*flow(south,east) - 2.6*flow(south,west) + total =E= 0 ; (LHS = 0)
+     
+
+---- cap  =L=  depot capacity
+
+cap(north)..  flow(north,east) + flow(north,west) =L= 90 ; (LHS = 0)
+     
+cap(south)..  flow(south,east) + flow(south,west) =L= 60 ; (LHS = 0)
+     
+
+---- dem  =G=  shop demand
+
+dem(east)..  flow(north,east) + flow(south,east) =G= 70 ; (LHS = 0, INFES = 70 ****)
+     
+dem(west)..  flow(north,west) + flow(south,west) =G= 50 ; (LHS = 0, INFES = 50 ****)
+     
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 5
+Mini Shipping Problem, $include variant
+Column Listing      SOLVE ship Using LP From line 26
+
+
+---- flow  units shipped
+
+flow(north,east)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -2.5     obj
+        1       cap(north)
+        1       dem(east)
+
+flow(north,west)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1.75    obj
+        1       cap(north)
+        1       dem(west)
+
+flow(south,east)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+       -1.9     obj
+        1       cap(south)
+        1       dem(east)
+
+REMAINING ENTRY SKIPPED
+
+---- total  total cost
+
+total
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       obj
+
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 6
+Mini Shipping Problem, $include variant
+Range Statistics    SOLVE ship Using LP From line 26
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 5.000E+01, 9.000E+01] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.600E+00]
+
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 7
+Mini Shipping Problem, $include variant
+Model Statistics    SOLVE ship Using LP From line 26
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           3     SINGLE EQUATIONS            5
+BLOCKS OF VARIABLES           2     SINGLE VARIABLES            5
+NON ZERO ELEMENTS            13
+
+
+GENERATION TIME      =        0.001 SECONDS      4 MB  54.6.1 20a39885 LEX-LEG
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 8
+Mini Shipping Problem, $include variant
+Solution Report     SOLVE ship Using LP From line 26
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   ship                OBJECTIVE  total
+     TYPE    LP                  DIRECTION  MINIMIZE
+     SOLVER  HIGHS               FROM LINE  26
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE              226.5000
+
+ RESOURCE USAGE, LIMIT          0.001 10000000000.000
+ ITERATION COUNT, LIMIT         3    2147483647
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU obj                 .              .              .             1.0000      
+
+  obj  cost definition
+
+---- EQU cap  depot capacity
+
+             LOWER          LEVEL          UPPER         MARGINAL
+
+north        -INF           60.0000        90.0000          .          
+south        -INF           60.0000        60.0000        -0.6000      
+
+---- EQU dem  shop demand
+
+            LOWER          LEVEL          UPPER         MARGINAL
+
+east        70.0000        70.0000        +INF            2.5000      
+west        50.0000        50.0000        +INF            1.7500      
+
+---- VAR flow  units shipped
+
+                  LOWER          LEVEL          UPPER         MARGINAL
+
+north.east          .            10.0000        +INF             .          
+north.west          .            50.0000        +INF             .          
+south.east          .            60.0000        +INF             .          
+south.west          .              .            +INF            1.4500      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR total             -INF          226.5000        +INF             .          
+
+  total  total cost
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+GAMS 54.6.1  20a39885 Oct 24, 2026          LEX-LEG x86 64bit/Linux - 11/04/26 18:15:00 Page 9
+Mini Shipping Problem, $include variant
+E x e c u t i o n
+
+
+----     27 VARIABLE flow.L  units shipped
+
+             east        west
+
+north      10.000      50.000
+south      60.000
+
+
+----     27 VARIABLE total.L               =      226.500  total cost
+
+
+EXECUTION TIME       =        0.024 SECONDS      4 MB  54.6.1 20a39885 LEX-LEG
+
+
+*** [removed]
+*** [removed]
+
+
+**** FILE SUMMARY
+
+Input      /work/mini_inc.gms
+Output     /work/mini_inc.lst

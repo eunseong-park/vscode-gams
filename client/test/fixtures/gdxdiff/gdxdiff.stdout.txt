@@ -1,0 +1,11 @@
+GDXDIFF          54.6.1 20a39885 Oct 24, 2026          LEG x86 64bit/Linux
+File1 : a.gdx
+File2 : b.gdx
+Summary of differences:
+    d   Data are different
+    i   Keys are different
+onlya   Symbol not found in file 2
+onlyb   Symbol not found in file 1
+    x   Data are different
+Output: diff.gdx
+GDXDiff finished

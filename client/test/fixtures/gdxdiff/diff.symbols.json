@@ -1,0 +1,8 @@
+{
+  "symbols": [
+    { "index": 1, "name": "d", "dim": 3, "kind": "Parameter", "records": 5, "text": "Differences", "domain": ["*", "*", "*"] },
+    { "index": 2, "name": "i", "dim": 2, "kind": "Set", "records": 2, "text": "Differences", "domain": ["*", "*"] },
+    { "index": 3, "name": "x", "dim": 3, "kind": "Variable", "records": 4, "text": "Differences", "domain": ["*", "*", "*"], "subType": "Positive" },
+    { "index": 4, "name": "FilesCompared", "dim": 1, "kind": "Set", "records": 2, "text": "", "domain": ["*"] }
+  ]
+}

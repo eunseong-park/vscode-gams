@@ -1,0 +1,20 @@
+B 8 C o m p i l a t i o n
+B 39 Include File Summary
+B 51 Equation Listing    SOLVE ship Using LP From line 26
+D 54 obj
+D 59 cap
+D 66 dem
+B 74 Column Listing      SOLVE ship Using LP From line 26
+E 77 flow
+E 99 total
+B 107 Range Statistics    SOLVE ship Using LP From line 26
+B 118 Model Statistics    SOLVE ship Using LP From line 26
+B 131 Solution Report     SOLVE ship Using LP From line 26
+F 149 obj
+F 153 cap
+F 160 dem
+G 167 flow
+G 178 total
+B 188 E x e c u t i o n
+I 188 flow
+I 198 total

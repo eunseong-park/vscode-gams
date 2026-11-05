@@ -1,0 +1,9 @@
+[package]
+name = "gams-capi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "FFI to the GAMS GDX/OPT C APIs, loaded at runtime from the user's GAMS system directory"
+
+[dependencies]
+libloading = "0.8"

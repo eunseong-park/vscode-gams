@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<!-- GDX viewer preview (dev only). Open directly in a browser; see README.md.
+     Build first:  npm run build && node scripts/gdx-preview/prepare.js
+     URL parameters: ?file=mini|g20|glcalift  &theme=dark|light|hc-dark|hc-light  &latency=15  &synthetic=100000000 -->
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDX viewer preview</title>
+<link rel="stylesheet" href="out/style.css">
+</head>
+<body><div id="app"></div>
+<!-- real server responses dumped by dump.js (plain scripts so that file:// works) -->
+<script src="out/data-mini.js"></script>
+<script src="out/data-g20.js"></script>
+<script src="out/data-glcalift.js"></script>
+<!-- mocked acquireVsCodeApi + extension host, then the real webview bundle -->
+<script src="preview.js"></script>
+<script src="../../dist/gdxWebview.js"></script>
+</body></html>

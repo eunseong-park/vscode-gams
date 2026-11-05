@@ -1,0 +1,23 @@
+[package]
+name = "gams-lsp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "GAMS language server (stdio) built on gams-syntax, gams-ref, gams-lst and gams-gdx"
+
+[[bin]]
+name = "gams-lsp"
+path = "src/main.rs"
+
+[dependencies]
+gams-syntax = { path = "../gams-syntax" }
+gams-ref = { path = "../gams-ref" }
+gams-lst = { path = "../gams-lst" }
+gams-gdx = { path = "../gams-gdx" }
+gams-capi = { path = "../gams-capi" }
+lsp-server = "0.10.0"
+lsp-types = "0.97.0"
+serde_json = "1.0.154"
+crossbeam-channel = "0.5.17"
+serde = { version = "1.0.229", features = ["derive"] }
+regex = { version = "1", default-features = false, features = ["std", "unicode", "perf"] }

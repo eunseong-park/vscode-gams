@@ -1,0 +1,14 @@
+.vscode/**
+client/**
+out/**
+node_modules/**
+docs/**
+server/**
+!server/bin/**
+tsconfig.json
+esbuild.js
+**/*.map
+.gitignore
+scripts/**
+.github/**
+*.vsix

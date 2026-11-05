@@ -1,0 +1,115 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the built VSIX files to the VS Code Marketplace
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-24.04, target: linux-x64, rust: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-24.04-arm, target: linux-arm64, rust: aarch64-unknown-linux-gnu }
+          - { os: windows-latest, target: win32-x64, rust: x86_64-pc-windows-msvc }
+          - { os: macos-14, target: darwin-arm64, rust: aarch64-apple-darwin }
+          - { os: macos-14, target: darwin-x64, rust: x86_64-apple-darwin }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server
+          key: ${{ matrix.target }}
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      # The darwin-x64 server is cross-compiled on the arm64 runner and cannot be run there.
+      - if: matrix.target != 'darwin-x64'
+        run: cargo test --manifest-path server/Cargo.toml --workspace
+      - run: node scripts/package.js ${{ matrix.target }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vsix-${{ matrix.target }}
+          path: '*.vsix'
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: vsix-*
+          path: dist
+          merge-multiple: true
+      - name: Tag must match package.json version
+        run: |
+          v=$(node -p "require('./package.json').version")
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then echo "::error::tag $GITHUB_REF_NAME does not match package.json version $v"; exit 1; fi
+      - name: Release notes from CHANGELOG.md
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          awk -v v="$v" '/^## \[/ { p = index($0, "[" v "]") > 0; next } p' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then echo "Release $GITHUB_REF_NAME" > notes.md; fi
+      - name: Create or update the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+            gh release upload "$GITHUB_REF_NAME" dist/*.vsix --clobber
+          else
+            minor=$(node -p "require('./package.json').version.split('.')[1]")
+            pre=""; if [ $((minor % 2)) -eq 1 ]; then pre="--prerelease"; fi
+            gh release create "$GITHUB_REF_NAME" dist/*.vsix --title "$GITHUB_REF_NAME" --notes-file notes.md $pre
+          fi
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publish)
+    needs: build
+    runs-on: ubuntu-24.04
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: vsix-*
+          path: dist
+          merge-multiple: true
+      - name: Publish to the Marketplace
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "::warning::Secret VSCE_PAT is not set; skipping Marketplace publish."
+            exit 0
+          fi
+          # odd minor version = pre-release (VS Code convention); the VSIX files are already marked
+          minor=$(node -p "require('./package.json').version.split('.')[1]")
+          pre=""; if [ $((minor % 2)) -eq 1 ]; then pre="--pre-release"; fi
+          npx vsce publish --packagePath dist/*.vsix $pre

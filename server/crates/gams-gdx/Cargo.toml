@@ -1,0 +1,15 @@
+[package]
+name = "gams-gdx"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Safe GDX file reader (pure Rust backend gdx-rs; the C API backend is a test oracle)"
+
+[features]
+# Keep the previous C API backend (`gams_gdx::capi`) for oracle tests against the GAMS library.
+capi-oracle = ["dep:gams-capi"]
+
+[dependencies]
+gdx-rs = { path = "../gdx-rs" }
+gams-capi = { path = "../gams-capi", optional = true }
+regex = { version = "1", default-features = false, features = ["std", "unicode", "perf"] }

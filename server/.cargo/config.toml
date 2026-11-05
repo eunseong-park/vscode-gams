@@ -1,0 +1,11 @@
+# Cross-compile the Windows server from Linux with mingw-w64:
+#   cargo build --release -p gams-lsp --target x86_64-pc-windows-gnu
+# libgcc/winpthread are linked statically so the .exe needs no mingw DLLs.
+[target.x86_64-pc-windows-gnu]
+linker = "x86_64-w64-mingw32-gcc"
+ar = "x86_64-w64-mingw32-ar"
+rustflags = ["-C", "link-arg=-static-libgcc", "-C", "link-arg=-Wl,-Bstatic", "-C", "link-arg=-lwinpthread", "-C", "link-arg=-Wl,-Bdynamic"]
+
+[env]
+CC_x86_64_pc_windows_gnu = "x86_64-w64-mingw32-gcc"
+AR_x86_64_pc_windows_gnu = "x86_64-w64-mingw32-ar"

@@ -1,0 +1,96 @@
+--- Job mini_bat.gms Start 11/04/26 18:15:01 54.6.1 20a39885 LEX-LEG x86 64bit/Linux
+--- Applying:
+*** [removed]
+*** [removed]
+--- GAMS Parameters defined
+    LP HIGHS
+    MIP SCIP
+    RMIP HIGHS
+    NLP IPOPT
+    MCP MILES
+    MPEC NLPEC
+    RMPEC NLPEC
+    CNS IPOPT
+    DNLP IPOPT
+    RMINLP IPOPT
+    MINLP SHOT
+    QCP IPOPT
+    MIQCP SHOT
+    RMIQCP IPOPT
+    EMP RESHOP
+    Input /work/mini_bat.gms
+    PageSize 0
+    ScrDir /work/225a/
+    *** [removed]
+    LogOption 3
+    AppendLog 1
+    ErrMsg 1
+    Reference /work/mini_bat.ref
+    ErrorLog 99
+    IDE 1
+    GDX /work/mini_bat.gdx
+    LstTitleLeftAligned 1
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+GAMS 54.6.1   Copyright (C) 1987-2026 GAMS Development. All rights reserved
+--- Starting compilation
+--- mini_bat.gms(5) 3 Mb[FIL:"/work/mini_bat.gms",5,0]
+--- > mini_data.inc(8) 3 Mb[FIL:"/work/mini_data.inc",8,0]
+--- mini_bat.gms(19) 3 Mb[FIL:"/work/mini_bat.gms",19,0]
+--- > mini_rep.inc(4) 3 Mb[FIL:"/work/mini_rep.inc",4,0]
+--- mini_bat.gms(20) 3 Mb[FIL:"/work/mini_bat.gms",20,0]
+--- Starting execution: elapsed 0:00:00.004[LST:56]
+--- Generating LP model ship[LST:56]
+--- mini_bat.gms(26) 4 Mb[FIL:"/work/mini_bat.gms",26,0]
+---   5 rows  5 columns  13 non-zeroes
+--- Range statistics (absolute non-zero finite values)
+--- RHS       [min, max] : [ 5.000E+01, 9.000E+01] - Zero values observed as well
+--- Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+--- Matrix    [min, max] : [ 1.000E+00, 2.600E+00]
+--- Executing HIGHS (Solvelink=2): elapsed 0:00:00.005[LST:124]
+
+HIGHS            54.6.1 20a39885 Oct 24, 2026          LEG x86 64bit/Linux    
+
+Running HiGHS 1.14.0 (git hash: 7df0786de3): Copyright (c) 2026 under Apache 2.0 license terms
+Using BLAS: Intel MKL 
+Options set:
+  time_limit           = 1e+10
+  log_to_console       = false
+  mip_abs_gap          = 0
+  pdlp_cupdlpc_restart_method = 0
+
+LP has 4 rows; 4 cols; 8 nonzeros
+Coefficient ranges:
+  Matrix  [1e+00, 1e+00]
+  Cost    [2e+00, 3e+00]
+  Bound   [0e+00, 0e+00]
+  RHS     [5e+01, 9e+01]
+Presolving model
+4 rows, 4 cols, 8 nonzeros 0s
+4 rows, 4 cols, 8 nonzeros 0s
+Presolve reductions: rows 4(-0); columns 4(-0); nonzeros 8(-0) - Not reduced
+Problem not reduced by presolve: solving the LP
+Using dual simplex solver
+  Iteration        Objective     Infeasibilities num(sum)
+          0     0.0000000000e+00 Pr: 2(120) 0.0s
+          3     2.2650000000e+02 Pr: 0(0) 0.0s
+
+Model status        : Optimal
+Simplex   iterations: 3
+Objective value     :  2.2650000000e+02
+P-D objective error :  0.0000000000e+00
+HiGHS run time      :          0.00
+--- Reading solution for model ship[LST:136]
+--- Executing after solve: elapsed 0:00:00.025[LST:193]
+--- mini_bat.gms(32) 4 Mb[FIL:"/work/mini_bat.gms",32,0]
+--- RefFile /work/mini_bat.ref[FIL:"/work/mini_bat.ref",1,1]
+--- GDX File /work/mini_bat.gdx[FIL:"/work/mini_bat.gdx",0,0]
+*** Status: Normal completion[LST:224]
+--- Job mini_bat.gms Stop 11/04/26 18:15:01 elapsed 0:00:00.025

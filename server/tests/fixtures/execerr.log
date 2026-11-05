@@ -1,0 +1,55 @@
+--- Job execerr.gms Start 11/04/26 18:25:04 54.6.1 20a39885 LEX-LEG x86 64bit/Linux
+--- Applying:
+*** [removed]
+*** [removed]
+--- GAMS Parameters defined
+    LP HIGHS
+    MIP SCIP
+    RMIP HIGHS
+    NLP IPOPT
+    MCP MILES
+    MPEC NLPEC
+    RMPEC NLPEC
+    CNS IPOPT
+    DNLP IPOPT
+    RMINLP IPOPT
+    MINLP SHOT
+    QCP IPOPT
+    MIQCP SHOT
+    RMIQCP IPOPT
+    EMP RESHOP
+    Input /work/execerr.gms
+    PageSize 0
+    ScrDir /work/225a/
+    *** [removed]
+    LogOption 3
+    AppendLog 1
+    ErrMsg 1
+    Reference /work/execerr.ref
+    ErrorLog 99
+    IDE 1
+    LstTitleLeftAligned 1
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+*** [removed]
+GAMS 54.6.1   Copyright (C) 1987-2026 GAMS Development. All rights reserved
+--- Starting compilation
+unicode: üß ✓ tab:     here and bell done
+esc:[31mred[0m end
+--- execerr.gms(7) 2 Mb[FIL:"/work/execerr.gms",7,0]
+--- Starting execution: elapsed 0:00:00.004[LST:19]
+--- execerr.gms(5) 3 Mb[FIL:"/work/execerr.gms",5,0]
+*** Error at line 5: division by zero (0)[LST:23]
+--- execerr.gms(7) 3 Mb 1 Error[FIL:"/work/execerr.gms",7,0]
+*** Error at line 7: Execution halted: abort$1 'custom abort message'[LST:28]
+--- execerr.gms(7) 3 Mb 2 Errors[FIL:"/work/execerr.gms",7,0]
+--- RefFile /work/execerr.ref[FIL:"/work/execerr.ref",1,1]
+--- execerr.gms(7) 3 Mb 2 Errors[FIL:"/work/execerr.gms",7,0]
+*** Status: Execution error(s)[LST:41]
+--- Job execerr.gms Stop 11/04/26 18:25:04 elapsed 0:00:00.004

@@ -1,0 +1,16 @@
+[package]
+name = "gams-syntax"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Port of the GAMS Studio syntax highlighter (state machine, keyword tables, semantic-token mapping)"
+
+[dependencies]
+
+[[bin]]
+name = "gen_tables"
+path = "src/bin/gen_tables.rs"
+
+[[bin]]
+name = "gen_tmlanguage"
+path = "src/bin/gen_tmlanguage.rs"
