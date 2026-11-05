@@ -12,3 +12,5 @@ esbuild.js
 scripts/**
 .github/**
 *.vsix
+CLAUDE.md
+**/*.local.md
