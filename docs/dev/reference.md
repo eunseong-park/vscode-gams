@@ -125,7 +125,7 @@ NEOS requires an email address: set `gams.neos.email` (it is never filled in fro
 
 ## Building from source
 
-Needs Node 20+ and Rust (cargo). No GAMS installation is needed to build: GDX files are handled by the pure Rust crate `server/crates/gdx-rs` (no C code; zlib via `flate2`/`miniz_oxide`), the OPT shared library is loaded at runtime from the GAMS system directory (via `libloading`). Tests that need a GAMS install skip with a note when `GAMS_SYSDIR` (or the default install dir) lacks the libraries.
+Needs Node 22+ and Rust (cargo). No GAMS installation is needed to build: GDX files are handled by the pure Rust crate `server/crates/gdx-rs` (no C code; zlib via `flate2`/`miniz_oxide`), the OPT shared library is loaded at runtime from the GAMS system directory (via `libloading`). Tests that need a GAMS install skip with a note when `GAMS_SYSDIR` is not set or lacks the libraries.
 
 The GDX oracle tests compare `gdx-rs` (and the `gams-gdx` API on top of it) with the official GDX C library of a GAMS installation, on every `.gdx` of the installation and the repository, on generated files with more than a million records (compressed and uncompressed) and on files written by `gdx-rs`; `gdxdump` from the sysdir checks that Rust- and C-written files have identical contents:
 
