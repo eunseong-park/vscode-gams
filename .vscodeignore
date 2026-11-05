@@ -14,3 +14,4 @@ scripts/**
 *.vsix
 CLAUDE.md
 **/*.local.md
+local/**

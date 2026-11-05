@@ -7,3 +7,4 @@ server/bin/
 .vscode-test/
 CLAUDE.md
 *.local.md
+local/
