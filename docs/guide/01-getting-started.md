@@ -34,7 +34,24 @@ If GAMS is somewhere else, press `Ctrl+,`, search for `gams.sysdir` and enter th
 
 If a run fails with "No GAMS installation found", the message has a button **Open Settings**.
 
-**Several GAMS versions installed?** The extension picks the newest one, judged by the version number in the folder name (`54` before `51` before `49`). To use another version, set `gams.sysdir` to its folder.
+**Several GAMS versions installed?** The extension picks the newest one. To use another version, use the picker:
+
+1. Open a GAMS file. The status bar at the bottom right shows the version in use, for example `GAMS 54.6`. If it says `GAMS: not found` (yellow), no GAMS was found.
+2. Click it, or press `Ctrl+Shift+P` and run **GAMS: Select GAMS Installation**.
+3. Pick a version from the list. **Automatic (newest found)** goes back to the default, and **Browse...** lets you choose a GAMS folder yourself.
+4. Choose **This workspace** (only the folder that is open now) or **All workspaces**. Over SSH or WSL, "All workspaces" is saved on that remote machine.
+
+A choice for one workspace is stored in `.vscode/settings.json` in your project folder:
+
+```json
+{
+  "gams.sysdir": "C:\\GAMS\\49"
+}
+```
+
+If `gams.sysdir` is also set at a more specific level, that value wins. The picker tells you and offers to remove it.
+
+**Which version is really used?** Hover over the status bar item to see the full version and folder. Every run also writes `Running: ...` as the first line of the GAMS Log, with the full path of the `gams` program.
 
 **Working over SSH, in WSL or in a container?** The extension runs on the remote machine, so it looks for GAMS there. Set `gams.sysdir` in the **Remote** tab of the Settings editor (`Ctrl+,`), so each machine keeps its own GAMS folder.
 

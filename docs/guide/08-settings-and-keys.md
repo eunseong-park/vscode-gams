@@ -50,6 +50,12 @@ Press `Ctrl+,` and type the name of the setting in the search box. Or edit `sett
 | `GAMS.terminalCwd` | Still works. Working folder for runs, unless a `.gsp` project sets one. |
 | `GAMS.listingFileLocation`, `GAMS.preserveFocus` | Still work, used when `gams.editor.openLocation` and `gams.editor.preserveFocus` are not set. |
 
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| **GAMS: Select GAMS Installation** | Choose which installed GAMS to use and where to save the choice (this workspace or all workspaces). It also opens when you click the version in the status bar. |
+
 ## All keys
 
 On macOS use `Cmd` for `Ctrl` in the comment, bracket and section keys.

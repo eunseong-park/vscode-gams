@@ -187,6 +187,10 @@
         "category": "GAMS"
       },
       {
+        "command": "gams.selectInstallation",
+        "title": "GAMS: Select GAMS Installation"
+      },
+      {
         "command": "gams.openModelLibrary",
         "title": "GAMS: Open Model Library"
       },
@@ -658,7 +662,7 @@
           "gams.sysdir": {
             "type": "string",
             "default": "",
-            "markdownDescription": "GAMS system directory (the folder that contains `gams`/`gams.exe`; a path to the executable itself is accepted). If empty it is auto-detected: `gams` on PATH, then the newest `/opt/gams/*`, `C:/GAMS/*` / `C:/GAMS/win64/*` or `/Library/Frameworks/GAMS.framework/Versions/*/Resources` (macOS). With several versions the newest is used; set this to choose another. In a remote window (SSH, WSL) set it under the Remote tab."
+            "markdownDescription": "GAMS system directory (the folder that contains `gams`/`gams.exe`; a path to the executable itself is accepted). If empty it is auto-detected: `gams` on PATH, then the newest `/opt/gams/*`, `C:/GAMS/*` / `C:/GAMS/win64/*` or `/Library/Frameworks/GAMS.framework/Versions/*/Resources` (macOS). With several versions the newest is used; run **GAMS: Select GAMS Installation** (or click the version in the status bar) to choose another. In a remote window (SSH, WSL) set it under the Remote tab."
           },
           "gams.defaultParameters": {
             "type": "array",

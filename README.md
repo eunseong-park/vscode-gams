@@ -33,7 +33,7 @@ Edit, run, debug and inspect GAMS models in Visual Studio Code. Includes a GDX v
 
 - VS Code 1.95 or newer. To run models, you also need GAMS and a valid license.
 - Editing, the outline and the GDX viewer (view, compare, export, search) work without GAMS.
-- The GAMS folder (the "sysdir") is taken from the setting `gams.sysdir`. If it is empty, the extension looks for `gams` on your `PATH`, then for the newest GAMS in `/opt/gams`, `C:\GAMS` or `/Library/Frameworks/GAMS.framework` (macOS). Over SSH or WSL, set it in the **Remote** settings tab. ([Details](docs/guide/01-getting-started.md#how-do-i-tell-the-extension-where-gams-is))
+- The GAMS folder (the "sysdir") is taken from the setting `gams.sysdir`. If it is empty, the extension looks for `gams` on your `PATH`, then for the newest GAMS in `/opt/gams`, `C:\GAMS` or `/Library/Frameworks/GAMS.framework` (macOS). Over SSH or WSL, set it in the **Remote** settings tab. To switch versions, click the GAMS version in the status bar (or run **GAMS: Select GAMS Installation**). ([Details](docs/guide/01-getting-started.md#how-do-i-tell-the-extension-where-gams-is))
 
 ## Installation
 

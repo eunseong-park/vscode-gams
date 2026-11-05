@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+import { installationStatus } from '../installationUi';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -148,12 +149,12 @@ export class Runner implements vscode.Disposable {
 
   constructor() {
     this.status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 10);
-    this.status.command = 'gams.showLog';
-    this.status.name = 'GAMS Run Status';
+    this.status.name = 'GAMS';
     this.setIdle();
     this.disposables.push(
       this.status,
       vscode.window.onDidChangeActiveTextEditor(() => this.updateStatusVisibility()),
+      vscode.workspace.onDidChangeConfiguration((e) => { if (e.affectsConfiguration('gams.sysdir')) this.refreshInstallation(); }),
       this.diagnostics,
       this.output,
       vscode.workspace.registerTextDocumentContentProvider(LOG_SCHEME, this.logDoc),
@@ -190,16 +191,29 @@ export class Runner implements vscode.Disposable {
     else this.status.hide();
   }
 
+  /** Re-read the GAMS version shown by the idle item (gams.sysdir changed). */
+  refreshInstallation(): void {
+    if (!this.statusBusy) this.setIdle();
+  }
+
   private setIdle(): void {
     this.statusBusy = false;
-    this.status.text = '$(circle-outline) GAMS';
-    this.status.tooltip = 'GAMS: idle. Click to show the log.';
-    this.status.accessibilityInformation = { label: 'GAMS: idle. Show the log', role: 'button' };
+    const inst = installationStatus();
+    this.status.command = 'gams.selectInstallation';
+    this.status.text = `$(circle-outline) ${inst.text}`;
+    this.status.tooltip = inst.tooltip;
+    this.status.backgroundColor = inst.notFound ? new vscode.ThemeColor('statusBarItem.warningBackground') : undefined;
+    this.status.accessibilityInformation = {
+      label: inst.notFound ? 'GAMS not found. Select a GAMS installation' : `GAMS version ${inst.version}. Select a GAMS installation`,
+      role: 'button',
+    };
     this.updateStatusVisibility();
     void vscode.commands.executeCommand('setContext', 'gams.running', false);
   }
 
   private setRunning(name: string, pid: number | undefined): void {
+    this.status.command = 'gams.showLog';
+    this.status.backgroundColor = undefined;
     this.status.text = `$(sync~spin) GAMS: ${name}`;
     this.status.tooltip = `GAMS running (pid ${pid ?? '?'}). Click to show the log.`;
     this.status.accessibilityInformation = { label: `GAMS running ${name}. Show the log`, role: 'button' };
@@ -343,6 +357,8 @@ export class Runner implements vscode.Disposable {
     }, false);
     const ext = { stop };
     this.external = ext;
+    this.status.command = 'gams.showLog';
+    this.status.backgroundColor = undefined;
     this.status.text = `$(sync~spin) NEOS: ${name}`;
     this.status.tooltip = 'NEOS run in progress. Click to show the log.';
     this.status.accessibilityInformation = { label: `NEOS run ${name} in progress. Show the log`, role: 'button' };

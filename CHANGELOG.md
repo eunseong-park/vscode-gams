@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- **GAMS: Select GAMS Installation** and a status bar item: lists the GAMS versions found (on `PATH` and in the standard folders), shows the version in use (`GAMS 54.6`, or `GAMS: not found`), and saves the choice in `gams.sysdir` for this workspace or all workspaces. The item sits with the run status item, which shows the running job while a model runs.
+
+### Changed
+- Documentation: new section on where the extension looks for GAMS and how to set it.
+- GitHub workflows use Node 22.
+
 ## [0.3.0] - Pre-release: rebuilt from scratch as a port of GAMS Studio
 
 An unofficial port of features of the open-source GAMS Studio (not affiliated with GAMS Development Corp.).

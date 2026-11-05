@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+import { registerInstallationCommands } from './installationUi';
 import * as vscode from 'vscode';
 import { restartLanguageClient, startLanguageClient, stopLanguageClient } from './lsp';
 import { Runner } from './run/runner';
@@ -70,6 +71,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     vscode.commands.registerCommand('gams.interrupt', () => runner.interrupt()),
     vscode.commands.registerCommand('gams.stop', () => runner.stop()),
     vscode.commands.registerCommand('gams.showLog', () => runner.showLog()),
+    ...registerInstallationCommands(),
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('gams.stopGracePeriod')) applyStopGrace();
       if (e.affectsConfiguration('gams.sysdir') || e.affectsConfiguration('gams.serverPath')) {
