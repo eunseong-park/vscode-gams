@@ -311,6 +311,18 @@ fn end_of_line_comments() {
 }
 
 #[test]
+fn end_of_line_comment_after_declaration() {
+    // DEVIATION from Studio, which reads the `//` as an empty data block `/ /` and the rest as code
+    let t = toks("$eolCom //\nParameter p(i) // text (z)\n;\nParameter q(i) / a 1 /  // (w)\n;");
+    assert!(has(&t[1], "// text (z)", K::CommentEndline));
+    assert!(!t[1].iter().any(|(_, k, _)| *k == K::IdentifierAssignment));
+    assert!(has(&t[3], "// (w)", K::CommentEndline));
+    // without `$eolCom //`, `//` stays an empty data block
+    let t = toks("Parameter p(i) // text;");
+    assert!(t[0].iter().any(|(_, k, _)| *k == K::IdentifierAssignment));
+}
+
+#[test]
 fn compile_time_variables() {
     let t =
         toks("display '%system.date%', %myVar%;\nx = %modelStat.Optimal%;\n* %myVar% in comment");

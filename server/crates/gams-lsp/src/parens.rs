@@ -297,6 +297,11 @@ mod tests {
         // a later `$eolCom` replaces the character
         let t = "$eolCom //\nx = a(i); // (c)\n$eolCom !\ny = b(j); ! (d)\nz = c(k); // (e)\n";
         assert_eq!(per_line(t), ["", "()", "", "()", "()()"]);
+        // `//` after a declaration is the comment, not an empty `/ /` data block (deviation from Studio)
+        let t = "$eolCom //\nParameter p(i) // text (z)\n;\nParameters\n  a(i)  // (y)\n  b(i) / x 1 /  // (w)\n;\nScalar s // (x)\n;\n";
+        assert_eq!(per_line(t), ["", "()", "", "", "()", "()/\\"]);
+        // an empty data block without `$eolCom //` is still one
+        assert_eq!(per_line("Parameter p(i) / /;\n"), ["()/\\"]);
     }
 
     #[test]
@@ -492,3 +497,4 @@ mod corpus {
         assert!(in_text.is_empty(), "{} brackets in text, e.g. {:#?}", in_text.len(), &in_text[..in_text.len().min(40)]);
     }
 }
+

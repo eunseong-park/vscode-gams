@@ -10,7 +10,7 @@
 //! value in [`LineState`], which also carries the eol-comment configuration (see
 //! `syntax.rs`). Positions are UTF-16 code units, like `QString` and LSP.
 
-use crate::chars::{scan_dco_matches, u, Line};
+use crate::chars::{is_white_u16, scan_dco_matches, u, Line};
 use crate::kind::flavor::{FLAVOR_CHARS, MAX_STORED};
 use crate::kind::SyntaxKind as K;
 use crate::semantic::{semantic_token_type, trim_blank, SemToken};
@@ -419,14 +419,31 @@ fn highlight_impl(prev: &LineState, text: &[u16], mut scan: Option<&mut ScanMap>
         }
 
         let mut next = Block::none();
+        let mut eol_comment = Block::none();
         for &nk in next_kinds(skind, empty_line_kinds) {
             if !is_registered(nk) {
                 continue;
             }
             let tb = find(nk, skind, &state, &line, index, &mut st.eol);
+            if nk == K::CommentEndline && tb.is_valid() {
+                eol_comment = tb.clone();
+            }
             if tb.is_valid() && (!next.is_valid() || next.start > tb.start) {
                 next = tb;
             }
+        }
+        // DEVIATION: blocks that begin with their leading blanks (e.g. the `/` data block after a
+        // declaration) start before an end-of-line comment that follows the same blanks, so Studio
+        // reads `Parameter p(i) // text (x)` with `$eolCom //` as an empty data block `//` and colors
+        // the comment as code. GAMS reads it as a comment: an end-of-line comment that follows only
+        // blanks wins, once end-of-line comments are on (`$onEolCom`/`$eolCom`).
+        if eol_comment.is_valid()
+            && st.eol.dyn_char.is_some()
+            && next.syntax != Some(K::CommentEndline)
+            && next.start < eol_comment.start
+            && (next.start..eol_comment.start).all(|i| is_white_u16(text[i as usize]))
+        {
+            next = eol_comment;
         }
         if !next.is_valid() {
             if !tail.is_valid() {
