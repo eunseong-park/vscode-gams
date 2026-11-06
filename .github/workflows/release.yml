@@ -21,8 +21,8 @@ jobs:
           - { os: ubuntu-24.04, target: linux-x64, rust: x86_64-unknown-linux-gnu }
           - { os: ubuntu-24.04-arm, target: linux-arm64, rust: aarch64-unknown-linux-gnu }
           - { os: windows-latest, target: win32-x64, rust: x86_64-pc-windows-msvc }
-          - { os: macos-14, target: darwin-arm64, rust: aarch64-apple-darwin }
-          - { os: macos-14, target: darwin-x64, rust: x86_64-apple-darwin }
+          - { os: macos-latest, target: darwin-arm64, rust: aarch64-apple-darwin }
+          - { os: macos-latest, target: darwin-x64, rust: x86_64-apple-darwin }
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
