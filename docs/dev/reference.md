@@ -159,6 +159,6 @@ Behavior is ported only from the official GAMS Studio sources, the GAMS installa
 
 ## Licenses
 - This extension is licensed under GPL-3.0-or-later (see `LICENSE`). It ports logic and syntax tables from GAMS Studio (GPL-3.0).
-- Third-party components (bundled npm packages, Rust crates, MIT-licensed GAMS-dev code) are listed with their license texts in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- Third-party components (bundled npm packages, Rust crates, MIT-licensed GAMS-dev code) are listed with their license texts in [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md).
 - The GAMS documentation is not bundled. Documentation is read from your GAMS installation (`docs/`) or linked on https://www.gams.com; hovers and completion items only link to it.
 - GAMS is a trademark of GAMS Development Corp. This extension is unofficial and not affiliated with or endorsed by GAMS.
