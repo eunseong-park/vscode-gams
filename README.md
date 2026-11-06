@@ -89,7 +89,7 @@ All settings are listed in [Settings and keys](docs/guide/08-settings-and-keys.m
 
 - [GAMS Studio](https://github.com/GAMS-dev/studio) by GAMS Development Corp. is the model for many features and for the colors.
 - The GDX reader and writer are derived from [GAMS-dev/gdx](https://github.com/GAMS-dev/gdx) (MIT).
-- The GAMS Connect schemas are generated from the agent schemas of [GAMS-dev/gamsapi](https://github.com/GAMS-dev/gamsapi) (MIT).
+- The GAMS Connect schemas are generated from the agent schemas of the `gamsapi` Python package (MIT; [PyPI](https://pypi.org/project/gamsapi/), also shipped with GAMS).
 - Licenses of all bundled components: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Author
