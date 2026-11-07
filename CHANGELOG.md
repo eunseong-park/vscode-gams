@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.2] - 2026-11-07 - Pre-release
 
 ### Fixed
 - With `$eolCom //`, a `//` comment right after a declaration (`Parameter p(i) // text (x)`) was highlighted as an empty data block and code, with colored brackets. It is now a comment (GAMS Studio has the same flaw).
